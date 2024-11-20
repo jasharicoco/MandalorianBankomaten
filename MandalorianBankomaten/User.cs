@@ -2,9 +2,12 @@ namespace MandalorianBankomaten;
 
 public class User
 {
-    public string Name { get; set; }
-    public string Password { get; set; }
-    public List<Account> Accounts { get; set; } // En användare kan ha flera konton
+    private string _name;
+    private string _password;
+    private List<Account> _accounts = new List<Account>();
+    public string Name { get { return _name; } set; }
+    public string Password { get { return _password; } set; }
+    public List<Account> Accounts { get { return _accounts; } set; } // En användare kan ha flera konton
 
     public User(string name, string password)
     {
@@ -23,7 +26,32 @@ public class User
         Console.WriteLine($"Konton för användare: {Name}");
         foreach (var account in Accounts)
         {
-            Console.WriteLine($" - Konto: {account.AccountName}, Saldo: {account.AccountMoney}");
+            Console.WriteLine($" - Konto: {account.AccountName}, Saldo: {account.Balance}");
+        }
+    }
+
+    public void AddAccount(Account account)
+    {
+        if (account == null)
+        {
+            throw new ArgumentNullException(nameof(account), "Kontot kan inte vara null.");
+        }
+        _accounts.Add(account);
+    }
+
+    public void RemoveAccount(Account account)
+    {
+        if (account == null)
+        {
+            throw new ArgumentNullException(nameof(account), "Kontot kan inte vara null.");
+        }
+        if (_accounts.Contains(account))
+        {
+            _accounts.Remove(account);
+        }
+        else
+        {
+            Console.WriteLine("Kontot finns inte i listan.");
         }
     }
 }
