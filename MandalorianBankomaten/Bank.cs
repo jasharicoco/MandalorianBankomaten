@@ -110,7 +110,7 @@
             }
 
             // Utför överföringen
-            currentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount);
+            currentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount).Wait();
         }
 
         public void TransferToAnotherUser()
@@ -174,7 +174,7 @@
             }
 
             // Utför överföringen
-            currentUser.TransferMoneyToUser(recipient, fromAccount, recipientAccount, amount);
+            currentUser.TransferMoneyToUser(recipient, fromAccount, recipientAccount, amount).Wait();
         }
 
         static string ReadPassword()

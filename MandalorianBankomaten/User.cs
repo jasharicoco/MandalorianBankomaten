@@ -59,10 +59,15 @@ namespace MandalorianBankomaten
             }
         }
 
-        public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
+        public async Task TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
             if (fromAccount.Balance >= amount)
             {
+                Console.WriteLine("Förbereder överföring... Vänta 1 minut.");
+
+                // Vänta i 15 minuter
+                await Task.Delay(TimeSpan.FromMinutes(1));
+
                 fromAccount.Withdraw(amount);
                 toAccount.Deposit(amount);
                 Console.WriteLine($"Överförde {amount.ToString("C", CultureInfo.CurrentCulture)} från {fromAccount.AccountName} till {toAccount.AccountName}.");
@@ -73,10 +78,15 @@ namespace MandalorianBankomaten
             }
         }
 
-        public void TransferMoneyToUser(User recipient, Account fromAccount, Account recipientAccount, decimal amount)
+        public async Task TransferMoneyToUser(User recipient, Account fromAccount, Account recipientAccount, decimal amount)
         {
             if (fromAccount.Balance >= amount)
             {
+                Console.WriteLine("Förbereder överföring... Vänta 1 minut.");
+
+                // Vänta i 15 minuter
+                await Task.Delay(TimeSpan.FromMinutes(1));
+
                 fromAccount.Withdraw(amount);
                 recipientAccount.Deposit(amount);
                 Console.WriteLine($"Överförde {amount.ToString("C", CultureInfo.CurrentCulture)} från {fromAccount.AccountName} till {recipient.Name}'s {recipientAccount.AccountName}.");
