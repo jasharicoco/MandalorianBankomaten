@@ -16,7 +16,7 @@ public class Loan
     }
     
     // Method to calculate the monthly interest
-    public decimal MontlyInterest()
+    public decimal MonthlyInterest()
     {
         return RemainingBalance * (InterestRate / 100 / 12);
     }

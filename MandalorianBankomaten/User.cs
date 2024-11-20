@@ -56,6 +56,7 @@ namespace MandalorianBankomaten
             Loan loan = new Loan(amount, interestRate);
             _loans.Add(loan);
             Console.WriteLine($"Lån på {amount.ToString("C", CultureInfo.CurrentCulture)} har tagits av användare: {Name}.");
+            Console.WriteLine($"Räntekostnad: {loan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)} i månaden.");
         }
         // Method to display users loans
         public void ShowLoans()
@@ -69,7 +70,7 @@ namespace MandalorianBankomaten
             Console.WriteLine($"Lån för användare: {Name}");
             foreach (var loan in _loans)
             {
-                Console.WriteLine($" - Lån: {loan.Amount.ToString("C", CultureInfo.CurrentCulture)}, Ränta: {loan.InterestRate}%");
+                Console.WriteLine($" - Lån: {loan.Amount.ToString("C", CultureInfo.CurrentCulture)}, Räntesats: {loan.InterestRate}%, Räntekostnad: {loan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)} i månaden.");
             }
         }
 

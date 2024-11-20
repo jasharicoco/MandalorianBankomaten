@@ -33,12 +33,12 @@
                 ShowUserAccounts(); // show the user's accounts
                 // här kommer menyn att vara så småningom
                 
-                OfferLoan(); 
+                OfferLoan();
                 ShowLoans();
 
                 //testkör metoder
                 //TransferToAnotherUser();
-                TransferBetweenAccounts();
+                //TransferBetweenAccounts();
             }
         }
 
