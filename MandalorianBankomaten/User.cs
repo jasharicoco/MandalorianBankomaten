@@ -5,25 +5,26 @@ namespace MandalorianBankomaten
     public class User
     {
         private List<Account> _accounts;
+        private List<Loan> _loans = new List<Loan>(); // Added loans list
 
         public string Name { get; private set; }
         public string Password { get; private set; }
         public IReadOnlyList<Account> Accounts => _accounts.AsReadOnly();
-        static int userCounter = 0;
-        public int userID { get; set; }
+        static int _userCounter = 0;
+        public int UserId { get; set; }
 
         public User(string name, string password)
         {
-            userCounter++;
+            _userCounter++;
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Namn får inte vara tomt.", nameof(name));
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Lösenord får inte vara tomt.", nameof(password));
 
             Name = name;
             Password = password;
             _accounts = new List<Account>();
-            userID = userCounter;
+            UserId = _userCounter;
         }
-
+        // Added method to show the user accounts
         public void ShowAccounts()
         {
             if (_accounts.Count == 0)
@@ -45,6 +46,31 @@ namespace MandalorianBankomaten
 
             _accounts.Add(account);
             Console.WriteLine($"Konto {account.AccountName} har lagts till för användare: {Name}.");
+        }
+        // Added method to take a loan
+        public void TakeLoan(decimal amount, decimal interestRate)
+        {
+            if (amount <= 0) throw new ArgumentException("Lånebeloppet måste vara större än noll.");
+            if (interestRate <= 0) throw new ArgumentException("Räntesatsen måste vara större än noll.");
+
+            Loan loan = new Loan(amount, interestRate);
+            _loans.Add(loan);
+            Console.WriteLine($"Lån på {amount.ToString("C", CultureInfo.CurrentCulture)} har tagits av användare: {Name}.");
+        }
+        // Method to display users loans
+        public void ShowLoans()
+        {
+            if (_loans.Count == 0)
+            {
+                Console.WriteLine($"Användare: {Name} har inga lån.");
+                return;
+            }
+
+            Console.WriteLine($"Lån för användare: {Name}");
+            foreach (var loan in _loans)
+            {
+                Console.WriteLine($" - Lån: {loan.Amount.ToString("C", CultureInfo.CurrentCulture)}, Ränta: {loan.InterestRate}%");
+            }
         }
 
         public void RemoveAccount(Account account)
