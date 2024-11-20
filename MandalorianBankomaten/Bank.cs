@@ -11,10 +11,24 @@
             new User("tim", "1234"),
             new User("arbunit", "1234"),
         };
+        private User currentUser; // tracks the current user
+        public Bank() 
+        {
+            foreach (var user in users)
+            {
+                // create some standard accounts for each user
+                user.AddAccount(new Account("Lönekonto", 10000, "SEK"));
+                user.AddAccount(new Account("Sparkonto", 50000, "SEK"));
+            }
+        }
 
         public void Run()
         {
             bool loginSuccesfull = LogIn();
+            if (loginSuccesfull) // if login is successful
+            {
+                ShowUserAccounts(); // show the user's accounts
+            }
         }
 
         public bool LogIn()
@@ -22,7 +36,7 @@
             int attempts = 0;
             while (attempts < 3)
             {
-                const int maxAttempts = 3;
+                const int maxAttempts = 3; // constant for max attempts allowed 
                 attempts++;
                 Console.Write("Vänligen skriv in ditt användernamn: ");
                 string username = Console.ReadLine().ToLower();
@@ -35,13 +49,19 @@
                     {
                         Console.WriteLine();
                         Console.WriteLine("Inloggning lyckades!");
+                        currentUser = user;
                         return true;
                     }
                 }
                 Console.WriteLine();
-                Console.WriteLine($"Inloggning misslyckades, försök kvar: {maxAttempts - attempts}");
+                Console.WriteLine($"Inloggning misslyckades, försök kvar: {maxAttempts - attempts}"); // show remaining attempts
             }
             return false;
+        }
+        
+        private void ShowUserAccounts()
+        {
+            currentUser.ShowAccounts(); // show the active user's accounts
         }
 
         static string ReadPassword()
