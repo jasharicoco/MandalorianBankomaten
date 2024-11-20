@@ -22,6 +22,7 @@
             int attempts = 0;
             while (attempts < 3)
             {
+                const int maxAttempts = 3;
                 attempts++;
                 Console.Write("Vänligen skriv in ditt användernamn: ");
                 string username = Console.ReadLine().ToLower();
@@ -38,7 +39,7 @@
                     }
                 }
                 Console.WriteLine();
-                Console.WriteLine("Inloggning misslyckades, försök igen!");
+                Console.WriteLine($"Inloggning misslyckades, försök kvar: {maxAttempts - attempts}");
             }
             return false;
         }
