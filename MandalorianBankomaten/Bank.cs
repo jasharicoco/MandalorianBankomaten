@@ -22,6 +22,7 @@
             int attempts = 0;
             while (attempts < 3)
             {
+                attempts++;
                 Console.Write("Vänligen skriv in ditt användernamn: ");
                 string username = Console.ReadLine().ToLower();
                 Console.Write("Vänligen skriv in ditt lösenord: ");
