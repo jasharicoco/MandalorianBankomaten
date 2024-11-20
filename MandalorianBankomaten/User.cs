@@ -61,24 +61,6 @@ namespace MandalorianBankomaten
 
         public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
-            if (fromAccount == null || toAccount == null)
-            {
-                Console.WriteLine("Ett eller båda konton är ogiltiga.");
-                return;
-            }
-
-            if (fromAccount == toAccount)
-            {
-                Console.WriteLine("Du kan ej överföra från/till samma konto.");
-                return;
-            }
-
-            if (amount <= 0)
-            {
-                Console.WriteLine("Beloppet måste vara större än noll.");
-                return;
-            }
-
             if (fromAccount.Balance >= amount)
             {
                 fromAccount.Withdraw(amount);
@@ -93,18 +75,6 @@ namespace MandalorianBankomaten
 
         public void TransferMoneyToUser(User recipient, Account fromAccount, Account recipientAccount, decimal amount)
         {
-            if (recipient == null || fromAccount == null || recipientAccount == null)
-            {
-                Console.WriteLine("Mottagare eller något av kontona är ogiltiga.");
-                return;
-            }
-
-            if (amount <= 0)
-            {
-                Console.WriteLine("Beloppet måste vara större än noll.");
-                return;
-            }
-
             if (fromAccount.Balance >= amount)
             {
                 fromAccount.Withdraw(amount);

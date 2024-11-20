@@ -35,7 +35,7 @@
 
                 //testkör metoder
                 //TransferToAnotherUser();
-                //TransferBetweenAccounts();
+                TransferBetweenAccounts();
             }
         }
 
