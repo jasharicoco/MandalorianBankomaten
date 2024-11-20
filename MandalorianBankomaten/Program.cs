@@ -37,6 +37,9 @@
 
             // Avsluta programmet
             Console.WriteLine("\n== Tack för att du använde Mandalorian Bankomaten! ==");
+
+            Bank bank = new Bank();
+            bank.Run();
         }
     }
 }

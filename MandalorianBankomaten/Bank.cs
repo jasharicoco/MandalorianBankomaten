@@ -31,6 +31,7 @@
                 {
                     if(username == user.Name && userpswd == user.Password)
                     {
+                        Console.WriteLine();
                         Console.WriteLine("Inloggning lyckades!");
                         return true;
                     }
