@@ -9,15 +9,19 @@ namespace MandalorianBankomaten
         public string Name { get; private set; }
         public string Password { get; private set; }
         public IReadOnlyList<Account> Accounts => _accounts.AsReadOnly();
+        static int userCounter = 0;
+        public int userID { get; set; }
 
         public User(string name, string password)
         {
+            userCounter++;
             if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Namn får inte vara tomt.", nameof(name));
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Lösenord får inte vara tomt.", nameof(password));
 
             Name = name;
             Password = password;
             _accounts = new List<Account>();
+            userID = userCounter;
         }
 
         public void ShowAccounts()

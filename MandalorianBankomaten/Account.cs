@@ -7,12 +7,16 @@ namespace MandalorianBankomaten
         public string AccountName { get; private set; }
         public decimal Balance { get; private set; }
         public string Currency { get; private set; }
+        static int accountCounter = 0;
+        public int accountID { get; set; }
 
         public Account(string accountName, decimal balance, string currency)
         {
+            accountCounter++;
             AccountName = accountName;
             Balance = balance;
             Currency = currency;
+            accountID = accountCounter;
         }
 
         public void Deposit(decimal amount)
