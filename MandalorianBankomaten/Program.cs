@@ -22,16 +22,6 @@
 
             // Skapa konto till user2
             user2.Accounts.Add(new Account("Lönekonto", 5000, "USD"));
-
-            // Försök lägga till ett null-konto (kastar ett undantag)
-            try
-            {
-                user2.AddAccount(null);
-            }
-            catch (ArgumentNullException ex)
-            {
-                Console.WriteLine(ex.Message); // Kontot kan inte vara null.
-            }
         }
     }
 }
