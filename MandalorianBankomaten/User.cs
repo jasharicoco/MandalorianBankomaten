@@ -1,105 +1,114 @@
-namespace MandalorianBankomaten;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 
-public class User
+namespace MandalorianBankomaten
 {
-    private string _name;
-    private string _password;
-    private List<Account> _accounts = new List<Account>();
-    public string Name { get { return _name; } set; }
-    public string Password { get { return _password; } set; }
-    public List<Account> Accounts { get { return _accounts; } set; } // En användare kan ha flera konton
-
-    public User(string name, string password)
+    public class User
     {
-        Name = name;
-        Password = password;
-        Accounts = new List<Account>();
-    }
-    
-    public void ShowAccounts()
-    {
-        if (Accounts.Count == 0)
-        {
-            Console.WriteLine($"Användare: {Name} har inga konton.");
-            return;
-        }
-        Console.WriteLine($"Konton för användare: {Name}");
-        foreach (var account in Accounts)
-        {
-            Console.WriteLine($" - Konto: {account.AccountName}, Saldo: {account.Balance}");
-        }
-    }
+        private string _name;
+        private string _password;
+        private List<Account> _accounts;
 
-    public void AddAccount(Account account)
-    {
-        if (account == null)
-        {
-            throw new ArgumentNullException(nameof(account), "Kontot kan inte vara null.");
-        }
-        _accounts.Add(account);
-    }
+        public string Name { get; private set; }
+        public string Password { get; private set; }
+        public IReadOnlyList<Account> Accounts => _accounts.AsReadOnly();
 
-    public void RemoveAccount(Account account)
-    {
-        if (_accounts.Contains(account))
+        public User(string name, string password)
         {
-            _accounts.Remove(account);
-        }
-        else
-        {
-            Console.WriteLine("Kontot finns inte i listan.");
-        }
-    }
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Namn får inte vara tomt.", nameof(name));
+            if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Lösenord får inte vara tomt.", nameof(password));
 
-    public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
-    {
-        if (fromAccount == null || toAccount == null)
-        {
-            Console.WriteLine("Ett eller båda konton är ogiltiga.");
-            return;
+            Name = name;
+            Password = password;
+            _accounts = new List<Account>();
         }
 
-        if (amount <= 0)
+        public void ShowAccounts()
         {
-            Console.WriteLine("Beloppet måste vara större än noll.");
-            return;
+            if (_accounts.Count == 0)
+            {
+                Console.WriteLine($"Användare: {Name} har inga konton.");
+                return;
+            }
+
+            Console.WriteLine($"Konton för användare: {Name}");
+            foreach (var account in _accounts)
+            {
+                Console.WriteLine($" - Konto: {account.AccountName}, Saldo: {account.Balance.ToString("C", CultureInfo.CurrentCulture)}");
+            }
         }
 
-        if (fromAccount.Balance >= amount)
+        public void AddAccount(Account account)
         {
-            fromAccount.Withdraw(amount);
-            toAccount.Deposit(amount);
-            Console.WriteLine($"Överförde {amount:C} från {fromAccount.AccountName} till {toAccount.AccountName}.");
-        }
-        else
-        {
-            Console.WriteLine("Otillräckligt saldo för överföring.");
-        }
-    }
+            if (account == null) throw new ArgumentNullException(nameof(account), "Kontot kan inte vara null.");
 
-    public void TransferMoneyToUser(User recipient, Account fromAccount, Account recipientAccount, decimal amount)
-    {
-        if (recipient == null || fromAccount == null || recipientAccount == null)
-        {
-            Console.WriteLine("Mottagare eller något av kontona är ogiltiga.");
-            return;
+            _accounts.Add(account);
+            Console.WriteLine($"Konto {account.AccountName} har lagts till för användare: {Name}.");
         }
 
-        if (amount <= 0)
+        public void RemoveAccount(Account account)
         {
-            Console.WriteLine("Beloppet måste vara större än noll.");
-            return;
+            if (_accounts.Remove(account))
+            {
+                Console.WriteLine($"Konto {account.AccountName} har tagits bort för användare: {Name}.");
+            }
+            else
+            {
+                Console.WriteLine("Kontot finns inte i listan.");
+            }
         }
 
-        if (fromAccount.Balance >= amount)
+        public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
-            fromAccount.Withdraw(amount);
-            recipientAccount.Deposit(amount);
-            Console.WriteLine($"Överförde {amount:C} från {fromAccount.AccountName} till {recipient.Name}'s {recipientAccount.AccountName}.");
+            if (fromAccount == null || toAccount == null)
+            {
+                Console.WriteLine("Ett eller båda konton är ogiltiga.");
+                return;
+            }
+
+            if (amount <= 0)
+            {
+                Console.WriteLine("Beloppet måste vara större än noll.");
+                return;
+            }
+
+            if (fromAccount.Balance >= amount)
+            {
+                fromAccount.Withdraw(amount);
+                toAccount.Deposit(amount);
+                Console.WriteLine($"Överförde {amount.ToString("C", CultureInfo.CurrentCulture)} från {fromAccount.AccountName} till {toAccount.AccountName}.");
+            }
+            else
+            {
+                Console.WriteLine("Otillräckligt saldo för överföring.");
+            }
         }
-        else
+
+        public void TransferMoneyToUser(User recipient, Account fromAccount, Account recipientAccount, decimal amount)
         {
-            Console.WriteLine("Otillräckligt saldo för överföring.");
+            if (recipient == null || fromAccount == null || recipientAccount == null)
+            {
+                Console.WriteLine("Mottagare eller något av kontona är ogiltiga.");
+                return;
+            }
+
+            if (amount <= 0)
+            {
+                Console.WriteLine("Beloppet måste vara större än noll.");
+                return;
+            }
+
+            if (fromAccount.Balance >= amount)
+            {
+                fromAccount.Withdraw(amount);
+                recipientAccount.Deposit(amount);
+                Console.WriteLine($"Överförde {amount.ToString("C", CultureInfo.CurrentCulture)} från {fromAccount.AccountName} till {recipient.Name}'s {recipientAccount.AccountName}.");
+            }
+            else
+            {
+                Console.WriteLine("Otillräckligt saldo för överföring.");
+            }
         }
     }
 }
