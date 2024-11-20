@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace MandalorianBankomaten
 {
     public class User
     {
-        private string _name;
-        private string _password;
         private List<Account> _accounts;
 
         public string Name { get; private set; }
