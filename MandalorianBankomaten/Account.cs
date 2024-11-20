@@ -1,14 +1,9 @@
-using System;
 using System.Globalization;
 
 namespace MandalorianBankomaten
 {
     public class Account
     {
-        private string _accountName;
-        private decimal _balance;
-        private string _currency;
-
         public string AccountName { get; private set; }
         public decimal Balance { get; private set; }
         public string Currency { get; private set; }
