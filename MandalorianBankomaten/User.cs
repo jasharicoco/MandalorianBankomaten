@@ -67,6 +67,12 @@ namespace MandalorianBankomaten
                 return;
             }
 
+            if (fromAccount == toAccount)
+            {
+                Console.WriteLine("Du kan ej överföra från/till samma konto.");
+                return;
+            }
+
             if (amount <= 0)
             {
                 Console.WriteLine("Beloppet måste vara större än noll.");
