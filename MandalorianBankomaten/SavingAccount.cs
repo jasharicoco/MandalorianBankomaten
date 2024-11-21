@@ -2,9 +2,9 @@
 {
     public class SavingAccount : Account
     {
-        public decimal Interest { get; set; }
+        public decimal InterestRate { get; set; }
 
-        public SavingAccount(string accountName, decimal balance, stirng currency, decimal interestRate)
+        public SavingAccount(string accountName, decimal balance, string currency, decimal interestRate)
             : base(accountName, balance, currency)
         {
             if (interestRate < 0) throw new ArgumentException("Räntan kan inte vara negativ");
