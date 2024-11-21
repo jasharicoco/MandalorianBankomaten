@@ -184,7 +184,7 @@
             }
 
             // Utför överföringen
-            currentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount);
+            currentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount).Wait();
         }
 
         public void TransferToAnotherUser()
@@ -248,7 +248,7 @@
             }
 
             // Utför överföringen
-            currentUser.TransferMoneyToUser(recipient, fromAccount, recipientAccount, amount);
+            currentUser.TransferMoneyToUser(recipient, fromAccount, recipientAccount, amount).Wait();
         }
 
         static string ReadPassword()
@@ -285,6 +285,41 @@
                 }
             }
             return password;
+        }
+        // Method to offer a loan to user
+        public void OfferLoan()
+        {
+            if (currentUser == null)
+            {
+                Console.WriteLine("Du måste vara inloggad för att ta ett lån.");
+                return;
+            }
+
+            Console.Write("Ange lånebelopp: ");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0)
+            {
+                Console.WriteLine("Ogiltigt belopp.");
+                return;
+            }
+
+            Console.Write("Ange ränta (i procent): ");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal interestRate) || interestRate <= 0)
+            {
+                Console.WriteLine("Ogiltig ränta.");
+                return;
+            }
+
+            currentUser.TakeLoan(amount, interestRate);
+        }
+        // Method to show users loans
+        public void ShowLoans()
+        {
+            if (currentUser == null)
+            {
+                Console.WriteLine("Du måste vara inloggad för att se lån.");
+                return;
+            }
+            currentUser.ShowLoans();
         }
     }
 }
