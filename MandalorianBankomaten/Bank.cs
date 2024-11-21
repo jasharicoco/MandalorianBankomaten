@@ -11,7 +11,13 @@
             new User("tim", "1234"),
             new User("arbunit", "1234"),
         };
+
+        private List<Admin> admins = new List<Admin>
+        {
+            new Admin("admin", "0000")
+        };
         private User currentUser; // tracks the current user
+        private Admin currentAdmin;
         private int fromIndex;
         private int toIndex;
 
@@ -27,15 +33,77 @@
 
         public void Run()
         {
+            bool programRunning = true;
+            string? choice;
+
+            Console.WriteLine("== Välkommen till Mandalorian Bankomaten ==\n");
+
             bool loginSuccesfull = LogIn();
             if (loginSuccesfull) // if login is successful
             {
-                ShowUserAccounts(); // show the user's accounts
-                // här kommer menyn att vara så småningom
+                while (programRunning)
+                {
+                    if (currentAdmin != null)
+                    {
+                        Console.WriteLine("------ Menu ------");
+                        Console.WriteLine("1. Skapa Användare");
+                        Console.WriteLine("2. Logga ut");
+                        Console.Write("Ditt val: ");
+                        choice = Console.ReadLine();
 
-                //testkör metoder
-                //TransferToAnotherUser();
-                //TransferBetweenAccounts();
+                        switch (choice)
+                        {
+                            case "1":
+                                users = currentAdmin.CreateUser(users);
+                                break;
+                            case "2":
+                                programRunning = false;
+                                break;
+                            default:
+                                Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                break;
+                        }
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine("------ Menu ------");
+                        Console.WriteLine("1. Visa konton");
+                        Console.WriteLine("2. Lägg till konto");
+                        Console.WriteLine("3. Ta bort konto");
+                        Console.WriteLine("4. För över pengar mellan konton");
+                        Console.WriteLine("5. För över pengar till en annan användare");
+                        Console.WriteLine("6. Logga ut");
+                        Console.Write("Ditt val: ");
+                        choice = Console.ReadLine();
+
+                        switch (choice)
+                        {
+                            case "1":
+                                currentUser.ShowAccounts();
+                                break;
+                            case "2":
+                                //currentUser.AddAccount();
+                                break;
+                            case "3":
+                                //currentUser.RemoveAccount();
+                                break;
+                            case "4":
+                                TransferBetweenAccounts();
+                                break;
+                            case "5":
+                                TransferToAnotherUser();
+                                break;
+                            case "6":
+                                programRunning = false;
+                                break;
+                            default:
+                                Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                break;
+                        }
+                        Console.WriteLine();
+                    }
+                }
             }
         }
 
@@ -50,6 +118,17 @@
                 string username = Console.ReadLine().ToLower();
                 Console.Write("Vänligen skriv in ditt lösenord: ");
                 string userpswd = ReadPassword();
+
+                foreach (var admin in admins)
+                {
+                    if (username == admin.Name && userpswd == admin.Password)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Inloggad som admin");
+                        currentAdmin = admin;
+                        return true;
+                    }
+                }
 
                 foreach (var user in users)
                 {
@@ -66,11 +145,6 @@
             } while (attempts < 3);
             Console.WriteLine("Inga försök kvar. Du är tillfälligt avstängd.");
             return false;
-        }
-
-        private void ShowUserAccounts()
-        {
-            currentUser.ShowAccounts(); // show the active user's accounts
         }
 
         public void TransferBetweenAccounts()
