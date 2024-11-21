@@ -286,6 +286,7 @@
             }
             return password;
         }
+
         // Method to offer a loan to user
         public void OfferLoan()
         {
@@ -311,6 +312,7 @@
 
             currentUser.TakeLoan(amount, interestRate);
         }
+
         // Method to show users loans
         public void ShowLoans()
         {
