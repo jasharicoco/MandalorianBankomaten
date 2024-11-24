@@ -1,4 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Threading.Channels;
 
 namespace MandalorianBankomaten
 {
@@ -40,6 +42,22 @@ namespace MandalorianBankomaten
             }
         }
 
+        public void CreateAccount()
+        {
+            Console.WriteLine("Ange namn på konto: ");
+            string accountName = Console.ReadLine();
+            Console.WriteLine("Ange valuta: ");
+            string currency = Console.ReadLine();
+            Console.WriteLine("Ange insättningsbelopp: ");
+            decimal deposit = Convert.ToDecimal(Console.ReadLine());
+
+            Account account = new Account(accountName, deposit, currency);
+            if (account == null) throw new ArgumentNullException(nameof(account), "Kontot kan inte vara null.");
+
+            _accounts.Add(account);
+            Console.WriteLine($"Konto {account.AccountName} har lagts till för användare: {Name}.");
+        }
+       
         public void AddAccount(Account account)
         {
             if (account == null) throw new ArgumentNullException(nameof(account), "Kontot kan inte vara null.");
@@ -48,9 +66,26 @@ namespace MandalorianBankomaten
             Console.WriteLine($"Konto {account.AccountName} har lagts till för användare: {Name}.");
         }
         // Added method to take a loan
-        public void TakeLoan(decimal amount, decimal interestRate)
+        public void TakeLoan(decimal interestRate)
         {
-            if (amount <= 0) throw new ArgumentException("Lånebeloppet måste vara större än noll.");
+            decimal sum = 0;
+            decimal amount = 0;
+            foreach (Account account in _accounts)
+            {
+                sum =+ account.Balance;
+            }
+            do
+            {
+                // Since the user will be prompted to input values I think we can remove the method arguments
+                Console.WriteLine("Ange lånebelopp");
+                amount = Convert.ToDecimal(Console.ReadLine());
+                if (amount > sum*5)
+                {
+                    Console.WriteLine("Vänligen ange ett lägre belopp (Lånebelopp har en gräns på 5 gånger ditt banksaldo");
+                }
+                if (amount <= 0) throw new ArgumentException("Lånebeloppet måste vara större än noll.");
+            } while (amount > sum * 5);
+
             if (interestRate <= 0) throw new ArgumentException("Räntesatsen måste vara större än noll.");
 
             Loan loan = new Loan(amount, interestRate);
@@ -71,6 +106,7 @@ namespace MandalorianBankomaten
             foreach (var loan in _loans)
             {
                 Console.WriteLine($" - Lån: {loan.Amount.ToString("C", CultureInfo.CurrentCulture)}, Räntesats: {loan.InterestRate}%, Räntekostnad: {loan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)} i månaden.");
+
             }
         }
 
