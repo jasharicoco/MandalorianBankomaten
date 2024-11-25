@@ -49,8 +49,9 @@ namespace MandalorianBankomaten
                     if (currentAdmin != null)
                     {
                         Console.WriteLine("------ Menu ------");
-                        Console.WriteLine("1. Skapa Användare");
-                        Console.WriteLine("2. Logga ut");
+                        Console.WriteLine("1. Skapa användare");
+                        Console.WriteLine("2. Radera användare");
+                        Console.WriteLine("3. Logga ut");
                         Console.Write("Ditt val: ");
                         choice = Console.ReadLine();
 
@@ -60,6 +61,9 @@ namespace MandalorianBankomaten
                                 users = currentAdmin.CreateUser(users);
                                 break;
                             case "2":
+                                users = currentAdmin.DeleteUser(users);
+                                break;
+                            case "3":
                                 programRunning = false;
                                 break;
                             default:

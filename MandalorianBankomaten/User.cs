@@ -41,11 +41,11 @@ namespace MandalorianBankomaten
             Console.WriteLine("Ange namn på konto:");
             string accountName = Console.ReadLine();
             Console.WriteLine("Ange konto-valuta:");
-            string currency = Console.ReadLine();
+            string currencyCode = Console.ReadLine();
             Console.WriteLine("Ange insättningsbelopp:");
             decimal depositAmount = Convert.ToDecimal(Console.ReadLine());
 
-            Account newAccount = new Account(accountName, depositAmount, currency);
+            Account newAccount = new Account(accountName, depositAmount, currencyCode);
             _accounts.Add(newAccount);
             Console.WriteLine($"Konto {accountName} har skapats!");
             Console.ReadKey();
