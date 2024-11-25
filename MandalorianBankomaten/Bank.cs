@@ -140,7 +140,7 @@ namespace MandalorianBankomaten
                         Console.WriteLine();
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("\n====================================================");
-                        Console.WriteLine($"✅ Inloggning lyckades! Välkommen {currentUser}!");
+                        Console.WriteLine($"\t✅ Inloggning lyckades! Välkommen {currentUser}!");
                         Console.WriteLine("====================================================");
                         Console.ResetColor();
                         currentUser = user;
@@ -150,10 +150,10 @@ namespace MandalorianBankomaten
                 Console.WriteLine();
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("\n====================================================");
-                Console.WriteLine("❌ Inloggning misslyckades!");
+                Console.WriteLine("\t   ❌ Inloggning misslyckades!");
                 Console.WriteLine("====================================================");
                 Console.ResetColor();
-                Console.WriteLine($"Försök kvar: {maxAttempts - attempts}");
+                Console.WriteLine($"\tFörsök kvar: {maxAttempts - attempts}");
                 System.Threading.Thread.Sleep(1500); // delay for next try
             } while (attempts < 3);
             
