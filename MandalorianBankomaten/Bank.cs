@@ -1,4 +1,6 @@
-﻿namespace MandalorianBankomaten
+﻿using System.Text;
+
+namespace MandalorianBankomaten
 {
     public class Bank
     {
@@ -36,6 +38,7 @@
             bool programRunning = true;
             string? choice;
 
+            Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler presentabla i programmet
             Console.WriteLine("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
             bool loginSuccesfull = LogIn();
