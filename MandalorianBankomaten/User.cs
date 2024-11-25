@@ -66,10 +66,10 @@ namespace MandalorianBankomaten
             Console.WriteLine($"Konto {account.AccountName} har lagts till för användare: {Name}.");
         }
         // Added method to take a loan
-        public void TakeLoan(decimal interestRate)
+        public void TakeLoan(decimal amount, decimal interestRate)
         {
             decimal sum = 0;
-            decimal amount = 0;
+            amount = 0;
             foreach (Account account in _accounts)
             {
                 sum =+ account.Balance;
