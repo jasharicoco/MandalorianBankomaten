@@ -83,7 +83,7 @@
                                 currentUser.ShowAccounts();
                                 break;
                             case "2":
-                                //currentUser.AddAccount();
+                                currentUser.CreateAccount();
                                 break;
                             case "3":
                                 //currentUser.RemoveAccount();
@@ -288,7 +288,7 @@
         }
 
         // Method to offer a loan to user
-        public void OfferLoan()
+        public void TakeLoan()
         {
             if (currentUser == null)
             {
@@ -310,7 +310,7 @@
                 return;
             }
 
-            currentUser.TakeLoan(amount, interestRate);
+            currentUser.TakeLoan(interestRate, amount);
         }
 
         // Method to show users loans
