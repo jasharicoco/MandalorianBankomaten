@@ -2,13 +2,13 @@ using System.Globalization;
 
 namespace MandalorianBankomaten
 {
-    public class Account
+    public class Account : IAccount
     {
         public string AccountName { get; private set; }
         public decimal Balance { get; private set; }
         public string Currency { get; private set; }
-        static int accountCounter = 0;
-        public int accountID { get; set; }
+        public int accountID { get;}
+        private static int accountCounter = 0;
 
         public Account(string accountName, decimal balance, string currency)
         {

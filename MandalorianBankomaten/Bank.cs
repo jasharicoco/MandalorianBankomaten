@@ -11,7 +11,13 @@
             new User("tim", "1234"),
             new User("arbunit", "1234"),
         };
+
+        private List<Admin> admins = new List<Admin>
+        {
+            new Admin("admin", "0000")
+        };
         private User currentUser; // tracks the current user
+        private Admin currentAdmin;
         private int fromIndex;
         private int toIndex;
 
@@ -27,18 +33,77 @@
 
         public void Run()
         {
+            bool programRunning = true;
+            string? choice;
+
+            Console.WriteLine("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
+
             bool loginSuccesfull = LogIn();
             if (loginSuccesfull) // if login is successful
             {
-                ShowUserAccounts(); // show the user's accounts
-                // här kommer menyn att vara så småningom
-                
-                OfferLoan(); 
-                ShowLoans();
+                while (programRunning)
+                {
+                    if (currentAdmin != null)
+                    {
+                        Console.WriteLine("------ Menu ------");
+                        Console.WriteLine("1. Skapa Användare");
+                        Console.WriteLine("2. Logga ut");
+                        Console.Write("Ditt val: ");
+                        choice = Console.ReadLine();
 
-                //testkör metoder
-                //TransferToAnotherUser();
-                TransferBetweenAccounts();
+                        switch (choice)
+                        {
+                            case "1":
+                                users = currentAdmin.CreateUser(users);
+                                break;
+                            case "2":
+                                programRunning = false;
+                                break;
+                            default:
+                                Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                break;
+                        }
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Console.WriteLine("------ Menu ------");
+                        Console.WriteLine("1. Visa konton");
+                        Console.WriteLine("2. Lägg till konto");
+                        Console.WriteLine("3. Ta bort konto");
+                        Console.WriteLine("4. För över pengar mellan konton");
+                        Console.WriteLine("5. För över pengar till en annan användare");
+                        Console.WriteLine("6. Logga ut");
+                        Console.Write("Ditt val: ");
+                        choice = Console.ReadLine();
+
+                        switch (choice)
+                        {
+                            case "1":
+                                currentUser.ShowAccounts();
+                                break;
+                            case "2":
+                                currentUser.CreateAccount();
+                                break;
+                            case "3":
+                                //currentUser.RemoveAccount();
+                                break;
+                            case "4":
+                                TransferBetweenAccounts();
+                                break;
+                            case "5":
+                                TransferToAnotherUser();
+                                break;
+                            case "6":
+                                programRunning = false;
+                                break;
+                            default:
+                                Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                break;
+                        }
+                        Console.WriteLine();
+                    }
+                }
             }
         }
 
@@ -49,31 +114,52 @@
             do
             {
                 attempts++;
-                Console.Write("Vänligen skriv in ditt användernamn: ");
+                Console.Write("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
                 string username = Console.ReadLine().ToLower();
-                Console.Write("Vänligen skriv in ditt lösenord: ");
+                Console.Write("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
                 string userpswd = ReadPassword();
+
+                foreach (var admin in admins)
+                {
+                    if (username == admin.Name && userpswd == admin.Password)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("Inloggad som admin");
+                        currentAdmin = admin;
+                        return true;
+                    }
+                }
 
                 foreach (var user in users)
                 {
                     if (username == user.Name && userpswd == user.Password)
                     {
                         Console.WriteLine();
-                        Console.WriteLine("Inloggning lyckades!");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\n====================================================");
+                        Console.WriteLine($"✅ Inloggning lyckades! Välkommen {currentUser}!");
+                        Console.WriteLine("====================================================");
+                        Console.ResetColor();
                         currentUser = user;
                         return true;
                     }
                 }
                 Console.WriteLine();
-                Console.WriteLine($"Inloggning misslyckades, försök kvar: {maxAttempts - attempts}"); // show remaining attempts
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n====================================================");
+                Console.WriteLine("❌ Inloggning misslyckades!");
+                Console.WriteLine("====================================================");
+                Console.ResetColor();
+                Console.WriteLine($"Försök kvar: {maxAttempts - attempts}");
+                System.Threading.Thread.Sleep(1500); // delay for next try
             } while (attempts < 3);
-            Console.WriteLine("Inga försök kvar. Du är tillfälligt avstängd.");
+            
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("\n====================================================");
+            Console.WriteLine("❌ Du har gjort för många misslyckade försök. Kontot är tillfälligt avstängt.");
+            Console.WriteLine("====================================================");
+            Console.ResetColor();
             return false;
-        }
-
-        private void ShowUserAccounts()
-        {
-            currentUser.ShowAccounts(); // show the active user's accounts
         }
 
         public void TransferBetweenAccounts()
@@ -215,8 +301,9 @@
             }
             return password;
         }
+
         // Method to offer a loan to user
-        public void OfferLoan()
+        public void TakeLoan()
         {
             if (currentUser == null)
             {
@@ -238,8 +325,9 @@
                 return;
             }
 
-            currentUser.TakeLoan(amount, interestRate);
+            currentUser.TakeLoan(interestRate, amount);
         }
+
         // Method to show users loans
         public void ShowLoans()
         {
