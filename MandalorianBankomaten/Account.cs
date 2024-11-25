@@ -6,17 +6,17 @@ namespace MandalorianBankomaten
     {
         public string AccountName { get; private set; }
         public decimal Balance { get; private set; }
-        public string Currency { get; private set; }
+        public string CurrencyCode { get; private set; }
         public int accountID { get; }
 
         private static int accountCounter = 0;
 
-        public Account(string accountName, decimal balance, string currency)
+        public Account(string accountName, decimal balance, string currencyCode)
         {
             accountCounter++;
             AccountName = accountName;
             Balance = balance;
-            Currency = currency;
+            CurrencyCode = currencyCode;
             accountID = accountCounter;
         }
 
