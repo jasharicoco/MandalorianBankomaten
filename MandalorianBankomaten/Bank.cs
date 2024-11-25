@@ -36,7 +36,7 @@
             bool programRunning = true;
             string? choice;
 
-            Console.WriteLine("== Välkommen till Mandalorian Bankomaten ==\n");
+            Console.WriteLine("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
             bool loginSuccesfull = LogIn();
             if (loginSuccesfull) // if login is successful
@@ -114,9 +114,9 @@
             do
             {
                 attempts++;
-                Console.Write("Vänligen skriv in ditt användernamn: ");
+                Console.Write("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
                 string username = Console.ReadLine().ToLower();
-                Console.Write("Vänligen skriv in ditt lösenord: ");
+                Console.Write("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
                 string userpswd = ReadPassword();
 
                 foreach (var admin in admins)
@@ -135,15 +135,30 @@
                     if (username == user.Name && userpswd == user.Password)
                     {
                         Console.WriteLine();
-                        Console.WriteLine("Inloggning lyckades!");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\n====================================================");
+                        Console.WriteLine($"✅ Inloggning lyckades! Välkommen {currentUser}!");
+                        Console.WriteLine("====================================================");
+                        Console.ResetColor();
                         currentUser = user;
                         return true;
                     }
                 }
                 Console.WriteLine();
-                Console.WriteLine($"Inloggning misslyckades, försök kvar: {maxAttempts - attempts}"); // show remaining attempts
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\n====================================================");
+                Console.WriteLine("❌ Inloggning misslyckades!");
+                Console.WriteLine("====================================================");
+                Console.ResetColor();
+                Console.WriteLine($"Försök kvar: {maxAttempts - attempts}");
+                System.Threading.Thread.Sleep(1500); // delay for next try
             } while (attempts < 3);
-            Console.WriteLine("Inga försök kvar. Du är tillfälligt avstängd.");
+            
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("\n====================================================");
+            Console.WriteLine("❌ Du har gjort för många misslyckade försök. Kontot är tillfälligt avstängt.");
+            Console.WriteLine("====================================================");
+            Console.ResetColor();
             return false;
         }
 
