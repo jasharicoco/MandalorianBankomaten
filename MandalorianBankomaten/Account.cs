@@ -49,5 +49,6 @@ namespace MandalorianBankomaten
                 Console.WriteLine("Otillräckligt saldo för uttag.");
             }
         }
+
     }
 }
