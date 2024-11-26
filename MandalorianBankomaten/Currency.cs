@@ -20,6 +20,7 @@
         {
             var Currencies = new List<string> { "SEK", "EUR", "USD" };
 
+            // Needs error handling
             string fromCurrency = Console.ReadLine();
             string toCurrency = Console.ReadLine();
 

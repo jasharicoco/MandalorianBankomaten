@@ -52,7 +52,7 @@ namespace MandalorianBankomaten
             }
         }
 
-        public void CreateAccount()
+        public void CreateAccount() // Tim 
         {
             Console.WriteLine("Ange namn på konto:");
             string accountName = Console.ReadLine();
@@ -115,6 +115,24 @@ namespace MandalorianBankomaten
         // Method to take a loan
         public void TakeLoan(decimal amount, decimal interestRate)
         {
+            decimal sum = 0;
+            amount = 0;
+            foreach (Account account in _accounts)
+            {
+                sum = +account.Balance;
+            }
+            do
+            {
+                // Since the user will be prompted to input values I think we can remove the method arguments
+                Console.WriteLine("Ange lånebelopp");
+                amount = Convert.ToDecimal(Console.ReadLine());
+                if (amount > sum * 5)
+                {
+                    Console.WriteLine("Vänligen ange ett lägre belopp (Lånebelopp har en gräns på 5 gånger ditt banksaldo");
+                }
+                if (amount <= 0) throw new ArgumentException("Lånebeloppet måste vara större än noll.");
+            } while (amount > sum * 5);
+            if (interestRate <= 0) throw new ArgumentException("Räntesatsen måste vara större än noll.");
             Loan newLoan = new Loan(amount, interestRate);
             _loans.Add(newLoan); 
             Console.WriteLine($"Lån på {amount} SEK har tagits med ränta på {interestRate}%.");
