@@ -113,14 +113,10 @@ namespace MandalorianBankomaten
         }
         
         // Method to take a loan
-        public void TakeLoan(decimal amount, decimal interestRate)
+        public void TakeLoan(decimal amount, decimal interestRate) // Parkodning Alex & Tim 
         {
-            decimal sum = 0;
             amount = 0;
-            foreach (Account account in _accounts)
-            {
-                sum = +account.Balance;
-            }
+            decimal sum = _accounts.Sum(account => account.Balance);
             do
             {
                 // Since the user will be prompted to input values I think we can remove the method arguments
