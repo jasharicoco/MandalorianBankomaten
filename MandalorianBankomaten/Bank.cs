@@ -172,12 +172,7 @@ namespace MandalorianBankomaten
         public void TransferBetweenAccounts()
         {
             // Visa användarens konton
-            Console.WriteLine("\nDina konton:");
-            for (int i = 0; i < currentUser.Accounts.Count; i++)
-            {
-                var account = currentUser.Accounts[i];
-                Console.WriteLine($"{i + 1}. {account.AccountName} - Saldo: {account.Balance:C}");
-            }
+            currentUser.ShowAccounts();
 
             // Välj avsändarkonto
             Console.Write("\nAnge numret för kontot att överföra från: ");
@@ -228,6 +223,11 @@ namespace MandalorianBankomaten
                 return;
             }
             var recipient = users[recipientIndex - 1];
+
+            if (!recipient.HasAccounts())
+            {
+                return;
+            }
 
             // Välj avsändarkonto
             Console.WriteLine("\nDina konton:");
