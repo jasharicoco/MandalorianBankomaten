@@ -66,6 +66,10 @@ namespace MandalorianBankomaten
             Console.WriteLine($"Konto {accountName} har skapats!");
             Console.ReadKey();
         }
+        public void AddAccount(Account account)
+        {
+            _accounts.Add(account);
+        }
 
         public void RemoveAccount(Account account)
         {
