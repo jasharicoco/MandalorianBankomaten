@@ -35,10 +35,11 @@ namespace MandalorianBankomaten
 
         public void Run()
         {
+            Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler presentabla i programmet
+            Ascii();
             bool programRunning = true;
             string? choice;
 
-            Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler presentabla i programmet
             Console.WriteLine("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
             bool loginSuccesfull = LogIn();
@@ -48,67 +49,81 @@ namespace MandalorianBankomaten
                 {
                     if (currentAdmin != null)
                     {
-                        Console.WriteLine("------ Menu ------");
-                        Console.WriteLine("1. Skapa användare");
-                        Console.WriteLine("2. Radera användare");
-                        Console.WriteLine("3. Logga ut");
-                        Console.Write("Ditt val: ");
-                        choice = Console.ReadLine();
-
-                        switch (choice)
+                        while (programRunning)
                         {
-                            case "1":
-                                users = currentAdmin.CreateUser(users);
-                                break;
-                            case "2":
-                                users = currentAdmin.DeleteUser(users);
-                                break;
-                            case "3":
-                                programRunning = false;
-                                break;
-                            default:
-                                Console.WriteLine("Ogiltligt menyval. Försök igen!");
-                                break;
+                            string adminMenu = "------ Menu ------\n" +
+                                               "1. Skapa användare\n" +
+                                               "2. Radera användare\n" +
+                                               "3. Logga ut\n" +
+                                               "Ditt val: ";
+                            DisplayMenu(adminMenu); // Visa ASCII-konst och menyn
+
+                            choice = Console.ReadLine();
+
+                            switch (choice)
+                            {
+                                case "1":
+                                    users = currentAdmin.CreateUser(users);
+                                    break;
+                                case "2":
+                                    users = currentAdmin.DeleteUser(users);
+                                    break;
+                                case "3":
+                                    programRunning = false;
+                                    break;
+                                default:
+                                    Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                    break;
+                            }
                         }
-                        Console.WriteLine();
                     }
                     else
                     {
-                        Console.WriteLine("------ Menu ------");
-                        Console.WriteLine("1. Visa konton");
-                        Console.WriteLine("2. Lägg till konto");
-                        Console.WriteLine("3. Ta bort konto");
-                        Console.WriteLine("4. För över pengar mellan konton");
-                        Console.WriteLine("5. För över pengar till en annan användare");
-                        Console.WriteLine("6. Logga ut");
-                        Console.Write("Ditt val: ");
-                        choice = Console.ReadLine();
-
-                        switch (choice)
+                        while (programRunning)
                         {
-                            case "1":
-                                currentUser.ShowAccounts();
-                                break;
-                            case "2":
-                                currentUser.CreateAccount();
-                                break;
-                            case "3":
-                                //currentUser.RemoveAccount();
-                                break;
-                            case "4":
-                                TransferBetweenAccounts();
-                                break;
-                            case "5":
-                                TransferToAnotherUser();
-                                break;
-                            case "6":
-                                programRunning = false;
-                                break;
-                            default:
-                                Console.WriteLine("Ogiltligt menyval. Försök igen!");
-                                break;
+                            string userMenu = "------ Menu ------\n" +
+                                              "1. Visa konton\n" +
+                                              "2. Lägg till konto\n" +
+                                              "3. Ta bort konto\n" +
+                                              "4. För över pengar mellan konton\n" +
+                                              "5. För över pengar till en annan användare\n" +
+                                              "6. Logga ut\n" +
+                                              "Ditt val: ";
+                            DisplayMenu(userMenu); // Visa ASCII-konst och menyn
+
+                            choice = Console.ReadLine();
+
+                            switch (choice)
+                            {
+                                case "1":
+                                    currentUser.ShowAccounts();
+                                    Return();
+                                    break;
+                                case "2":
+                                    currentUser.CreateAccount();
+                                    Return();
+                                    break;
+                                case "3":
+                                    //currentUser.RemoveAccount();
+                                    Return();
+                                    break;
+                                case "4":
+                                    TransferBetweenAccounts();
+                                    Return();
+                                    break;
+                                case "5":
+                                    TransferToAnotherUser();
+                                    Return();
+                                    break;
+                                case "6":
+                                    programRunning = false;
+                                    break;
+                                default:
+                                    Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                    Return();
+                                    break;
+                            }
                         }
-                        Console.WriteLine();
                     }
                 }
             }
@@ -147,6 +162,7 @@ namespace MandalorianBankomaten
                         Console.WriteLine($"\t✅ Inloggning lyckades! Välkommen {currentUser}!");
                         Console.WriteLine("====================================================");
                         Console.ResetColor();
+                        System.Threading.Thread.Sleep(1500); // Vänta för att visa meddelandet
                         currentUser = user;
                         return true;
                     }
@@ -344,6 +360,22 @@ namespace MandalorianBankomaten
                 return;
             }
             currentUser.ShowLoans();
+        }
+        public void Ascii()
+        {
+            Console.WriteLine("⠀⢀⣠⣄⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⡾⠿⠿⠿⠿⢷⣶⣦⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⢰⣿⡟⠛⠛⠛⠻⠿⠿⢿⣶⣶⣦⣤⣤⣀⣀⡀⣀⣴⣾⡿⠟⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠻⢿⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⣀⡀\r\n⠀⠻⣿⣦⡀⠀⠉⠓⠶⢦⣄⣀⠉⠉⠛⠛⠻⠿⠟⠋⠁⠀⠀⠀⣤⡀⠀⠀⢠⠀⠀⠀⣠⠀⠀⠀⠀⠈⠙⠻⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠛⢻⣿\r\n⠀⠀⠈⠻⣿⣦⠀⠀⠀⠀⠈⠙⠻⢷⣶⣤⡀⠀⠀⠀⠀⢀⣀⡀⠀⠙⢷⡀⠸⡇⠀⣰⠇⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣶⡶⠶⠶⠒⠂⠀⠀⣠⣾⠟\r\n⠀⠀⠀⠀⠈⢿⣷⡀⠀⠀⠀⠀⠀⠀⠈⢻⣿⡄⣠⣴⣿⣯⣭⣽⣷⣆⠀⠁⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣦⡀⠀⣠⣾⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⣠⣾⡟⠁⠀\r\n⠀⠀⠀⠀⠀⠈⢻⣷⣄⠀⠀⠀⠀⠀⠀⠀⣿⡗⢻⣿⣧⣽⣿⣿⣿⣧⠀⠀⣀⣀⠀⢠⣿⣧⣼⣿⣿⣿⣿⠗⠰⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⡿⠋⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠙⢿⣶⣄⡀⠀⠀⠀⠀⠸⠃⠈⠻⣿⣿⣿⣿⣿⡿⠃⠾⣥⡬⠗⠸⣿⣿⣿⣿⣿⡿⠛⠀⢀⡟⠀⠀⠀⠀⠀⠀⣀⣠⣾⡿⠋⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⣷⣶⣤⣤⣄⣰⣄⠀⠀⠉⠉⠉⠁⠀⢀⣀⣠⣄⣀⡀⠀⠉⠉⠉⠀⠀⢀⣠⣾⣥⣤⣤⣤⣶⣶⡿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⢻⣿⠛⢿⣷⣦⣤⣴⣶⣶⣦⣤⣤⣤⣤⣬⣥⡴⠶⠾⠿⠿⠿⠿⠛⢛⣿⣿⣿⣯⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣧⡀⠈⠉⠀⠈⠁⣾⠛⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣿⠟⠉⣹⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣸⣿⣿⣦⣀⠀⠀⠀⢻⡀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣿⠋⣿⠛⠃⠀⣈⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡿⢿⡀⠈⢹⡿⠶⣶⣼⡇⠀⢀⣀⣀⣤⣴⣾⠟⠋⣡⣿⡟⠀⢻⣶⠶⣿⣿⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣷⡈⢿⣦⣸⠇⢀⡿⠿⠿⡿⠿⠿⣿⠛⠋⠁⠀⣴⠟⣿⣧⡀⠈⢁⣰⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⢻⣦⣈⣽⣀⣾⠃⠀⢸⡇⠀⢸⡇⠀⢀⣠⡾⠋⢰⣿⣿⣿⣿⡿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⢿⣿⣿⡟⠛⠃⠀⠀⣾⠀⠀⢸⡇⠐⠿⠋⠀⠀⣿⢻⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠁⢀⡴⠋⠀⣿⠀⠀⢸⠇⠀⠀⠀⠀⠀⠁⢸⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡿⠟⠋⠀⠀⠀⣿⠀⠀⣸⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣁⣀⠀⠀⠀⠀⣿⡀⠀⣿⠀⠀⠀⠀⠀⠀⢀⣈⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠛⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+        }
+        private void DisplayMenu(string menu)
+        {
+            Console.Clear();
+            Ascii(); // Visa ASCII-konsten
+            Console.WriteLine(menu); // Skriv ut menyn under ASCII-konsten
+        }
+
+        public void Return()
+        {
+            Console.WriteLine("Tryck Enter för att komma tillbaka till menyn.");
+            Console.ReadLine();
         }
     }
 }

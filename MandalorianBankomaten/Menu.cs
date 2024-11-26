@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace MandalorianBankomaten;
 
 public class Menu
@@ -36,6 +38,7 @@ public class Menu
            Console.WriteLine($"✅ Inloggning lyckades! Välkommen {userName}!");
            Console.WriteLine("====================================================");
            Console.ResetColor();
+           System.Threading.Thread.Sleep(1500); // Vänta för att visa meddelandet
        }
      */
 }
