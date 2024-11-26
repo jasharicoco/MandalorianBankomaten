@@ -25,15 +25,31 @@ namespace MandalorianBankomaten
             UserId = _userCounter;
         }
 
+        // Show number of accounts
+        public int NumberOfAccounts()
+        {
+            return _accounts.Count;
+        }
+
+        // See if user has accounts
+        public bool HasAccounts()
+        {
+            if (_accounts.Count == 0)
+            {
+                Console.WriteLine($"{Name} har inga konton på den här banken.");
+                return false;
+            }
+            return true;
+        }
+
         // Method to show accounts
         public void ShowAccounts()
         {
-            Console.WriteLine($"Konton för {Name}:");
-            foreach (var account in _accounts)
+            Console.WriteLine($"Konton för användare: {Name}");
+            for (int i = 0; i < _accounts.Count; i++)
             {
-                Console.WriteLine($"- Konto: {account.AccountName}, Saldo: {account.Balance}");
+                Console.WriteLine($"{i + 1}. {_accounts[i].AccountName} - Saldo: {_accounts[i].Balance:C}");
             }
-            Console.ReadKey();
         }
 
         public void CreateAccount()
@@ -49,11 +65,6 @@ namespace MandalorianBankomaten
             _accounts.Add(newAccount);
             Console.WriteLine($"Konto {accountName} har skapats!");
             Console.ReadKey();
-        }
-
-        public void AddAccount(Account account)
-        {
-            _accounts.Add(account);
         }
 
         public void RemoveAccount(Account account)

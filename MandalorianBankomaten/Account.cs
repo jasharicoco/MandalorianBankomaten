@@ -7,9 +7,10 @@ namespace MandalorianBankomaten
         public string AccountName { get; private set; }
         public decimal Balance { get; private set; }
         public string CurrencyCode { get; private set; }
-        public int accountID { get; }
+        public int accountID { get; private set; }
 
         private static int accountCounter = 0;
+
 
         public Account(string accountName, decimal balance, string currencyCode)
         {
@@ -51,5 +52,9 @@ namespace MandalorianBankomaten
             }
         }
 
+        public void DisplayAccountDetails()
+        {
+            Console.WriteLine($"Kontonamn: {AccountName}, Saldo: {Balance.ToString("C")}, Valuta: {CurrencyCode}, Konto-ID: {accountID}");
+        }
     }
 }
