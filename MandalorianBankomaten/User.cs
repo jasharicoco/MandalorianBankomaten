@@ -8,11 +8,11 @@ namespace MandalorianBankomaten
     {
         private List<Account> _accounts;
         private List<Loan> _loans;
-
         public string Name { get; private set; }
         public string Password { get; private set; }
         public int UserId { get; private set; }
         public List<Account> Accounts => _accounts;
+        public List<Loan> Loans => _loans;
         static int _userCounter = 0;
         
         public User(string name, string password)
@@ -23,6 +23,15 @@ namespace MandalorianBankomaten
             _accounts = new List<Account>();
             _loans = new List<Loan>();
             UserId = _userCounter;
+        }
+
+        public decimal MaxLoanAmount
+        {
+            get
+            {
+                // max loan amount is 5 times the total balance of all accounts
+                return Accounts.Sum(account => account.Balance) * 5;
+            }
         }
 
         // Show number of accounts
@@ -49,6 +58,12 @@ namespace MandalorianBankomaten
             for (int i = 0; i < _accounts.Count; i++)
             {
                 Console.WriteLine($"{i + 1}. {_accounts[i].AccountName} - Saldo: {_accounts[i].Balance:C}");
+            }
+            Console.WriteLine("\nLånekonton:");
+            
+            for (int i = 0; i < _loans.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. Lån-ID: {_loans[i].LoanId} - Belopp: {_loans[i].Amount:C} - Ränta: {_loans[i].InterestRate}% - Saldo: {_loans[i].RemainingBalance:C}");
             }
         }
 
@@ -113,25 +128,24 @@ namespace MandalorianBankomaten
         }
         
         // Method to take a loan
-        public void TakeLoan(decimal amount, decimal interestRate) // Parkodning Alex & Tim 
+        public void TakeLoan(decimal amount, decimal interestRate)
         {
-            amount = 0;
-            decimal sum = _accounts.Sum(account => account.Balance);
-            do
+            Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
+
+            decimal totalLoanAmount = _loans.Sum(loan => loan.RemainingBalance);
+            if (totalLoanAmount + amount > MaxLoanAmount)
             {
-                // Since the user will be prompted to input values I think we can remove the method arguments
-                Console.WriteLine("Ange lånebelopp");
-                amount = Convert.ToDecimal(Console.ReadLine());
-                if (amount > sum * 5)
-                {
-                    Console.WriteLine("Vänligen ange ett lägre belopp (Lånebelopp har en gräns på 5 gånger ditt banksaldo");
-                }
-                if (amount <= 0) throw new ArgumentException("Lånebeloppet måste vara större än noll.");
-            } while (amount > sum * 5);
-            if (interestRate <= 0) throw new ArgumentException("Räntesatsen måste vara större än noll.");
+                Console.WriteLine($"Du kan max låna {MaxLoanAmount.ToString("C", CultureInfo.CurrentCulture)}.");
+                return;
+            }
+            
             Loan newLoan = new Loan(amount, interestRate);
-            _loans.Add(newLoan); 
-            Console.WriteLine($"Lån på {amount} SEK har tagits med ränta på {interestRate}%.");
+            _loans.Add(newLoan);
+            
+            Console.WriteLine($"Ett nytt lånekonto har skapats. Låne-ID: {newLoan.LoanId}");
+            Console.WriteLine($"Lånebelopp: {newLoan.Amount.ToString("C", CultureInfo.CurrentCulture)}");
+            Console.WriteLine($"Ränta: {newLoan.InterestRate}%");
+            Console.WriteLine($"Månatlig ränta: {newLoan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)}");
         }
 
         // Method to show loans

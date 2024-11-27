@@ -1,4 +1,8 @@
 ﻿using System.Text;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Globalization;
 
 namespace MandalorianBankomaten
 {
@@ -88,6 +92,7 @@ namespace MandalorianBankomaten
                                               "4. För över pengar mellan konton\n" +
                                               "5. För över pengar till en annan användare\n" +
                                               "6. Logga ut\n" +
+                                                "7. Ta lån\n" +
                                               "Ditt val: ";
                             DisplayMenu(userMenu); // Visa ASCII-konst och menyn
 
@@ -117,6 +122,10 @@ namespace MandalorianBankomaten
                                     break;
                                 case "6":
                                     programRunning = false;
+                                    break;
+                                case "7":
+                                    TakeLoan();
+                                    Return();
                                     break;
                                 default:
                                     Console.WriteLine("Ogiltligt menyval. Försök igen!");
@@ -326,7 +335,7 @@ namespace MandalorianBankomaten
         }
 
         // Method to offer a loan to user
-        public void TakeLoan()
+        public void TakeLoan() // programmed by Alex & Tim
         {
             if (currentUser == null)
             {
@@ -334,25 +343,44 @@ namespace MandalorianBankomaten
                 return;
             }
 
-            Console.Write("Ange lånebelopp: ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0)
-            {
-                Console.WriteLine("Ogiltigt belopp.");
-                return;
-            }
+            Console.WriteLine($"Hej {currentUser.Name}! Välkommen till bankens låneavdelning. Du kan låna upp till 5 gånger ditt totala saldo.");
+            decimal maxLoanAmount = currentUser.Accounts.Sum(account => account.Balance) * 5; 
+            decimal currentLoanAmount = currentUser.Loans.Sum(loan => loan.RemainingBalance);
 
-            Console.Write("Ange ränta (i procent): ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal interestRate) || interestRate <= 0)
-            {
-                Console.WriteLine("Ogiltig ränta.");
-                return;
-            }
+            Console.WriteLine(
+                $"Ditt nuvarande låneutrymme: {(maxLoanAmount - currentLoanAmount).ToString("C", CultureInfo.CurrentCulture)}");
 
-            currentUser.TakeLoan(interestRate, amount);
+            decimal amount;
+            do
+            {
+                Console.Write("Ange lånebelopp: ");
+                if (!decimal.TryParse(Console.ReadLine(), out amount) || amount <= 0)
+                {
+                    Console.WriteLine("Ogiltigt belopp. Försök igen.");
+                    continue;
+                }
+
+                if (amount + currentLoanAmount > maxLoanAmount)
+                {
+                    Console.WriteLine("Beloppet överstiger ditt tillgängliga låneutrymme. Försök igen.");
+                }
+            } while (amount <= 0 || amount + currentLoanAmount > maxLoanAmount);
+
+            decimal interestRate;
+            do
+            {
+                Console.Write("Ange ränta (i procent): ");
+                if (!decimal.TryParse(Console.ReadLine(), out interestRate) || interestRate <= 0)
+                {
+                    Console.WriteLine("Ogiltig ränta. Försök igen.");
+                }
+            } while (interestRate <= 0);
+
+            currentUser.TakeLoan(amount, interestRate);
         }
 
-        // Method to show users loans
-        public void ShowLoans()
+        // Method to show users loans but as of now our program shows this in the ShowAccounts method do we really need this?
+        /*public void ShowLoans()
         {
             if (currentUser == null)
             {
@@ -361,6 +389,7 @@ namespace MandalorianBankomaten
             }
             currentUser.ShowLoans();
         }
+        */
         public void Ascii()
         {
             Console.WriteLine("⠀⢀⣠⣄⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⡾⠿⠿⠿⠿⢷⣶⣦⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⢰⣿⡟⠛⠛⠛⠻⠿⠿⢿⣶⣶⣦⣤⣤⣀⣀⡀⣀⣴⣾⡿⠟⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠻⢿⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⣀⡀\r\n⠀⠻⣿⣦⡀⠀⠉⠓⠶⢦⣄⣀⠉⠉⠛⠛⠻⠿⠟⠋⠁⠀⠀⠀⣤⡀⠀⠀⢠⠀⠀⠀⣠⠀⠀⠀⠀⠈⠙⠻⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠛⢻⣿\r\n⠀⠀⠈⠻⣿⣦⠀⠀⠀⠀⠈⠙⠻⢷⣶⣤⡀⠀⠀⠀⠀⢀⣀⡀⠀⠙⢷⡀⠸⡇⠀⣰⠇⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣶⡶⠶⠶⠒⠂⠀⠀⣠⣾⠟\r\n⠀⠀⠀⠀⠈⢿⣷⡀⠀⠀⠀⠀⠀⠀⠈⢻⣿⡄⣠⣴⣿⣯⣭⣽⣷⣆⠀⠁⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣦⡀⠀⣠⣾⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⣠⣾⡟⠁⠀\r\n⠀⠀⠀⠀⠀⠈⢻⣷⣄⠀⠀⠀⠀⠀⠀⠀⣿⡗⢻⣿⣧⣽⣿⣿⣿⣧⠀⠀⣀⣀⠀⢠⣿⣧⣼⣿⣿⣿⣿⠗⠰⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⡿⠋⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠙⢿⣶⣄⡀⠀⠀⠀⠀⠸⠃⠈⠻⣿⣿⣿⣿⣿⡿⠃⠾⣥⡬⠗⠸⣿⣿⣿⣿⣿⡿⠛⠀⢀⡟⠀⠀⠀⠀⠀⠀⣀⣠⣾⡿⠋⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⣷⣶⣤⣤⣄⣰⣄⠀⠀⠉⠉⠉⠁⠀⢀⣀⣠⣄⣀⡀⠀⠉⠉⠉⠀⠀⢀⣠⣾⣥⣤⣤⣤⣶⣶⡿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⢻⣿⠛⢿⣷⣦⣤⣴⣶⣶⣦⣤⣤⣤⣤⣬⣥⡴⠶⠾⠿⠿⠿⠿⠛⢛⣿⣿⣿⣯⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣧⡀⠈⠉⠀⠈⠁⣾⠛⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣿⠟⠉⣹⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣸⣿⣿⣦⣀⠀⠀⠀⢻⡀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣿⠋⣿⠛⠃⠀⣈⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡿⢿⡀⠈⢹⡿⠶⣶⣼⡇⠀⢀⣀⣀⣤⣴⣾⠟⠋⣡⣿⡟⠀⢻⣶⠶⣿⣿⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣷⡈⢿⣦⣸⠇⢀⡿⠿⠿⡿⠿⠿⣿⠛⠋⠁⠀⣴⠟⣿⣧⡀⠈⢁⣰⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⢻⣦⣈⣽⣀⣾⠃⠀⢸⡇⠀⢸⡇⠀⢀⣠⡾⠋⢰⣿⣿⣿⣿⡿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⢿⣿⣿⡟⠛⠃⠀⠀⣾⠀⠀⢸⡇⠐⠿⠋⠀⠀⣿⢻⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠁⢀⡴⠋⠀⣿⠀⠀⢸⠇⠀⠀⠀⠀⠀⠁⢸⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡿⠟⠋⠀⠀⠀⣿⠀⠀⣸⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣁⣀⠀⠀⠀⠀⣿⡀⠀⣿⠀⠀⠀⠀⠀⠀⢀⣈⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠛⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
