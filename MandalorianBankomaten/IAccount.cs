@@ -6,6 +6,4 @@ public interface IAccount // Interface for Account
     decimal Balance { get; }
     string CurrencyCode { get; }
 
-    void Deposit(decimal amount); // Method for deposit
-    void Withdraw(decimal amount); // Method for withdrawal
 }

@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace MandalorianBankomaten
+﻿namespace MandalorianBankomaten
 {
     public class Admin
     {
@@ -52,31 +50,28 @@ namespace MandalorianBankomaten
             Console.WriteLine("Lista över alla användare:");
             foreach (var user in users)
             {
-                Console.WriteLine($"- {user.Name}");
+                Console.WriteLine($"👽 {user.Name}");
             }
 
             Console.Write("Ange namnet på den användare du vill ta bort: ");
             string usernameToRemove = Console.ReadLine();
 
-            var userToRemove =
-                users.FirstOrDefault(u => u.Name.Equals(usernameToRemove, StringComparison.OrdinalIgnoreCase));
+            // Use helper function to check if the user exists
+            var userToRemove = FindUserByName(users, usernameToRemove);
 
             if (userToRemove != null)
             {
-                users.Remove(userToRemove);
-                if (userToRemove != null)
+                Console.WriteLine($"Är du säker på att du vill ta bort användaren '{userToRemove.Name}'? (j/n)");
+                string answer = Console.ReadLine().ToLower();
+
+                if (answer == "j")
                 {
-                    Console.WriteLine($"Är du säker på att du vill ta bort användaren '{userToRemove.Name}'? (j/n)");
-                    string answer = Console.ReadLine().ToLower();
-                    if (answer == "j")
-                    {
-                        users.Remove(userToRemove);
-                        Console.WriteLine($"Användare '{userToRemove.Name}' har tagits bort.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Åtgärden avbröts. Ingen användare har tagits bort.");
-                    }
+                    users.Remove(userToRemove);
+                    Console.WriteLine($"Användare '{userToRemove.Name}' har tagits bort.");
+                }
+                else
+                {
+                    Console.WriteLine("Åtgärden avbröts. Ingen användare har tagits bort.");
                 }
             }
             else
@@ -84,7 +79,14 @@ namespace MandalorianBankomaten
                 Console.WriteLine($"Ingen användare med namnet '{usernameToRemove}' hittades.");
             }
 
-            return users; // if successfully deleted user, return the updated list of users
+            Console.ReadKey();
+            return users; // Return the updated list of users
+        }
+
+        // Helper function to find a user by name
+        private User FindUserByName(List<User> users, string username)
+        {
+            return users.FirstOrDefault(u => u.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

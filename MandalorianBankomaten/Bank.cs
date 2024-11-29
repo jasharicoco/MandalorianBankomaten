@@ -8,38 +8,24 @@ namespace MandalorianBankomaten
 {
     public class Bank
     {
-        public List<User> users = new List<User>
-        {
-            new User("viggo", "1234"),
-            new User("egzon", "1234"),
-            new User("alex", "1234"),
-            new User("margarita", "1234"),
-            new User("tim", "1234"),
-            new User("arbunit", "1234"),
-        };
-
-        private List<Admin> admins = new List<Admin>
-        {
-            new Admin("admin", "0000")
-        };
+        private List<User> users;
+        private List<Admin> admins;
         private User currentUser; // tracks the current user
         private Admin currentAdmin;
-        private int fromIndex;
-        private int toIndex;
 
         public Bank()
         {
-            foreach (var user in users)
-            {
-                // create some standard accounts for each user
-                user.AddAccount(new Account("Lönekonto", 10000, "SEK"));
-                user.AddAccount(new Account("Sparkonto", 50000, "SEK"));
-            }
+            // Initialize users and admins from AccountSeeder
+            users = Seeder.SeedUsers();
+            admins = Seeder.SeedAdmins();
+
+            // Add standard accounts to each user
+            Seeder.AddStandardAccountsToUsers(users);
         }
 
         public void Run()
         {
-            Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler presentabla i programmet
+            Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler synliga i programmet
             Ascii();
             bool programRunning = true;
             string? choice;
@@ -60,7 +46,7 @@ namespace MandalorianBankomaten
                                                "2. Radera användare\n" +
                                                "3. Logga ut\n" +
                                                "Ditt val: ";
-                            DisplayMenu(adminMenu); // Visa ASCII-konst och menyn
+                            DisplayMenu(adminMenu); // Visa adminmeny
 
                             choice = Console.ReadLine();
 
@@ -91,10 +77,10 @@ namespace MandalorianBankomaten
                                               "3. Ta bort konto\n" +
                                               "4. För över pengar mellan konton\n" +
                                               "5. För över pengar till en annan användare\n" +
-                                              "6. Logga ut\n" +
-                                                "7. Ta lån\n" +
+                                              "6. Ta lån\n" +
+                                              "7. Logga ut\n" +
                                               "Ditt val: ";
-                            DisplayMenu(userMenu); // Visa ASCII-konst och menyn
+                            DisplayMenu(userMenu); // Visa användarmeny
 
                             choice = Console.ReadLine();
 
@@ -121,11 +107,11 @@ namespace MandalorianBankomaten
                                     Return();
                                     break;
                                 case "6":
-                                    programRunning = false;
-                                    break;
-                                case "7":
                                     TakeLoan();
                                     Return();
+                                    break;
+                                case "7":
+                                    programRunning = false;
                                     break;
                                 default:
                                     Console.WriteLine("Ogiltligt menyval. Försök igen!");
@@ -201,22 +187,35 @@ namespace MandalorianBankomaten
 
             // Välj avsändarkonto
             Console.Write("\nAnge numret för kontot att överföra från: ");
-            if (!int.TryParse(Console.ReadLine(), out int fromIndex) || fromIndex < 1 || fromIndex > currentUser.Accounts.Count)
+            if (!int.TryParse(Console.ReadLine(), out int fromId) || fromId < 4850)
             {
                 Console.WriteLine("Ogiltigt val.");
                 return;
             }
-            var fromAccount = currentUser.Accounts[fromIndex - 1];
+
+            // Find the account with the matching accountID
+            var fromAccount = currentUser.Accounts.FirstOrDefault(account => account.AccountID == fromId);
+
+            if (fromAccount == null)
+            {
+                Console.WriteLine("Inget konto hittades med det numret.");
+                return;
+            }
 
             // Välj mottagarkonto
             Console.Write("Ange numret för kontot att överföra till: ");
-            if (!int.TryParse(Console.ReadLine(), out int toIndex) || toIndex < 1 || toIndex > currentUser.Accounts.Count || toIndex == fromIndex)
+            if (!int.TryParse(Console.ReadLine(), out int toId) || toId < 4850 || toId == fromId)
             {
                 Console.WriteLine("Ogiltigt val.");
                 return;
             }
-            var toAccount = currentUser.Accounts[toIndex - 1];
+            var toAccount = currentUser.Accounts.FirstOrDefault(account => account.AccountID == toId);
 
+            if (toAccount == null)
+            {
+                Console.WriteLine("Inget konto hittades med det numret.");
+                return;
+            }
             // Ange belopp
             Console.Write("Ange belopp att överföra: ");
             if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0)
@@ -226,76 +225,73 @@ namespace MandalorianBankomaten
             }
 
             // Utför överföringen
-            currentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount).Wait();
+            currentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount);
         }
 
         public void TransferToAnotherUser()
         {
-            // Visa alla användare för att välja mottagare
-            Console.WriteLine("\nTillgängliga användare:");
-            for (int i = 0; i < users.Count; i++)
-            {
-                if (users[i] != currentUser) // Visa inte den inloggade användaren som val
-                {
-                    Console.WriteLine($"{i + 1}. {users[i].Name}");
-                }
-            }
-
-            Console.Write("\nAnge numret för mottagaren: ");
-            if (!int.TryParse(Console.ReadLine(), out int recipientIndex) || recipientIndex < 1 || recipientIndex > users.Count || users[recipientIndex - 1] == currentUser)
-            {
-                Console.WriteLine("Ogiltigt val.");
-                return;
-            }
-            var recipient = users[recipientIndex - 1];
-
-            if (!recipient.HasAccounts())
-            {
-                return;
-            }
-
-            // Välj avsändarkonto
-            Console.WriteLine("\nDina konton:");
-            for (int i = 0; i < currentUser.Accounts.Count; i++)
-            {
-                var account = currentUser.Accounts[i];
-                Console.WriteLine($"{i + 1}. {account.AccountName} - Saldo: {account.Balance:C}");
-            }
+            // Visa användarens konton för att välja avsändarkonto
+            currentUser.ShowAccounts();
 
             Console.Write("Ange numret för kontot att överföra från: ");
-            if (!int.TryParse(Console.ReadLine(), out int fromIndex) || fromIndex < 1 || fromIndex > currentUser.Accounts.Count)
+            if (!int.TryParse(Console.ReadLine(), out int fromId) || fromId < 4850)
             {
                 Console.WriteLine("Ogiltigt val.");
                 return;
             }
-            var fromAccount = currentUser.Accounts[fromIndex - 1];
 
-            // Välj mottagarens konto
-            Console.WriteLine($"\nKonton för {recipient.Name}:");
-            for (int i = 0; i < recipient.Accounts.Count; i++)
+            // Hitta avsändarkontot med matchande AccountID
+            var fromAccount = currentUser.Accounts.FirstOrDefault(account => account.AccountID == fromId);
+            if (fromAccount == null)
             {
-                var account = recipient.Accounts[i];
-                Console.WriteLine($"{i + 1}. {account.AccountName} - Saldo: {account.Balance:C}");
+                Console.WriteLine("Inget konto hittades med det numret.");
+                return;
             }
 
+            var allAccounts = new List<Account>();
+            foreach (var user in users)
+            {
+                allAccounts.AddRange(user.Accounts);
+            }
+
+            // Ange mottagarens kontonummer
             Console.Write("Ange numret för mottagarens konto: ");
-            if (!int.TryParse(Console.ReadLine(), out int toIndex) || toIndex < 1 || toIndex > recipient.Accounts.Count)
+            if (!int.TryParse(Console.ReadLine(), out int toId) || toId < 4850)
             {
                 Console.WriteLine("Ogiltigt val.");
                 return;
             }
-            var recipientAccount = recipient.Accounts[toIndex - 1];
+
+            // Hitta mottagarens konto med matchande AccountID
+            var recipientAccount = allAccounts.FirstOrDefault(account => account.AccountID == toId);
+            if (recipientAccount == null)
+            {
+                Console.WriteLine("Inget konto hittades med det numret.");
+                return;
+            }
+
+            // Hitta mottagarens användare genom att kolla vilket konto som tillhör vilken användare
+            var recipient = users.FirstOrDefault(user => user.Accounts.Contains(recipientAccount));
+            if (recipient == null)
+            {
+                Console.WriteLine("Mottagaren finns inte.");
+                return;
+            }
 
             // Ange belopp
             Console.Write("Ange belopp att överföra: ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0)
+            if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0 || amount > fromAccount.Balance)
             {
-                Console.WriteLine("Beloppet måste vara ett positivt tal.");
+                Console.WriteLine("Ogiltigt belopp. Beloppet måste vara positivt och mindre än eller lika med ditt saldo.");
                 return;
             }
 
             // Utför överföringen
-            currentUser.TransferMoneyToUser(recipient, fromAccount, recipientAccount, amount).Wait();
+            currentUser.TransferMoneyToAccount(fromAccount, recipientAccount, amount);
+
+            // Bekräftelse av överföringen
+            Console.WriteLine($"\nDu har skickat {amount:C} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
+            Console.WriteLine($"Ditt nya saldo är för konto {fromAccount.AccountID}: {fromAccount.AccountName} är: {fromAccount.Balance:C}.");
         }
 
         static string ReadPassword()
@@ -392,7 +388,26 @@ namespace MandalorianBankomaten
         */
         public void Ascii()
         {
-            Console.WriteLine("⠀⢀⣠⣄⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⡾⠿⠿⠿⠿⢷⣶⣦⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⢰⣿⡟⠛⠛⠛⠻⠿⠿⢿⣶⣶⣦⣤⣤⣀⣀⡀⣀⣴⣾⡿⠟⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠻⢿⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⣀⡀\r\n⠀⠻⣿⣦⡀⠀⠉⠓⠶⢦⣄⣀⠉⠉⠛⠛⠻⠿⠟⠋⠁⠀⠀⠀⣤⡀⠀⠀⢠⠀⠀⠀⣠⠀⠀⠀⠀⠈⠙⠻⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠛⢻⣿\r\n⠀⠀⠈⠻⣿⣦⠀⠀⠀⠀⠈⠙⠻⢷⣶⣤⡀⠀⠀⠀⠀⢀⣀⡀⠀⠙⢷⡀⠸⡇⠀⣰⠇⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣶⡶⠶⠶⠒⠂⠀⠀⣠⣾⠟\r\n⠀⠀⠀⠀⠈⢿⣷⡀⠀⠀⠀⠀⠀⠀⠈⢻⣿⡄⣠⣴⣿⣯⣭⣽⣷⣆⠀⠁⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣦⡀⠀⣠⣾⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⣠⣾⡟⠁⠀\r\n⠀⠀⠀⠀⠀⠈⢻⣷⣄⠀⠀⠀⠀⠀⠀⠀⣿⡗⢻⣿⣧⣽⣿⣿⣿⣧⠀⠀⣀⣀⠀⢠⣿⣧⣼⣿⣿⣿⣿⠗⠰⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⡿⠋⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠙⢿⣶⣄⡀⠀⠀⠀⠀⠸⠃⠈⠻⣿⣿⣿⣿⣿⡿⠃⠾⣥⡬⠗⠸⣿⣿⣿⣿⣿⡿⠛⠀⢀⡟⠀⠀⠀⠀⠀⠀⣀⣠⣾⡿⠋⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⣷⣶⣤⣤⣄⣰⣄⠀⠀⠉⠉⠉⠁⠀⢀⣀⣠⣄⣀⡀⠀⠉⠉⠉⠀⠀⢀⣠⣾⣥⣤⣤⣤⣶⣶⡿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⢻⣿⠛⢿⣷⣦⣤⣴⣶⣶⣦⣤⣤⣤⣤⣬⣥⡴⠶⠾⠿⠿⠿⠿⠛⢛⣿⣿⣿⣯⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣧⡀⠈⠉⠀⠈⠁⣾⠛⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣿⠟⠉⣹⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣸⣿⣿⣦⣀⠀⠀⠀⢻⡀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣿⠋⣿⠛⠃⠀⣈⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡿⢿⡀⠈⢹⡿⠶⣶⣼⡇⠀⢀⣀⣀⣤⣴⣾⠟⠋⣡⣿⡟⠀⢻⣶⠶⣿⣿⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣷⡈⢿⣦⣸⠇⢀⡿⠿⠿⡿⠿⠿⣿⠛⠋⠁⠀⣴⠟⣿⣧⡀⠈⢁⣰⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⢻⣦⣈⣽⣀⣾⠃⠀⢸⡇⠀⢸⡇⠀⢀⣠⡾⠋⢰⣿⣿⣿⣿⡿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⢿⣿⣿⡟⠛⠃⠀⠀⣾⠀⠀⢸⡇⠐⠿⠋⠀⠀⣿⢻⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠁⢀⡴⠋⠀⣿⠀⠀⢸⠇⠀⠀⠀⠀⠀⠁⢸⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡿⠟⠋⠀⠀⠀⣿⠀⠀⣸⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣁⣀⠀⠀⠀⠀⣿⡀⠀⣿⠀⠀⠀⠀⠀⠀⢀⣈⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠛⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
+            Console.WriteLine(
+                "⠀⢀⣠⣄⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⡾⠿⠿⠿⠿⢷⣶⣦⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⢰⣿⡟⠛⠛⠛⠻⠿⠿⢿⣶⣶⣦⣤⣤⣀⣀⡀⣀⣴⣾⡿⠟⠋⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠙⠻⢿⣷⣦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⣀⣀⣀⣀⣀⡀\r\n" +
+                "⠀⠻⣿⣦⡀⠀⠉⠓⠶⢦⣄⣀⠉⠉⠛⠛⠻⠿⠟⠋⠁⠀⠀⠀⣤⡀⠀⠀⢠⠀⠀⠀⣠⠀⠀⠀⠀⠈⠙⠻⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠛⢻⣿\r\n" +
+                "⠀⠀⠈⠻⣿⣦⠀⠀⠀⠀⠈⠙⠻⢷⣶⣤⡀⠀⠀⠀⠀⢀⣀⡀⠀⠙⢷⡀⠸⡇⠀⣰⠇⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⣀⣠⣤⣤⣶⡶⠶⠶⠒⠂⠀⠀⣠⣾⠟\r\n" +
+                "⠀⠀⠀⠀⠈⢿⣷⡀⠀⠀⠀⠀⠀⠀⠈⢻⣿⡄⣠⣴⣿⣯⣭⣽⣷⣆⠀⠁⠀⠀⠀⠀⢠⣾⣿⣿⣿⣿⣦⡀⠀⣠⣾⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⣠⣾⡟⠁⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠈⢻⣷⣄⠀⠀⠀⠀⠀⠀⠀⣿⡗⢻⣿⣧⣽⣿⣿⣿⣧⠀⠀⣀⣀⠀⢠⣿⣧⣼⣿⣿⣿⣿⠗⠰⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⣠⣾⡿⠋⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠙⢿⣶⣄⡀⠀⠀⠀⠀⠸⠃⠈⠻⣿⣿⣿⣿⣿⡿⠃⠾⣥⡬⠗⠸⣿⣿⣿⣿⣿⡿⠛⠀⢀⡟⠀⠀⠀⠀⠀⠀⣀⣠⣾⡿⠋⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⣷⣶⣤⣤⣄⣰⣄⠀⠀⠉⠉⠉⠁⠀⢀⣀⣠⣄⣀⡀⠀⠉⠉⠉⠀⠀⢀⣠⣾⣥⣤⣤⣤⣶⣶⡿⠿⠛⠉⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⢻⣿⠛⢿⣷⣦⣤⣴⣶⣶⣦⣤⣤⣤⣤⣬⣥⡴⠶⠾⠿⠿⠿⠿⠛⢛⣿⣿⣿⣯⡉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣿⣧⡀⠈⠉⠀⠈⠁⣾⠛⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣿⠟⠉⣹⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣸⣿⣿⣦⣀⠀⠀⠀⢻⡀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣿⠋⣿⠛⠃⠀⣈⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⡿⢿⡀⠈⢹⡿⠶⣶⣼⡇⠀⢀⣀⣀⣤⣴⣾⠟⠋⣡⣿⡟⠀⢻⣶⠶⣿⣿⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣷⡈⢿⣦⣸⠇⢀⡿⠿⠿⡿⠿⠿⣿⠛⠋⠁⠀⣴⠟⣿⣧⡀⠈⢁⣰⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⢻⣦⣈⣽⣀⣾⠃⠀⢸⡇⠀⢸⡇⠀⢀⣠⡾⠋⢰⣿⣿⣿⣿⡿⠟⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⢿⣿⣿⡟⠛⠃⠀⠀⣾⠀⠀⢸⡇⠐⠿⠋⠀⠀⣿⢻⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠁⢀⡴⠋⠀⣿⠀⠀⢸⠇⠀⠀⠀⠀⠀⠁⢸⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⡿⠟⠋⠀⠀⠀⣿⠀⠀⣸⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣁⣀⠀⠀⠀⠀⣿⡀⠀⣿⠀⠀⠀⠀⠀⠀⢀⣈⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n" +
+                "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠛⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠿⠟⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
         }
         private void DisplayMenu(string menu)
         {
