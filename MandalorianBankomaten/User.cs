@@ -1,6 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Threading.Channels;
 
 namespace MandalorianBankomaten
 {
@@ -14,7 +12,7 @@ namespace MandalorianBankomaten
         public List<Account> Accounts => _accounts;
         public List<Loan> Loans => _loans;
         static int _userCounter = 0;
-        
+
         public User(string name, string password)
         {
             _userCounter++;
@@ -57,29 +55,80 @@ namespace MandalorianBankomaten
             Console.WriteLine($"Konton för användare: {Name}");
             for (int i = 0; i < _accounts.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {_accounts[i].AccountName} - Saldo: {_accounts[i].Balance:C}");
+                Console.WriteLine($"{_accounts[i].AccountID}. {_accounts[i].AccountName} - Saldo: {_accounts[i].Balance:C}");
             }
-            Console.WriteLine("\nLånekonton:");
-            
-            for (int i = 0; i < _loans.Count; i++)
+            if (_loans.Count > 0)
             {
-                Console.WriteLine($"{i + 1}. Lån-ID: {_loans[i].LoanId} - Belopp: {_loans[i].Amount:C} - Ränta: {_loans[i].InterestRate}% - Saldo: {_loans[i].RemainingBalance:C}");
+                Console.WriteLine("\nLånekonton:");
+
+                for (int i = 0; i < _loans.Count; i++)
+                {
+                    Console.WriteLine($"{_loans[i].LoanId}. Belopp: {_loans[i].Amount:C} - Ränta: {_loans[i].InterestRate}% - Saldo: {_loans[i].RemainingBalance:C}");
+                }
             }
         }
 
         public void CreateAccount() // Tim 
         {
-            Console.WriteLine("Ange namn på konto:");
-            string accountName = Console.ReadLine();
-            Console.WriteLine("Ange konto-valuta:");
-            string currencyCode = Console.ReadLine();
-            Console.WriteLine("Ange insättningsbelopp:");
-            decimal depositAmount = Convert.ToDecimal(Console.ReadLine());
+            string accountName;
+            while (true)
+            {
+                Console.WriteLine("Ange namn på konto:");
+                accountName = Console.ReadLine();
 
+                // Check for invalid or empty account name
+                if (string.IsNullOrWhiteSpace(accountName))
+                {
+                    Console.WriteLine("Input är ogiltigt. Vänligen ange ett giltigt namn för kontot.");
+                }
+                else
+                {
+                    break; // Exit the loop when a valid name is entered
+                }
+            }
+
+            // Ask for the currency code
+            string currencyCode;
+            while (true)
+            {
+                Console.WriteLine("Ange konto-valuta (t.ex. SEK, USD, EUR):");
+                currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consistency
+
+                // You can extend this to validate known currencies, if needed.
+                if (string.IsNullOrWhiteSpace(currencyCode))
+                {
+                    Console.WriteLine("Valutan kan inte vara tom. Vänligen ange en giltig valuta.");
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            decimal depositAmount;
+            while (true)
+            {
+                Console.WriteLine("Ange insättningsbelopp:");
+                string input = Console.ReadLine();
+
+                // Try to convert the input to a decimal, and handle invalid inputs.
+                if (decimal.TryParse(input, out depositAmount) && depositAmount > 0)
+                {
+                    break; // Valid amount entered, exit the loop
+                }
+                else
+                {
+                    Console.WriteLine("Ogiltigt belopp. Vänligen ange ett positivt belopp för insättning.");
+                }
+            }
+
+            // Create the new account
             Account newAccount = new Account(accountName, depositAmount, currencyCode);
             _accounts.Add(newAccount);
-            Console.WriteLine($"Konto {accountName} har skapats!");
-            Console.ReadKey();
+
+            // Inform the user that the account was created successfully
+            Console.WriteLine($"Konto '{accountName}' har skapats med {depositAmount} {currencyCode}!");
+
         }
         public void AddAccount(Account account)
         {
@@ -91,13 +140,12 @@ namespace MandalorianBankomaten
             _accounts.Remove(account);
         }
 
-        public async Task TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
+        // Method to transfer money between two internal accounts
+        public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
             if (fromAccount.Balance >= amount)
             {
-                Console.WriteLine("Förbereder överföring... Vänta 1 minut.");
-                await Task.Delay(TimeSpan.FromMinutes(1));
-
+                //Execute transfer
                 fromAccount.Withdraw(amount);
                 toAccount.Deposit(amount);
                 Console.WriteLine($"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
@@ -107,26 +155,30 @@ namespace MandalorianBankomaten
                 Console.WriteLine("Otillräckligt saldo för överföring.");
             }
         }
-
-        public async Task TransferMoneyToUser(User recipient, Account fromAccount, Account recipientAccount,
-            decimal amount)
+        // Method to transfer money to an external account (i.e. other user)
+        public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount)
         {
-            if (fromAccount.Balance >= amount)
+            // Kontrollera om beloppet är positivt
+            if (amount <= 0)
             {
-                Console.WriteLine("Förbereder överföring... Vänta 1 minut.");
-                await Task.Delay(TimeSpan.FromMinutes(1));
+                Console.WriteLine("Beloppet måste vara ett positivt tal.");
+                return;
+            }
 
-                fromAccount.Withdraw(amount);
-                recipientAccount.Deposit(amount);
-                Console.WriteLine(
-                    $"Överföring från {fromAccount.AccountName} till {recipient.Name}'s {recipientAccount.AccountName} lyckades.");
-            }
-            else
+            // Kontrollera om avsändarkontot har tillräckligt med saldo
+            if (fromAccount.Balance < amount)
             {
-                Console.WriteLine("Otillräckligt saldo för överföring.");
+                Console.WriteLine("Det finns inte tillräckligt med pengar på ditt konto för denna överföring.");
+                return;
             }
+
+            // Subtrahera beloppet från avsändarkontot
+            fromAccount.Balance -= amount;
+
+            // Lägg till beloppet till mottagarkontot
+            recipientAccount.Balance += amount;
         }
-        
+
         // Method to take a loan
         public void TakeLoan(decimal amount, decimal interestRate)
         {
@@ -138,10 +190,10 @@ namespace MandalorianBankomaten
                 Console.WriteLine($"Du kan max låna {MaxLoanAmount.ToString("C", CultureInfo.CurrentCulture)}.");
                 return;
             }
-            
+
             Loan newLoan = new Loan(amount, interestRate);
             _loans.Add(newLoan);
-            
+
             Console.WriteLine($"Ett nytt lånekonto har skapats. Låne-ID: {newLoan.LoanId}");
             Console.WriteLine($"Lånebelopp: {newLoan.Amount.ToString("C", CultureInfo.CurrentCulture)}");
             Console.WriteLine($"Ränta: {newLoan.InterestRate}%");
@@ -157,11 +209,12 @@ namespace MandalorianBankomaten
                 return;
             }
 
-            foreach (var loan in _loans) 
+            foreach (var loan in _loans)
             {
                 Console.WriteLine($"Lån: {loan.Amount} SEK, Ränta: {loan.InterestRate}%, Saldo: {loan.RemainingBalance} SEK");
             }
         }
+
     }
-    
+
 }

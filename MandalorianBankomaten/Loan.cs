@@ -2,7 +2,7 @@ namespace MandalorianBankomaten;
 
 public class Loan
 {
-    private static int _loanCounter = 0;
+    private static int _loanCounter = 8540;
     public int LoanId { get; private set; }
     public decimal Amount { get; private set; } 
     public decimal InterestRate { get; private set; }
