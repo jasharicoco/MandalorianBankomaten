@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
+using System.ComponentModel.Design;
 
 namespace MandalorianBankomaten
 {
@@ -13,6 +14,7 @@ namespace MandalorianBankomaten
         private User currentUser; // tracks the current user
         private Admin currentAdmin;
         private TransactionLog transactionLog;
+
 
         public Bank()
         {
@@ -39,87 +41,221 @@ namespace MandalorianBankomaten
             {
                 while (programRunning)
                 {
+                    Console.Clear();
+                    //menyvalen indexas. En for-loop går igenom menyn, och skriver ut dem med en färg,
+                    //eller utan färg beroende på om indexet är detsamma som det choiceIndex vi har 
+                    //förflyttat oss till med tangenter. 
+                    string[] menu = {"1. Visa konton\n" ,
+                        "2. Lägg till konto\n" ,
+                        "3. Ta bort konto\n" ,
+                        "4. För över pengar mellan konton\n" ,
+                        "5. För över pengar till en annan användare\n" ,
+                        "6. Ta lån\n" ,
+                        "7. Logga ut\n" };
+                    int choiceIndex = 0;
+
                     if (currentAdmin != null)
                     {
+                        string[] adminMenu = {"------ Menu ------\n",
+                                               "1. Skapa användare\n" ,
+                                               "2. Radera användare\n" ,
+                                               "3. Logga ut\n" ,
+                                               "Ditt val: "};
+
+                        int adminChoiceIndex = 0;
+
                         while (programRunning)
                         {
-                            string adminMenu = "------ Menu ------\n" +
-                                               "1. Skapa användare\n" +
-                                               "2. Radera användare\n" +
-                                               "3. Logga ut\n" +
-                                               "Ditt val: ";
-                            DisplayMenu(adminMenu); // Visa adminmeny
+                            //string adminMenu = "------ Menu ------\n"+
+                            //                   "1. Skapa användare\n" +
+                            //                   "2. Radera användare\n" +
+                            //                   "3. Logga ut\n" +
+                            //                   "Ditt val: ";
 
-                            choice = Console.ReadLine();
+                            //DisplayMenu(adminMenu); // Visa adminmeny
 
-                            switch (choice)
+                            //choice = Console.ReadLine();
+
+                            Console.Clear();
+                            for (int i = 0; i < adminMenu.Length; i++)
                             {
-                                case "1":
-                                    users = currentAdmin.CreateUser(users);
-                                    break;
-                                case "2":
-                                    users = currentAdmin.DeleteUser(users);
-                                    break;
-                                case "3":
-                                    programRunning = false;
-                                    break;
-                                default:
-                                    Console.WriteLine("Ogiltligt menyval. Försök igen!");
-                                    break;
+                                if (i == adminChoiceIndex)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Blue;
+                                    Console.WriteLine($"◆ {adminMenu[i]}");
+                                    Console.ResetColor();
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"  {adminMenu[i]}");
+                                }
+                                
                             }
+                            ConsoleKey key = Console.ReadKey().Key;
+
+                            if (key == ConsoleKey.UpArrow)
+                            {
+                                adminChoiceIndex = choiceIndex - 1;
+                                if (adminChoiceIndex < 0)
+                                {
+                                    adminChoiceIndex = menu.Length - 1;
+                                }
+                            }
+                            else if (key == ConsoleKey.DownArrow)
+                            {
+                                adminChoiceIndex = adminChoiceIndex + 1;
+                                if (adminChoiceIndex == menu.Length)
+                                {
+                                    adminChoiceIndex = 0;
+                                }
+                            }
+                            else if (key == ConsoleKey.Enter)
+                            {
+                                switch (adminChoiceIndex + 1)
+                                {
+                                    case 1:
+                                        users = currentAdmin.CreateUser(users);
+                                        break;
+                                    case 2:
+                                        users = currentAdmin.DeleteUser(users);
+                                        break;
+                                    case 3:
+                                        programRunning = false;
+                                        break;
+                                    default:
+                                        Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                        break;
+                                }
+                            }
+
+                                
                         }
                     }
                     else
                     {
                         while (programRunning)
                         {
-                            string userMenu = "------ Menu ------\n" +
-                                              "1. Visa konton\n" +
-                                              "2. Lägg till konto\n" +
-                                              "3. Ta bort konto\n" +
-                                              "4. För över pengar mellan konton\n" +
-                                              "5. För över pengar till en annan användare\n" +
-                                              "6. Ta lån\n" +
-                                              "7. Logga ut\n" +
-                                              "Ditt val: ";
-                            DisplayMenu(userMenu); // Visa användarmeny
-
-                            choice = Console.ReadLine();
-
-                            switch (choice)
+                            Console.Clear();
+                            for (int i = 0; i < menu.Length; i++)
                             {
-                                case "1":
-                                    currentUser.ShowAccounts();
-                                    Return();
-                                    break;
-                                case "2":
-                                    currentUser.CreateAccount();
-                                    Return();
-                                    break;
-                                case "3":
-                                    //currentUser.RemoveAccount();
-                                    Return();
-                                    break;
-                                case "4":
-                                    TransferBetweenAccounts();
-                                    Return();
-                                    break;
-                                case "5":
-                                    TransferToAnotherUser();
-                                    Return();
-                                    break;
-                                case "6":
-                                    TakeLoan();
-                                    Return();
-                                    break;
-                                case "7":
-                                    programRunning = false;
-                                    break;
-                                default:
-                                    Console.WriteLine("Ogiltligt menyval. Försök igen!");
-                                    Return();
-                                    break;
+                                if (i == choiceIndex)
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Blue;
+                                    Console.WriteLine($"◆ {menu[i]}");
+                                    Console.ResetColor();
+                                }
+                                else
+                                {
+                                    Console.WriteLine($"  {menu[i]}");
+                                }
                             }
+
+                            ConsoleKey key = Console.ReadKey().Key;
+
+                            if (key == ConsoleKey.UpArrow)
+                            {
+                                choiceIndex = choiceIndex - 1;
+                                if (choiceIndex < 0)
+                                {
+                                    choiceIndex = menu.Length - 1;
+                                }
+                            }
+                            else if (key == ConsoleKey.DownArrow)
+                            {
+                                choiceIndex = choiceIndex + 1;
+                                if (choiceIndex == menu.Length)
+                                {
+                                    choiceIndex = 0;
+                                }
+                            }
+                            else if (key == ConsoleKey.Enter)
+                            {
+                                Console.Clear();
+                                switch (choiceIndex + 1)
+                                {
+                                    case 1:
+                                        currentUser.ShowAccounts();
+                                        Return();
+                                        break;
+                                    case 2:
+                                        currentUser.CreateAccount();
+                                        Return();
+                                        break;
+                                    case 3:
+                                        //currentUser.RemoveAccount();
+                                        Return();
+                                        break;
+                                    case 4:
+                                        TransferBetweenAccounts();
+                                        Return();
+                                        break;
+                                    case 5:
+                                        TransferToAnotherUser();
+                                        Return();
+                                        break;
+                                    case 6:
+                                        TakeLoan();
+                                        Return();
+                                        break;
+                                    case 7:
+                                        programRunning = false;
+                                        break;
+                                    default:
+                                        Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                        Return();
+                                        break;
+                                }
+                            }
+                            //{
+
+                            //    string userMenu = "------ Menu ------\n" +
+                            //                      "1. Visa konton\n" +
+                            //                      "2. Lägg till konto\n" +
+                            //                      "3. Ta bort konto\n" +
+                            //                      "4. För över pengar mellan konton\n" +
+                            //                      "5. För över pengar till en annan användare\n" +
+                            //                      "6. Ta lån\n" +
+                            //                      "7. Logga ut\n" +
+                            //                      "Ditt val: ";
+                            //}
+                            //DisplayMenu(userMenu); // Visa användarmeny
+
+                            //choice = Console.ReadLine();
+
+                            //switch (choice)
+                            //{
+                            //    case "1":
+                            //        currentUser.ShowAccounts();
+                            //        Return();
+                            //        break;
+                            //    case "2":
+                            //        currentUser.CreateAccount();
+                            //        Return();
+                            //        break;
+                            //    case "3":
+                            //        //currentUser.RemoveAccount();
+                            //        Return();
+                            //        break;
+                            //    case "4":
+                            //        TransferBetweenAccounts();
+                            //        Return();
+                            //        break;
+                            //    case "5":
+                            //        TransferToAnotherUser();
+                            //        Return();
+                            //        break;
+                            //    case "6":
+                            //        TakeLoan();
+                            //        Return();
+                            //        break;
+                            //    case "7":
+                            //        programRunning = false;
+                            //        break;
+                            //    default:
+                            //        Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                            //        Return();
+                            //        break;
+                            //}
                         }
                     }
                 }
