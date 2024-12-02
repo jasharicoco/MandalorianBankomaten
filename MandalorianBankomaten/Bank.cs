@@ -12,13 +12,15 @@ namespace MandalorianBankomaten
         private List<Admin> admins;
         private User currentUser; // tracks the current user
         private Admin currentAdmin;
+        private TransactionLog transactionLog;
 
         public Bank()
         {
             // Initialize users and admins from AccountSeeder
             users = Seeder.SeedUsers();
             admins = Seeder.SeedAdmins();
-
+            // initialize log and create a log-file
+            transactionLog = new TransactionLog("transaction.log");
             // Add standard accounts to each user
             Seeder.AddStandardAccountsToUsers(users);
         }
@@ -226,6 +228,10 @@ namespace MandalorianBankomaten
 
             // Utför överföringen
             currentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount);
+
+            // Log the transaction----------
+            string transferInfo = $"Överföring: {amount} från konto {fromAccount} till konto {toAccount}";
+            transactionLog.LogTransaction(transferInfo);
         }
 
         public void TransferToAnotherUser()
@@ -288,6 +294,10 @@ namespace MandalorianBankomaten
 
             // Utför överföringen
             currentUser.TransferMoneyToAccount(fromAccount, recipientAccount, amount);
+
+            // Log the transaction----------
+            string transactionInfo = $"Överföring: {amount} från konto {fromAccount} till konto {recipientAccount}";
+            transactionLog.LogTransaction(transactionInfo);
 
             // Bekräftelse av överföringen
             Console.WriteLine($"\nDu har skickat {amount:C} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
