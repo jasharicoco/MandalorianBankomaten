@@ -42,9 +42,8 @@ namespace MandalorianBankomaten
                 while (programRunning)
                 {
                     Console.Clear();
-                    //menyvalen indexas. En for-loop går igenom menyn, och skriver ut dem med en färg,
-                    //eller utan färg beroende på om indexet är detsamma som det choiceIndex vi har 
-                    //förflyttat oss till med tangenter. 
+                    //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
+                    //och skriver ut resten utan färg. 
                     string[] menu = {"1. Visa konton\n" ,
                         "2. Lägg till konto\n" ,
                         "3. Ta bort konto\n" ,
@@ -56,11 +55,9 @@ namespace MandalorianBankomaten
 
                     if (currentAdmin != null)
                     {
-                        string[] adminMenu = {"------ Menu ------\n",
-                                               "1. Skapa användare\n" ,
+                        string[] adminMenu = {"1. Skapa användare\n" ,
                                                "2. Radera användare\n" ,
-                                               "3. Logga ut\n" ,
-                                               "Ditt val: "};
+                                               "3. Logga ut\n" };
 
                         int adminChoiceIndex = 0;
 
@@ -77,40 +74,47 @@ namespace MandalorianBankomaten
                             //choice = Console.ReadLine();
 
                             Console.Clear();
+                            Console.WriteLine("  ------ Menu -------\n");
                             for (int i = 0; i < adminMenu.Length; i++)
                             {
+                                //i starts at 0 and is the same value as choiceIndex -> writes that line in blue
                                 if (i == adminChoiceIndex)
                                 {
                                     Console.ForegroundColor = ConsoleColor.Blue;
                                     Console.WriteLine($"◆ {adminMenu[i]}");
                                     Console.ResetColor();
                                 }
+                                //Writes the other ones like normal
                                 else
                                 {
                                     Console.WriteLine($"  {adminMenu[i]}");
                                 }
                                 
                             }
+                            //logs keypress
                             ConsoleKey key = Console.ReadKey().Key;
 
+                            //if key is up arrow, lower the value of choiceIndex by 1. If it goes below 0 it becomes out of bounds
+                            //so in that case it turns into the highest index, meaning it goes to the bottom of the list in the menu. 
                             if (key == ConsoleKey.UpArrow)
                             {
-                                adminChoiceIndex = choiceIndex - 1;
+                                adminChoiceIndex = adminChoiceIndex - 1;
                                 if (adminChoiceIndex < 0)
                                 {
-                                    adminChoiceIndex = menu.Length - 1;
+                                    adminChoiceIndex = adminMenu.Length - 1;
                                 }
                             }
                             else if (key == ConsoleKey.DownArrow)
                             {
                                 adminChoiceIndex = adminChoiceIndex + 1;
-                                if (adminChoiceIndex == menu.Length)
+                                if (adminChoiceIndex == adminMenu.Length)
                                 {
                                     adminChoiceIndex = 0;
                                 }
                             }
                             else if (key == ConsoleKey.Enter)
                             {
+                                //adminChoiceIndex is 0 when the first option is highlighted, hence the + 1. 
                                 switch (adminChoiceIndex + 1)
                                 {
                                     case 1:
@@ -136,6 +140,7 @@ namespace MandalorianBankomaten
                         while (programRunning)
                         {
                             Console.Clear();
+                            Console.WriteLine("  ------ Menu -------\n");
                             for (int i = 0; i < menu.Length; i++)
                             {
                                 if (i == choiceIndex)
