@@ -482,49 +482,77 @@ namespace MandalorianBankomaten
         }
 
         // Method to offer a loan to user
-        public void TakeLoan() // programmed by Alex & Tim
+    public void TakeLoan() // programmed by Alex & Tim
+    {
+        if (currentUser == null)
         {
-            if (currentUser == null)
+            Console.WriteLine("Du måste vara inloggad för att ta ett lån.");
+            return;
+        }
+        Console.WriteLine($"Hej {currentUser.Name}! Välkommen till bankens låneavdelning. Du kan låna upp till 5 gånger ditt totala saldo.");
+        decimal maxLoanAmount = currentUser.Accounts.Sum(account => account.Balance) * 5; 
+        decimal currentLoanAmount = currentUser.Loans.Sum(loan => loan.RemainingBalance);
+        decimal availableLoanAmount = maxLoanAmount - currentLoanAmount;
+
+        Console.WriteLine(
+            $"Ditt nuvarande låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
+
+        decimal amount;
+        Loan.LoanCategory loanCategory;
+        // input for loan type
+        Console.WriteLine("Välj typ av lån:");
+        Console.WriteLine("1. 🏠 Bolån 4% ränta");
+        Console.WriteLine("2. 🚗 Billån 8% ränta");
+        Console.WriteLine("3. 💳 Privatlån 10% ränta");
+        int choice;
+        while (true)
             {
-                Console.WriteLine("Du måste vara inloggad för att ta ett lån.");
-                return;
+                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= 3)
+                {
+                    break;
+                }
+                Console.WriteLine("Ogiltigt val. Försök igen.");
+            }
+            
+            switch (choice)
+            {
+                case 1:
+                    loanCategory = Loan.LoanCategory.Mortgage;
+                    break;
+                case 2:
+                    loanCategory = Loan.LoanCategory.CarLoan;
+                    break;
+                case 3:
+                    loanCategory = Loan.LoanCategory.PersonalLoan;
+                    break;
+                default: // Should never happen
+                    return;
             }
 
-            Console.WriteLine($"Hej {currentUser.Name}! Välkommen till bankens låneavdelning. Du kan låna upp till 5 gånger ditt totala saldo.");
-            decimal maxLoanAmount = currentUser.Accounts.Sum(account => account.Balance) * 5; 
-            decimal currentLoanAmount = currentUser.Loans.Sum(loan => loan.RemainingBalance);
-
-            Console.WriteLine(
-                $"Ditt nuvarande låneutrymme: {(maxLoanAmount - currentLoanAmount).ToString("C", CultureInfo.CurrentCulture)}");
-
-            decimal amount;
-            do
+        // input for loan amount
+        do
+        {
+            Console.Write("Ange lånebelopp: ");
+            if (!decimal.TryParse(Console.ReadLine(), out amount) || amount <= 0)
             {
-                Console.Write("Ange lånebelopp: ");
-                if (!decimal.TryParse(Console.ReadLine(), out amount) || amount <= 0)
-                {
-                    Console.WriteLine("Ogiltigt belopp. Försök igen.");
-                    continue;
-                }
-
-                if (amount + currentLoanAmount > maxLoanAmount)
-                {
-                    Console.WriteLine("Beloppet överstiger ditt tillgängliga låneutrymme. Försök igen.");
-                }
-            } while (amount <= 0 || amount + currentLoanAmount > maxLoanAmount);
-
-            decimal interestRate;
-            do
+                Console.WriteLine("Ogiltigt belopp. Försök igen.");
+                continue;
+            }
+            if (amount + currentLoanAmount > maxLoanAmount)
             {
-                Console.Write("Ange ränta (i procent): ");
-                if (!decimal.TryParse(Console.ReadLine(), out interestRate) || interestRate <= 0)
-                {
-                    Console.WriteLine("Ogiltig ränta. Försök igen.");
-                }
-            } while (interestRate <= 0);
-
-            currentUser.TakeLoan(amount, interestRate);
-        }
+                Console.WriteLine("Beloppet överstiger ditt tillgängliga låneutrymme. Försök igen.");
+            }
+            else if (amount > availableLoanAmount)
+            {
+                Console.WriteLine("Beloppet överstiger det lånebelopp du kan ta för den valda lånetypen. Försök igen.");
+            }
+        } while (amount <= 0 || amount + currentLoanAmount > maxLoanAmount || amount > availableLoanAmount);
+        
+        currentUser.TakeLoan(amount, loanCategory); // Calls my TakeLoan method in user.cs 
+        // Update available loan amount after taking the loan
+        availableLoanAmount -= amount;
+        Console.WriteLine($"Ditt uppdaterade låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
+}
 
         // Method to show users loans but as of now our program shows this in the ShowAccounts method do we really need this?
         /*public void ShowLoans()

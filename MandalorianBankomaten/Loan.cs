@@ -5,12 +5,19 @@ public class Loan
     private decimal _amount;
     private decimal _interestRate;
     private decimal _remainingBalance;
-
+    
+    public enum LoanCategory
+    {
+        Mortgage,   // Bolån
+        CarLoan,    // Billån
+        PersonalLoan // Privatlån
+    }
     // Static counter for generating unique loan IDs
     private static int _loanCounter = 8540;
 
     // Public properties
     public int LoanId { get; private set; }
+    public LoanCategory Category { get; private set; }
 
     public decimal Amount
     {
@@ -46,11 +53,12 @@ public class Loan
     }
 
     // Constructor
-    public Loan(decimal amount, decimal interestRate)
+    public Loan(decimal amount, LoanCategory loanCategory)
     {
         LoanId = _loanCounter;
         Amount = amount;
-        InterestRate = interestRate;
+        InterestRate = GetInterestRateByType(loanCategory);
+        Category = loanCategory;  
         RemainingBalance = amount;
         _loanCounter++;
     }
@@ -60,8 +68,19 @@ public class Loan
     {
         return RemainingBalance * (InterestRate / 100) / 12;}
     public void MakePayment(decimal paymentAmount) { }
+    
+    private decimal GetInterestRateByType(LoanCategory loanCategory)
+    {
+        return loanCategory switch
+        {
+            LoanCategory.Mortgage => 4.0m, // Bolån
+            LoanCategory.CarLoan => 8.0m,  // Billån
+            LoanCategory.PersonalLoan => 10.0m, // Privatlån
+            _ => throw new ArgumentException("Invalid loan type.")
+        };
+    }
     public override string ToString()
     {
-        return $"Amount: {Amount}, Interest Rate: {InterestRate}, Remaining Balance: {RemainingBalance}, Loan ID: {LoanId}";
+        return $"Loan ID: {LoanId}, Type: {Category}, Amount: {Amount:C}, Interest Rate: {InterestRate}%, Remaining Balance: {RemainingBalance:C}";
     }
 }
