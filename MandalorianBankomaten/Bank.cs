@@ -63,16 +63,6 @@ namespace MandalorianBankomaten
 
                         while (programRunning)
                         {
-                            //string adminMenu = "------ Menu ------\n"+
-                            //                   "1. Skapa användare\n" +
-                            //                   "2. Radera användare\n" +
-                            //                   "3. Logga ut\n" +
-                            //                   "Ditt val: ";
-
-                            //DisplayMenu(adminMenu); // Visa adminmeny
-
-                            //choice = Console.ReadLine();
-
                             Console.Clear();
                             Console.WriteLine("  ------ Menu -------\n");
                             for (int i = 0; i < adminMenu.Length; i++)
@@ -124,7 +114,8 @@ namespace MandalorianBankomaten
                                         users = currentAdmin.DeleteUser(users);
                                         break;
                                     case 3:
-                                        programRunning = false;
+                                        currentAdmin = null;
+                                        loginSuccesfull = LogIn();
                                         break;
                                     default:
                                         Console.WriteLine("Ogiltligt menyval. Försök igen!");
@@ -203,7 +194,8 @@ namespace MandalorianBankomaten
                                         Return();
                                         break;
                                     case 7:
-                                        programRunning = false;
+                                        currentUser = null;
+                                        loginSuccesfull = LogIn();
                                         break;
                                     default:
                                         Console.WriteLine("Ogiltligt menyval. Försök igen!");
@@ -211,56 +203,6 @@ namespace MandalorianBankomaten
                                         break;
                                 }
                             }
-                            //{
-
-                            //    string userMenu = "------ Menu ------\n" +
-                            //                      "1. Visa konton\n" +
-                            //                      "2. Lägg till konto\n" +
-                            //                      "3. Ta bort konto\n" +
-                            //                      "4. För över pengar mellan konton\n" +
-                            //                      "5. För över pengar till en annan användare\n" +
-                            //                      "6. Ta lån\n" +
-                            //                      "7. Logga ut\n" +
-                            //                      "Ditt val: ";
-                            //}
-                            //DisplayMenu(userMenu); // Visa användarmeny
-
-                            //choice = Console.ReadLine();
-
-                            //switch (choice)
-                            //{
-                            //    case "1":
-                            //        currentUser.ShowAccounts();
-                            //        Return();
-                            //        break;
-                            //    case "2":
-                            //        currentUser.CreateAccount();
-                            //        Return();
-                            //        break;
-                            //    case "3":
-                            //        //currentUser.RemoveAccount();
-                            //        Return();
-                            //        break;
-                            //    case "4":
-                            //        TransferBetweenAccounts();
-                            //        Return();
-                            //        break;
-                            //    case "5":
-                            //        TransferToAnotherUser();
-                            //        Return();
-                            //        break;
-                            //    case "6":
-                            //        TakeLoan();
-                            //        Return();
-                            //        break;
-                            //    case "7":
-                            //        programRunning = false;
-                            //        break;
-                            //    default:
-                            //        Console.WriteLine("Ogiltligt menyval. Försök igen!");
-                            //        Return();
-                            //        break;
-                            //}
                         }
                     }
                 }

@@ -1,4 +1,6 @@
 using System.Globalization;
+using System.Security;
+using System.Xml;
 
 namespace MandalorianBankomaten
 {
@@ -98,9 +100,13 @@ namespace MandalorianBankomaten
                 {
                     Console.WriteLine("Valutan kan inte vara tom. Vänligen ange en giltig valuta.");
                 }
-                else
+                else if(currencyCode == "SEK" || currencyCode == "USD" || currencyCode == "EUR")
                 {
                     break;
+                }
+                else
+                {
+                    Console.WriteLine("Ange giltlig valuta.");
                 }
             }
 
