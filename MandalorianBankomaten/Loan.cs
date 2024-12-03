@@ -1,3 +1,4 @@
+namespace MandalorianBankomaten;
 public class Loan
 {
     // Private fields

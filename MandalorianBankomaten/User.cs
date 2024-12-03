@@ -23,9 +23,8 @@ namespace MandalorianBankomaten
             UserId = _userCounter;
         }
 
-        public decimal MaxLoanAmount
+        public decimal MaxLoanAmount()
         {
-            get
             {
                 // max loan amount is 5 times the total balance of all accounts
                 return Accounts.Sum(account => account.Balance) * 5;
@@ -57,13 +56,13 @@ namespace MandalorianBankomaten
             {
                 Console.WriteLine($"{_accounts[i].AccountID}. {_accounts[i].AccountName} - Saldo: {_accounts[i].Balance:C}");
             }
-            if (_loans.Count > 0)
+            if (Loans.Count > 0)
             {
                 Console.WriteLine("\nLånekonton:");
 
-                for (int i = 0; i < _loans.Count; i++)
+                for (int i = 0; i < Loans.Count; i++)
                 {
-                    Console.WriteLine($"{_loans[i].LoanId}. Belopp: {_loans[i].Amount:C} - Ränta: {_loans[i].InterestRate}% - Saldo: {_loans[i].RemainingBalance:C}");
+                    Console.WriteLine($"{Loans[i].LoanId}. Belopp: {Loans[i].Amount:C} - Ränta: {Loans[i].InterestRate}% - Saldo: {Loans[i].RemainingBalance:C}");
                 }
             }
         }
@@ -184,15 +183,15 @@ namespace MandalorianBankomaten
         {
             Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
 
-            decimal totalLoanAmount = _loans.Sum(loan => loan.RemainingBalance);
-            if (totalLoanAmount + amount > MaxLoanAmount)
+            decimal totalLoanAmount = Loans.Sum(loan => loan.RemainingBalance);
+            if (totalLoanAmount + amount > MaxLoanAmount())
             {
-                Console.WriteLine($"Du kan max låna {MaxLoanAmount.ToString("C", CultureInfo.CurrentCulture)}.");
+                Console.WriteLine($"Du kan max låna {MaxLoanAmount().ToString("C", CultureInfo.CurrentCulture)}.");
                 return;
             }
 
             Loan newLoan = new Loan(amount, interestRate);
-            _loans.Add(newLoan);
+            Loans.Add(newLoan);
 
             Console.WriteLine($"Ett nytt lånekonto har skapats. Låne-ID: {newLoan.LoanId}");
             Console.WriteLine($"Lånebelopp: {newLoan.Amount.ToString("C", CultureInfo.CurrentCulture)}");
@@ -203,13 +202,13 @@ namespace MandalorianBankomaten
         // Method to show loans
         public void ShowLoans()
         {
-            if (_loans.Count == 0)
+            if (Loans.Count == 0)
             {
                 Console.WriteLine("Inga lån registrerade.");
                 return;
             }
 
-            foreach (var loan in _loans)
+            foreach (var loan in Loans)
             {
                 Console.WriteLine($"Lån: {loan.Amount} SEK, Ränta: {loan.InterestRate}%, Saldo: {loan.RemainingBalance} SEK");
             }
