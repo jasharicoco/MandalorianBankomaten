@@ -4,6 +4,10 @@ namespace MandalorianBankomaten
 {
     public class Account : IAccount
     {
+        private int _accountID;
+        private string _accountName;
+        private decimal _balance;
+        private string _currencyCode;
         public string AccountName { get; private set; }
         public decimal Balance { get; set; }
         public string CurrencyCode { get; private set; }
