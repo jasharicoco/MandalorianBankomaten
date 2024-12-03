@@ -62,7 +62,7 @@ namespace MandalorianBankomaten
 
                 for (int i = 0; i < Loans.Count; i++)
                 {
-                    Console.WriteLine($"{Loans[i].LoanId}. Belopp: {Loans[i].Amount:C} - Ränta: {Loans[i].InterestRate}% - Saldo: {Loans[i].RemainingBalance:C}");
+                    Console.WriteLine(Loans[i]); // call the ToString method
                 }
             }
         }
@@ -179,21 +179,14 @@ namespace MandalorianBankomaten
         }
 
         // Method to take a loan
-        public void TakeLoan(decimal amount, decimal interestRate)
+        public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
         {
-            Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
+            Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unikt lånekonto åt dig.");
 
-            decimal totalLoanAmount = Loans.Sum(loan => loan.RemainingBalance);
-            if (totalLoanAmount + amount > MaxLoanAmount())
-            {
-                Console.WriteLine($"Du kan max låna {MaxLoanAmount().ToString("C", CultureInfo.CurrentCulture)}.");
-                return;
-            }
-
-            Loan newLoan = new Loan(amount, interestRate);
+            Loan newLoan = new Loan(amount, loanCategory);
             Loans.Add(newLoan);
 
-            Console.WriteLine($"Ett nytt lånekonto har skapats. Låne-ID: {newLoan.LoanId}");
+            Console.WriteLine($"Ett nytt {loanCategory} har skapats. Låne-ID: {newLoan.LoanId}");
             Console.WriteLine($"Lånebelopp: {newLoan.Amount.ToString("C", CultureInfo.CurrentCulture)}");
             Console.WriteLine($"Ränta: {newLoan.InterestRate}%");
             Console.WriteLine($"Månatlig ränta: {newLoan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)}");
@@ -210,7 +203,7 @@ namespace MandalorianBankomaten
 
             foreach (var loan in Loans)
             {
-                Console.WriteLine($"Lån: {loan.Amount} SEK, Ränta: {loan.InterestRate}%, Saldo: {loan.RemainingBalance} SEK");
+                Console.WriteLine($"Lån: {loan.Amount} SEK, Kategori: {loan.Category}, Ränta: {loan.InterestRate}%, Saldo: {loan.RemainingBalance} SEK");
             }
         }
 
