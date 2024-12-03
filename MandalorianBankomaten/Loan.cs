@@ -8,9 +8,9 @@ public class Loan
     
     public enum LoanCategory
     {
-        Mortgage,   // Bolån
-        CarLoan,    // Billån
-        PersonalLoan // Privatlån
+        Bolån,
+        Billån,   
+        Privatlån 
     }
     // Static counter for generating unique loan IDs
     private static int _loanCounter = 8540;
@@ -73,14 +73,14 @@ public class Loan
     {
         return loanCategory switch
         {
-            LoanCategory.Mortgage => 4.0m, // Bolån
-            LoanCategory.CarLoan => 8.0m,  // Billån
-            LoanCategory.PersonalLoan => 10.0m, // Privatlån
+            LoanCategory.Bolån => 4.0m, // Bolån
+            LoanCategory.Billån => 8.0m,  // Billån
+            LoanCategory.Privatlån => 10.0m, // Privatlån
             _ => throw new ArgumentException("Invalid loan type.")
         };
     }
     public override string ToString()
     {
-        return $"Loan ID: {LoanId}, Type: {Category}, Amount: {Amount:C}, Interest Rate: {InterestRate}%, Remaining Balance: {RemainingBalance:C}";
+        return $"Lån ID: {LoanId}, Typ av lån: {Category}, Summa: {Amount:C}, Ränta: {InterestRate}%, Låneutrymme kvar: {RemainingBalance:C}";
     }
 }

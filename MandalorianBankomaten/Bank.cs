@@ -517,13 +517,13 @@ namespace MandalorianBankomaten
             switch (choice)
             {
                 case 1:
-                    loanCategory = Loan.LoanCategory.Mortgage;
+                    loanCategory = Loan.LoanCategory.Bolån;
                     break;
                 case 2:
-                    loanCategory = Loan.LoanCategory.CarLoan;
+                    loanCategory = Loan.LoanCategory.Billån;
                     break;
                 case 3:
-                    loanCategory = Loan.LoanCategory.PersonalLoan;
+                    loanCategory = Loan.LoanCategory.Privatlån;
                     break;
                 default: // Should never happen
                     return;
