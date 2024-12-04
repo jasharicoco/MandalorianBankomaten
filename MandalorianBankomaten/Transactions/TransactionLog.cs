@@ -1,19 +1,24 @@
-﻿namespace MandalorianBankomaten
+﻿namespace MandalorianBankomaten.Transactions
 {
-    public class TransactionLog
+    internal class TransactionLog
     {
-        private readonly string LogFilePath;
+        // Private fields
+        private readonly string _logFilePath;
+
+        // Constructor
         public TransactionLog(string logFilePath)
         {
             // name for the file with all transactions
-            LogFilePath = logFilePath;
+            _logFilePath = logFilePath;
 
-            if (!File.Exists(LogFilePath))
+            if (!File.Exists(_logFilePath))
             {
                 // Creates new file if it does not exist
-                File.Create(LogFilePath).Close();
+                File.Create(_logFilePath).Close();
             }
         }
+
+        // Methods
         public void LogTransaction(string transactionInfo)
         {
             try
@@ -21,7 +26,7 @@
                 // Variable with log information
                 string logText = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {transactionInfo}";
                 // Opens and writes to file then closes it
-                File.AppendAllText(LogFilePath, logText + Environment.NewLine);
+                File.AppendAllText(_logFilePath, logText + Environment.NewLine);
             }
             catch (Exception ex)
             {
@@ -40,7 +45,7 @@
                 // Reads all file-lines and save it to string array
                 string[] logs = File.ReadAllLines(logFilePath);
 
-                foreach(var log in logs)
+                foreach (var log in logs)
                 {
                     Console.WriteLine(log);
                 }
@@ -50,5 +55,6 @@
                 Console.WriteLine("Transaktionshistoriken är tom.");
             }
         }
+
     }
 }

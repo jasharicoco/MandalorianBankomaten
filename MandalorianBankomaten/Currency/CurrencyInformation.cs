@@ -1,34 +1,16 @@
 ﻿using System.Globalization;
 
-namespace MandalorianBankomaten
+namespace MandalorianBankomaten.Currency
 {
-    public class CurrencyInformation
+    internal class CurrencyInformation
     {
-        private Dictionary<string, (decimal Rate, string Culture)> CurrencyData = new()
-        {
-            //counted from the swedish currency
-            {"SEK", (1.00m, "en-SV") },
-            {"USD", (0.091m, "en-US")},
-            {"EUR", (0.087m, "en-EU")},
-            {"DKK", (0.065m, "en-DK")},
-            {"JPY", (13.98m, "en-JP")},
-            {"GBP", (0.072m, "en-GB")}
-        };
-
-        //properties to store in
+        // Private fields
         private decimal _amount;
         private string _fromCurrency;
         private string _toCurrency;
         private string _currencyCode;
 
-        public CurrencyInformation(decimal Amount, string FromCurrency, string ToCurrency, string CurrencyCode)
-        {
-            _fromCurrency = FromCurrency;
-            _toCurrency = ToCurrency;
-            _amount = Amount;
-            _currencyCode = CurrencyCode;
-        }
-
+        // Public properties
         public decimal Amount
         {
             get { return _amount; }
@@ -54,6 +36,28 @@ namespace MandalorianBankomaten
             //set { CurrencyData.ContainsKey(CurrencyCode); }
         }
 
+        // Constructor
+        public CurrencyInformation(decimal Amount, string FromCurrency, string ToCurrency, string CurrencyCode)
+        {
+            _fromCurrency = FromCurrency;
+            _toCurrency = ToCurrency;
+            _amount = Amount;
+            _currencyCode = CurrencyCode;
+        }
+
+        // Dictionary to store exchange rates
+        private Dictionary<string, (decimal Rate, string Culture)> CurrencyData = new()
+        {
+            //counted from the swedish currency
+            {"SEK", (1.00m, "en-SV") },
+            {"USD", (0.091m, "en-US")},
+            {"EUR", (0.087m, "en-EU")},
+            {"DKK", (0.065m, "en-DK")},
+            {"JPY", (13.98m, "en-JP")},
+            {"GBP", (0.072m, "en-GB")}
+        };
+
+        // Methods
         //validates if the currency code exists 
         public void ValidateCurrencyCode()
         {
@@ -96,5 +100,6 @@ namespace MandalorianBankomaten
             var culture = new CultureInfo(CurrencyData[CurrencyCode].Culture);
             return Amount.ToString("C", culture);
         }
+
     }
 }

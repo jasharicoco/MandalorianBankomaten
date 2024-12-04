@@ -1,62 +1,85 @@
+using MandalorianBankomaten.Accounts;
+using MandalorianBankomaten.Loans;
 using System.Globalization;
-using System.Security;
-using System.Xml;
+using static MandalorianBankomaten.Loans.Loan;
 
-namespace MandalorianBankomaten
+namespace MandalorianBankomaten.Users
 {
-    public class User : IUser // User class implements IUser interface
+    internal class User
     {
+        // Private fields
         private List<Account> _accounts;
         private List<Loan> _loans;
-        public string Name { get; private set; }
-        public string Password { get; private set; }
-        public int UserId { get; private set; }
-        public List<Account> Accounts => _accounts;
-        public List<Loan> Loans => _loans;
-        static int _userCounter = 0;
+        private string _name;
+        private string _password;
+        private int _userId;
 
-        public User(string name, string password)
-        {
-            _userCounter++;
-            Name = name;
-            Password = password;
-            _accounts = new List<Account>();
-            _loans = new List<Loan>();
-            UserId = _userCounter;
-        }
+        // Static counter for generating unique user IDs
+        private static int _userCounter = 0;
 
-        public decimal MaxLoanAmount()
+        // Public properties
+        public List<Account> Accounts => _accounts ??= new List<Account>();
+        public List<Loan> Loans => _loans ??= new List<Loan>();
+        public string Name
         {
+            get => _name;
+            private set
             {
-                // max loan amount is 5 times the total balance of all accounts
-                return Accounts.Sum(account => account.Balance) * 5;
+                //if (string.IsNullOrWhiteSpace(value))
+                //throw new ArgumentException("Name cannot be null or empty.");
+                _name = value;
             }
         }
-
-        // Show number of accounts
-        public int NumberOfAccounts()
+        public string Password
         {
-            return _accounts.Count;
+            get => _password;
+            private set
+            {
+                //if (string.IsNullOrWhiteSpace(value))
+                //throw new ArgumentException("Password cannot be null or empty.");
+                _password = value;
+            }
+        }
+        public int UserId
+        {
+            get => _userId;
+            private set => _userId = value;
         }
 
-        // See if user has accounts
+        // Constructor
+        public User(string name, string password)
+        {
+            UserId = _userCounter;
+            Name = name;
+            Password = password;
+            _userCounter++;
+        }
+
+        // Methods
+        public decimal MaxLoanAmount()
+        {
+            // Max loan amount is 5 times the total balance of all accounts
+            return Accounts.Sum(account => account.Balance) * 5;
+        }
         public bool HasAccounts()
         {
-            if (_accounts.Count == 0)
+            if (Accounts.Count == 0)
             {
                 Console.WriteLine($"{Name} har inga konton på den här banken.");
                 return false;
             }
             return true;
         }
-
-        // Method to show accounts
+        public int NumberOfAccounts()
+        {
+            return Accounts.Count;
+        }
         public void ShowAccounts()
         {
             Console.WriteLine($"Konton för användare: {Name}");
-            for (int i = 0; i < _accounts.Count; i++)
+            for (int i = 0; i < Accounts.Count; i++)
             {
-                Console.WriteLine($"{_accounts[i].AccountID}. {_accounts[i].AccountName} - Saldo: {_accounts[i].Balance:C}");
+                Console.WriteLine($"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {Accounts[i].Balance:C}");
             }
             if (Loans.Count > 0)
             {
@@ -64,12 +87,11 @@ namespace MandalorianBankomaten
 
                 for (int i = 0; i < Loans.Count; i++)
                 {
-                    Console.WriteLine(Loans[i]); // call the ToString method
+                    Console.WriteLine($"{Loans[i].LoanId}. Belopp: {Loans[i].Amount:C} - Ränta: {Loans[i].InterestRate}% - Saldo: {Loans[i].RemainingBalance:C}");
                 }
             }
         }
-
-        public void CreateAccount() // Tim 
+        public void CreateAccount()
         {
             string accountName;
             while (true)
@@ -100,13 +122,9 @@ namespace MandalorianBankomaten
                 {
                     Console.WriteLine("Valutan kan inte vara tom. Vänligen ange en giltig valuta.");
                 }
-                else if(currencyCode == "SEK" || currencyCode == "USD" || currencyCode == "EUR")
-                {
-                    break;
-                }
                 else
                 {
-                    Console.WriteLine("Ange giltlig valuta.");
+                    break;
                 }
             }
 
@@ -128,8 +146,8 @@ namespace MandalorianBankomaten
             }
 
             // Create the new account
-            Account newAccount = new Account(accountName, depositAmount, currencyCode);
-            _accounts.Add(newAccount);
+            Account newAccount = new Account(accountName, currencyCode, depositAmount);
+            Accounts.Add(newAccount);
 
             // Inform the user that the account was created successfully
             Console.WriteLine($"Konto '{accountName}' har skapats med {depositAmount} {currencyCode}!");
@@ -137,30 +155,28 @@ namespace MandalorianBankomaten
         }
         public void AddAccount(Account account)
         {
-            _accounts.Add(account);
+            if (account == null) throw new ArgumentNullException(nameof(account));
+            Accounts.Add(account);
         }
-
         public void RemoveAccount(Account account)
         {
-            _accounts.Remove(account);
+            if (account == null) throw new ArgumentNullException(nameof(account));
+            Accounts.Remove(account);
         }
-
-        // Method to transfer money between two internal accounts
         public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
             if (fromAccount.Balance >= amount)
             {
                 //Execute transfer
+                Console.WriteLine($"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
                 fromAccount.Withdraw(amount);
                 toAccount.Deposit(amount);
-                Console.WriteLine($"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
             }
             else
             {
                 Console.WriteLine("Otillräckligt saldo för överföring.");
             }
         }
-        // Method to transfer money to an external account (i.e. other user)
         public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount)
         {
             // Kontrollera om beloppet är positivt
@@ -183,22 +199,25 @@ namespace MandalorianBankomaten
             // Lägg till beloppet till mottagarkontot
             recipientAccount.Balance += amount;
         }
-
-        // Method to take a loan
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
         {
-            Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unikt lånekonto åt dig.");
+            Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
+
+            decimal totalLoanAmount = Loans.Sum(loan => loan.RemainingBalance);
+            if (totalLoanAmount + amount > MaxLoanAmount())
+            {
+                Console.WriteLine($"Du kan max låna {MaxLoanAmount().ToString("C", CultureInfo.CurrentCulture)}.");
+                return;
+            }
 
             Loan newLoan = new Loan(amount, loanCategory);
             Loans.Add(newLoan);
 
-            Console.WriteLine($"Ett nytt {loanCategory} har skapats. Låne-ID: {newLoan.LoanId}");
+            Console.WriteLine($"Ett nytt lånekonto har skapats. Låne-ID: {newLoan.LoanId}");
             Console.WriteLine($"Lånebelopp: {newLoan.Amount.ToString("C", CultureInfo.CurrentCulture)}");
             Console.WriteLine($"Ränta: {newLoan.InterestRate}%");
             Console.WriteLine($"Månatlig ränta: {newLoan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)}");
         }
-
-        // Method to show loans
         public void ShowLoans()
         {
             if (Loans.Count == 0)
@@ -209,10 +228,13 @@ namespace MandalorianBankomaten
 
             foreach (var loan in Loans)
             {
-                Console.WriteLine($"Lån: {loan.Amount} SEK, Kategori: {loan.Category}, Ränta: {loan.InterestRate}%, Saldo: {loan.RemainingBalance} SEK");
+                Console.WriteLine($"Lån: {loan.Amount} SEK, Ränta: {loan.InterestRate}%, Saldo: {loan.RemainingBalance} SEK");
             }
+        }
+        public override string ToString()
+        {
+            return $"Name: {Name}, User ID: {UserId}";
         }
 
     }
-
 }
