@@ -73,10 +73,10 @@ namespace MandalorianBankomaten
                 while (programRunning)
                 {
                     Console.Clear();
-                    //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
-                    //och skriver ut resten utan färg.
                     ConsoleKey key = ConsoleKey.A;
                     int choiceIndex = 0;
+                    //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
+                    //och skriver ut resten utan färg.
                     string[] menu = {"1. Visa konton\n" ,
                         "2. Lägg till konto\n" ,
                         "3. Ta bort konto\n" ,
@@ -91,8 +91,7 @@ namespace MandalorianBankomaten
                                                "2. Radera användare\n" ,
                                                "3. Logga ut\n" };
 
-                        //int adminChoiceIndex = 0;
-
+                        // Admin Menu
                         while (programRunning)
                         {
                             //(choiceIndex, key) are the values that return from the method having been changed from the input
@@ -122,6 +121,7 @@ namespace MandalorianBankomaten
                     }
                     else
                     {
+                        // User Menu
                         while (programRunning)
                         {
                             (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key);
