@@ -208,18 +208,11 @@ namespace MandalorianBankomaten.Users
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
         {
             Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
-
-            decimal totalLoanAmount = Loans.Sum(loan => loan.RemainingBalance);
-            if (totalLoanAmount + amount > MaxLoanAmount())
-            {
-                Console.WriteLine($"Du kan max låna {MaxLoanAmount().ToString("C", CultureInfo.CurrentCulture)}.");
-                return;
-            }
-
+            
             Loan newLoan = new Loan(amount, loanCategory);
             Loans.Add(newLoan);
 
-            Console.WriteLine($"Ett nytt lånekonto har skapats. Låne-ID: {newLoan.LoanId}");
+            Console.WriteLine($"Ett nytt {loanCategory} har skapats. Låne-ID: {newLoan.LoanId}");
             Console.WriteLine($"Lånebelopp: {newLoan.Amount.ToString("C", CultureInfo.CurrentCulture)}");
             Console.WriteLine($"Ränta: {newLoan.InterestRate}%");
             Console.WriteLine($"Månatlig ränta: {newLoan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)}");
