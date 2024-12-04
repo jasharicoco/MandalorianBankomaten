@@ -220,7 +220,11 @@ namespace MandalorianBankomaten
                 Console.WriteLine("Ogiltigt val.");
                 return;
             }
-
+            if (fromId >= 8540)
+            {
+                Console.WriteLine("Du kan ej överföra från ett lånekonto.");
+                return;
+            }
             // Hitta avsändarkontot med matchande AccountID
             var fromAccount = CurrentUser.Accounts.FirstOrDefault(account => account.AccountID == fromId);
             if (fromAccount == null)
@@ -313,7 +317,7 @@ namespace MandalorianBankomaten
                 Console.WriteLine("Ogiltigt val.");
                 return;
             }
-            if (fromId >= 8540)
+            if (toId >= 8540)
             {
                 Console.WriteLine("Du kan ej överföra till ett lånekonto.");
                 return;
