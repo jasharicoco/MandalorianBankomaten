@@ -1,9 +1,6 @@
 using MandalorianBankomaten.Accounts;
 using MandalorianBankomaten.Loans;
 using System.Globalization;
-using static MandalorianBankomaten.Loans.Loan;
-using System.Security;
-using System.Xml;
 
 namespace MandalorianBankomaten.Users
 {
