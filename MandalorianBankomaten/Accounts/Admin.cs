@@ -1,22 +1,52 @@
-﻿namespace MandalorianBankomaten
+﻿using MandalorianBankomaten.Users;
+
+namespace MandalorianBankomaten.Accounts
 {
-    public class Admin
+    internal class Admin
     {
-        public string Name { get; private set; }
-        public string Password { get; private set; }
-        public int UserId { get; private set; }
-        public List<Account> Accounts { get; private set; } = new List<Account>();
+        // Private fields
+        private string _name;
+        private string _password;
+        private int _userId;
+        private List<Account> _accounts = new();
 
-        static int _adminCounter = 0;
+        // Static counter for generating unique admin IDs
+        private static int _adminCounter = 0;
 
+        // Public properties
+        public string Name
+        {
+            get => _name;
+            private set
+            {
+                //if (string.IsNullOrWhiteSpace(value))
+                //throw new ArgumentException("Name cannot be null or empty.");
+                _name = value;
+            }
+        }
+        public string Password
+        {
+            get => _password;
+            private set
+            {
+                //if (string.IsNullOrWhiteSpace(value))
+                //throw new ArgumentException("Password cannot be null or empty.");
+                _password = value;
+            }
+        }
+        public int UserId => _userId; // Read-only; auto-assigned by constructor
+        public List<Account> Accounts => new List<Account>(_accounts); // Returns a copy to protect the internal list
+
+        // Constructor
         public Admin(string name, string password)
         {
             _adminCounter++;
+            _userId = _adminCounter;
             Name = name;
             Password = password;
-            UserId = _adminCounter;
         }
 
+        // Methods
         public List<User> CreateUser(List<User> users)
         {
             Console.Write("Vänligen skriv in ett användarnamn: ");
@@ -38,7 +68,6 @@
             Console.WriteLine("Användaren har skapats!");
             return users;
         }
-
         public List<User> DeleteUser(List<User> users)
         {
             if (users.Count == 0)
@@ -82,11 +111,14 @@
             Console.ReadKey();
             return users; // Return the updated list of users
         }
-
-        // Helper function to find a user by name
         private User FindUserByName(List<User> users, string username)
         {
             return users.FirstOrDefault(u => u.Name.Equals(username, StringComparison.OrdinalIgnoreCase));
         }
+        public override string ToString()
+        {
+            return $"Name: {Name}, UserID: {UserId}";
+        }
+
     }
 }

@@ -1,8 +1,11 @@
-﻿namespace MandalorianBankomaten
+﻿using MandalorianBankomaten.Accounts;
+using MandalorianBankomaten.Users;
+
+namespace MandalorianBankomaten.Helpers
 {
     internal class Seeder
     {
-        // Creating seed users
+        // Creating seed customer
         public static List<User> SeedUsers()
         {
             return new List<User>
@@ -25,15 +28,16 @@
             };
         }
 
-        // Adding seed accounts to each user
-        public static void AddStandardAccountsToUsers(List<User> users)
+        // Creating and adding seed accounts to seed users
+        public static void AddSeedAccountsToUsers(List<User> users)
         {
             foreach (var user in users)
             {
                 // Create standard accounts for each user
-                user.AddAccount(new Account("Lönekonto", 10000, "SEK"));
-                user.AddAccount(new Account("Sparkonto", 50000, "SEK"));
+                user.AddAccount(new Account("Lönekonto", "SEK", 10000));
+                user.AddAccount(new Account("Sparkonto", "SEK", 50000));
             }
         }
+
     }
 }
