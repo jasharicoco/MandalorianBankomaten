@@ -52,16 +52,16 @@ namespace MandalorianBankomaten
             return amount;
         }
 
-        //can be used for new accounts 
-        //public static string FormatAmount()
-        //{
-        //    if (CurrencyData.ContainsKey(CurrencyCode))
-        //    {
-        //        throw new ArgumentException($"Invalid currency code: {CurrencyCode}");
-        //    }
+        //can be used for new accounts
+        public static string FormatAmount(string currencyCode, decimal amount)
+        {
+            if (CurrencyData.ContainsKey(currencyCode))
+            {
+                Console.WriteLine($"Invalid currency code: {currencyCode}");
+            }
 
-        //    var culture = new CultureInfo(CurrencyData[CurrencyCode].Culture);
-        //    return amount.ToString("C", culture);
-        //}
+            var culture = new CultureInfo(CurrencyData[currencyCode].Culture);
+            return amount.ToString("C", culture);
+        }
     }
 }
