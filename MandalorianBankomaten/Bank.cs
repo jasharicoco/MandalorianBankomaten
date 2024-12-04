@@ -147,6 +147,7 @@ namespace MandalorianBankomaten
                                     case 3:
                                         CurrentAdmin = null;
                                         loginSuccesfull = LogIn();
+                                        break;
                                     default:
                                         Console.WriteLine("Ogiltligt menyval. Försök igen!");
                                         break;
@@ -226,6 +227,7 @@ namespace MandalorianBankomaten
                                     case 7:
                                         CurrentUser = null;
                                         loginSuccesfull = LogIn();
+                                        break;
                                     default:
                                         Console.WriteLine("Ogiltligt menyval. Försök igen!");
                                         Return();
