@@ -2,6 +2,8 @@ using MandalorianBankomaten.Accounts;
 using MandalorianBankomaten.Loans;
 using System.Globalization;
 using static MandalorianBankomaten.Loans.Loan;
+using System.Security;
+using System.Xml;
 
 namespace MandalorianBankomaten.Users
 {
@@ -122,9 +124,13 @@ namespace MandalorianBankomaten.Users
                 {
                     Console.WriteLine("Valutan kan inte vara tom. Vänligen ange en giltig valuta.");
                 }
-                else
+                else if (currencyCode == "SEK" || currencyCode == "USD" || currencyCode == "EUR")
                 {
                     break;
+                }
+                else
+                {
+                    Console.WriteLine("Ange giltlig valuta.");
                 }
             }
 

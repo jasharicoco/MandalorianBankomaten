@@ -94,7 +94,6 @@ namespace MandalorianBankomaten
 
                         while (programRunning)
                         {
-
                             Console.Clear();
                             Console.WriteLine("  ------ Menu -------\n");
                             for (int i = 0; i < adminMenu.Length; i++)
@@ -146,8 +145,8 @@ namespace MandalorianBankomaten
                                         Users = CurrentAdmin.DeleteUser(Users);
                                         break;
                                     case 3:
-                                        programRunning = false;
-                                        break;
+                                        CurrentAdmin = null;
+                                        loginSuccesfull = LogIn();
                                     default:
                                         Console.WriteLine("Ogiltligt menyval. Försök igen!");
                                         break;
@@ -225,8 +224,8 @@ namespace MandalorianBankomaten
                                         Return();
                                         break;
                                     case 7:
-                                        programRunning = false;
-                                        break;
+                                        CurrentUser = null;
+                                        loginSuccesfull = LogIn();
                                     default:
                                         Console.WriteLine("Ogiltligt menyval. Försök igen!");
                                         Return();
