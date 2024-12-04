@@ -43,7 +43,51 @@
             Console.ResetColor();
             System.Threading.Thread.Sleep(1500); // Pause program for user interaction
         }
-        public static void ShowMenu() { }
+
+        // (int, ConsoleKey) means the method can return both of those types. 
+        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key) 
+        {
+            Console.Clear();
+            Console.WriteLine("  ------ Menu -------\n");
+            for (int i = 0; i < menu.Length; i++)
+            {
+                //i starts at 0 and is the same value as choiceIndex -> writes that line in blue
+                if (i == index)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine($"◆ {menu[i]}");
+                    Console.ResetColor();
+                }
+                //Writes the other ones like normal
+                else
+                {
+                    Console.WriteLine($"  {menu[i]}");
+                }
+
+            }
+            //logs keypress
+            key = Console.ReadKey().Key;
+
+            //if key is up arrow, lower the value of choiceIndex by 1. If it goes below 0 it becomes out of bounds
+            //so in that case it turns into the highest index, meaning it goes to the bottom of the list in the menu. 
+            if (key == ConsoleKey.UpArrow)
+            {
+                index = index - 1;
+                if (index < 0)
+                {
+                    index = menu.Length - 1;
+                }
+            }
+            else if (key == ConsoleKey.DownArrow)
+            {
+                index = index + 1;
+                if (index == menu.Length)
+                {
+                    index = 0;
+                }
+            }
+            return (index, key);
+        }
         public static void ASCIIArt()
         {
             Console.WriteLine(

@@ -74,7 +74,9 @@ namespace MandalorianBankomaten
                 {
                     Console.Clear();
                     //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
-                    //och skriver ut resten utan färg. 
+                    //och skriver ut resten utan färg.
+                    ConsoleKey key = ConsoleKey.A;
+                    int choiceIndex = 0;
                     string[] menu = {"1. Visa konton\n" ,
                         "2. Lägg till konto\n" ,
                         "3. Ta bort konto\n" ,
@@ -82,7 +84,6 @@ namespace MandalorianBankomaten
                         "5. För över pengar till en annan användare\n" ,
                         "6. Ta lån\n" ,
                         "7. Logga ut\n" };
-                    int choiceIndex = 0;
 
                     if (CurrentAdmin != null)
                     {
@@ -90,53 +91,17 @@ namespace MandalorianBankomaten
                                                "2. Radera användare\n" ,
                                                "3. Logga ut\n" };
 
-                        int adminChoiceIndex = 0;
+                        //int adminChoiceIndex = 0;
 
                         while (programRunning)
                         {
-                            Console.Clear();
-                            Console.WriteLine("  ------ Menu -------\n");
-                            for (int i = 0; i < adminMenu.Length; i++)
-                            {
-                                //i starts at 0 and is the same value as choiceIndex -> writes that line in blue
-                                if (i == adminChoiceIndex)
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Blue;
-                                    Console.WriteLine($"◆ {adminMenu[i]}");
-                                    Console.ResetColor();
-                                }
-                                //Writes the other ones like normal
-                                else
-                                {
-                                    Console.WriteLine($"  {adminMenu[i]}");
-                                }
+                            //(choiceIndex, key) are the values that return from the method having been changed from the input
+                            (choiceIndex, key) = MenuUtility.ShowMenu(adminMenu, choiceIndex, key);
 
-                            }
-                            //logs keypress
-                            ConsoleKey key = Console.ReadKey().Key;
-
-                            //if key is up arrow, lower the value of choiceIndex by 1. If it goes below 0 it becomes out of bounds
-                            //so in that case it turns into the highest index, meaning it goes to the bottom of the list in the menu. 
-                            if (key == ConsoleKey.UpArrow)
-                            {
-                                adminChoiceIndex = adminChoiceIndex - 1;
-                                if (adminChoiceIndex < 0)
-                                {
-                                    adminChoiceIndex = adminMenu.Length - 1;
-                                }
-                            }
-                            else if (key == ConsoleKey.DownArrow)
-                            {
-                                adminChoiceIndex = adminChoiceIndex + 1;
-                                if (adminChoiceIndex == adminMenu.Length)
-                                {
-                                    adminChoiceIndex = 0;
-                                }
-                            }
-                            else if (key == ConsoleKey.Enter)
+                            if (key == ConsoleKey.Enter)
                             {
                                 //adminChoiceIndex is 0 when the first option is highlighted, hence the + 1. 
-                                switch (adminChoiceIndex + 1)
+                                switch (choiceIndex + 1)
                                 {
                                     case 1:
                                         Users = CurrentAdmin.CreateUser(Users);
@@ -153,49 +118,15 @@ namespace MandalorianBankomaten
                                         break;
                                 }
                             }
-
-
                         }
                     }
                     else
                     {
                         while (programRunning)
                         {
-                            Console.Clear();
-                            Console.WriteLine("  ------ Menu -------\n");
-                            for (int i = 0; i < menu.Length; i++)
-                            {
-                                if (i == choiceIndex)
-                                {
-                                    Console.ForegroundColor = ConsoleColor.Blue;
-                                    Console.WriteLine($"◆ {menu[i]}");
-                                    Console.ResetColor();
-                                }
-                                else
-                                {
-                                    Console.WriteLine($"  {menu[i]}");
-                                }
-                            }
-
-                            ConsoleKey key = Console.ReadKey().Key;
-
-                            if (key == ConsoleKey.UpArrow)
-                            {
-                                choiceIndex = choiceIndex - 1;
-                                if (choiceIndex < 0)
-                                {
-                                    choiceIndex = menu.Length - 1;
-                                }
-                            }
-                            else if (key == ConsoleKey.DownArrow)
-                            {
-                                choiceIndex = choiceIndex + 1;
-                                if (choiceIndex == menu.Length)
-                                {
-                                    choiceIndex = 0;
-                                }
-                            }
-                            else if (key == ConsoleKey.Enter)
+                            (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key);
+                            
+                            if (key == ConsoleKey.Enter)
                             {
                                 Console.Clear();
                                 switch (choiceIndex + 1)
