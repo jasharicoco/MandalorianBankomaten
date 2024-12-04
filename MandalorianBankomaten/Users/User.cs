@@ -87,7 +87,7 @@ namespace MandalorianBankomaten.Users
 
                 for (int i = 0; i < Loans.Count; i++)
                 {
-                    Console.WriteLine($"{Loans[i].LoanId}. Belopp: {Loans[i].Amount:C} - Ränta: {Loans[i].InterestRate}% - Saldo: {Loans[i].RemainingBalance:C}");
+                    Console.WriteLine(Loans[i].ToString());
                 }
             }
         }
@@ -228,7 +228,7 @@ namespace MandalorianBankomaten.Users
 
             foreach (var loan in Loans)
             {
-                Console.WriteLine($"Lån: {loan.Amount} SEK, Ränta: {loan.InterestRate}%, Saldo: {loan.RemainingBalance} SEK");
+                Console.WriteLine(loan.ToString());
             }
         }
         public override string ToString()
