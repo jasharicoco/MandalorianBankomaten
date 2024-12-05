@@ -526,7 +526,6 @@ public void AmortizeLoan(User user)
         }
     }
     user.MakeAmortization(loan, selectedAccount, amount); // Calls the user's MakeAmortization method
-    loan.MakePayment(amount); // Calls the loan's MakePayment method
     DisplayAmortizationDetails(amount, selectedAccount, loan); // Displays the details of the amortization
     if (loan.RemainingBalance == 0) // if remaning balance on the loan is 0 remove from the list and tell user it is paid.
     {
@@ -537,7 +536,7 @@ public void AmortizeLoan(User user)
 
 private void DisplayAmortizationDetails(decimal amount, Account account, Loan loan)
 {
-    Console.WriteLine($"Amortering på {amount:C} har genomförts från kontot {account.AccountName}. Återstående saldo på lånet: {loan.RemainingBalance:C}");
+    Console.WriteLine($"Amortering på {amount:C} har genomförts från kontot {account.AccountName}. Återstående skuld på lånet: {loan.RemainingBalance:C}");
 }
 // Displays a message to the user with an option to display an error message in red. Fun to try out and minimize ConsoleWriteline
 public void DisplayMessage(string message, bool isError = false)
