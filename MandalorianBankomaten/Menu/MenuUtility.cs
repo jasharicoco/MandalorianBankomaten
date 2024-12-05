@@ -16,6 +16,12 @@
             Console.WriteLine($"\nFörsök kvar: {remainingAttempts}");
             System.Threading.Thread.Sleep(1500); // Pause program for user interaction
         }
+        public static void ShowUserDontExist()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            TextBox("❌ Användare finns ej i systemet, försök igen!");
+            System.Threading.Thread.Sleep(1500); // Pause program for user interaction
+        }
         public static void ShowSuccessMessage(string userName)
         {
             Console.ForegroundColor = ConsoleColor.Green;

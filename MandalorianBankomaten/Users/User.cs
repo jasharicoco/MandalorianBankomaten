@@ -156,15 +156,36 @@ namespace MandalorianBankomaten.Users
             Console.WriteLine($"Konto '{accountName}' har skapats med {depositAmount} {currencyCode}!");
 
         }
+        public void RemoveAccount()
+        {
+            ShowAccounts();
+
+            int accountID;
+            while (true)
+            {
+                Console.WriteLine("Ange kontonummer på kontot som du vill ta bort:");
+                accountID = Convert.ToInt32(Console.ReadLine());
+
+                foreach(var account in Accounts)
+                {
+                    if(account.AccountID == accountID)
+                    {
+                        Account accountToRemove = Accounts.FirstOrDefault(account => account.AccountID == accountID);
+                        Accounts.Remove(accountToRemove);
+                        Console.WriteLine("Kontot har tagits bort!");
+                        return; // Exit the loop when a valid name is entered
+                    }
+                    else
+                    {
+                        Console.WriteLine("Fel kontonummer, försök igen!");
+                    }
+                }
+            }
+        }
         public void AddAccount(Account account)
         {
             if (account == null) throw new ArgumentNullException(nameof(account));
             Accounts.Add(account);
-        }
-        public void RemoveAccount(Account account)
-        {
-            if (account == null) throw new ArgumentNullException(nameof(account));
-            Accounts.Remove(account);
         }
         public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
@@ -226,6 +247,12 @@ namespace MandalorianBankomaten.Users
             {
                 Console.WriteLine(loan.ToString());
             }
+        }
+
+        public void MakeAmortization(Loan loan, Account account, decimal amount)
+        {
+            account.Withdraw(amount); // withdraw from account
+            loan.MakePayment(amount); // make payment on loan
         }
         public override string ToString()
         {

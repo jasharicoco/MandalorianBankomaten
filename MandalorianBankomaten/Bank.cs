@@ -65,9 +65,13 @@ namespace MandalorianBankomaten
             bool programRunning = true;
             string? choice;
 
-            Console.WriteLine("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
+            DisplayMessage("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
-            bool loginSuccesfull = LogIn();
+            bool loginSuccesfull = false;
+            while (!loginSuccesfull)
+            {
+                loginSuccesfull = LogIn();
+            }
             if (loginSuccesfull) // if login is successful
             {
                 while (programRunning)
@@ -77,6 +81,7 @@ namespace MandalorianBankomaten
                     int choiceIndex = 0;
                     //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
                     //och skriver ut resten utan färg.
+
                     string[] menu = {"Visa konton\n" ,
                         "Lägg till konto\n" ,
                         "Ta bort konto\n" ,
@@ -113,7 +118,7 @@ namespace MandalorianBankomaten
                                         loginSuccesfull = LogIn();
                                         break;
                                     default:
-                                        Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                        DisplayMessage("Ogiltligt menyval. Försök igen!", true);
                                         break;
                                 }
                             }
@@ -140,7 +145,7 @@ namespace MandalorianBankomaten
                                         Return();
                                         break;
                                     case 3:
-                                        //currentUser.RemoveAccount();
+                                        CurrentUser.RemoveAccount();
                                         Return();
                                         break;
                                     case 4:
@@ -156,11 +161,15 @@ namespace MandalorianBankomaten
                                         Return();
                                         break;
                                     case 7:
+                                        AmortizeLoan(CurrentUser);
+                                        Return();
+                                        break;
+                                    case 8:
                                         CurrentUser = null;
                                         loginSuccesfull = LogIn();
                                         break;
                                     default:
-                                        Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                        DisplayMessage("Ogiltligt menyval. Försök igen!", true);
                                         Return();
                                         break;
                                 }
@@ -172,41 +181,68 @@ namespace MandalorianBankomaten
         }
         public bool LogIn()
         {
-            int attempts = 0;
-            const int maxAttempts = 3; // Constant for max attempts 
-            do
+            DisplayMessage("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
+            string username = Console.ReadLine().ToLower();
+
+            // First we check if it is an admin logging in
+            foreach (var admin in Admins)
             {
-                attempts++;
-                Console.Write("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
-                string username = Console.ReadLine().ToLower();
-                Console.Write("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
-                string userpswd = Helper.ReadPassword();
-
-                // First we check if it is an admin logging in
-                foreach (var admin in Admins)
+                if (username == admin.Name)
                 {
-                    if (username == admin.Name && userpswd == admin.Password)
+                    int attempts = 0;
+                    const int maxAttempts = 3; // Constant for max attempts 
+                    do
                     {
-                        MenuUtility.ShowSuccessMessageAdmin(username);
-                        CurrentAdmin = admin;
-                        return true;
-                    }
-                }
+                        attempts++;
+                        DisplayMessage("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
+                        string userpswd = Helper.ReadPassword();
 
-                // No admin match means we check the regular user-list for a match
-                foreach (var user in Users)
+                        if (userpswd == admin.Password)
+                        {
+                            MenuUtility.ShowSuccessMessage(username);
+                            CurrentAdmin = admin;
+                            return true;
+                        }
+                        else
+                        {
+                            MenuUtility.ShowFailedLoginMessage(maxAttempts - attempts);
+                        }
+
+                    } while (attempts < 3);
+                    MenuUtility.ShowBlockedMessage();
+                    return false;
+                }
+            }
+
+            foreach (var user in Users)
+            {
+                if (username == user.Name)
                 {
-                    if (username == user.Name && userpswd == user.Password)
+                    int attempts = 0;
+                    const int maxAttempts = 3; // Constant for max attempts 
+                    do
                     {
-                        MenuUtility.ShowSuccessMessage(username);
-                        CurrentUser = user;
-                        return true;
-                    }
-                }
-                MenuUtility.ShowFailedLoginMessage(maxAttempts - attempts);
-            } while (attempts < 3);
+                        attempts++;
+                        DisplayMessage("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
+                        string userpswd = Helper.ReadPassword();
 
-            MenuUtility.ShowBlockedMessage();
+                        if(userpswd == user.Password)
+                        {
+                            MenuUtility.ShowSuccessMessage(username);
+                            CurrentUser = user;
+                            return true;
+                        }
+                        else
+                        {
+                            MenuUtility.ShowFailedLoginMessage(maxAttempts - attempts);
+                        }
+
+                    } while (attempts < 3);
+                    MenuUtility.ShowBlockedMessage();
+                    return false;
+                }
+            }
+            MenuUtility.ShowUserDontExist();
             return false;
         }
         public void TransferToAnotherUser()
@@ -214,22 +250,22 @@ namespace MandalorianBankomaten
             // Visa användarens konton för att välja avsändarkonto
             CurrentUser.ShowAccounts();
 
-            Console.Write("Ange numret för kontot att överföra från: ");
+            DisplayMessage("Ange numret för kontot att överföra från: ");
             if (!int.TryParse(Console.ReadLine(), out int fromId) || fromId < 4850)
             {
-                Console.WriteLine("Ogiltigt val.");
+                DisplayMessage("Ogiltigt val.", true);
                 return;
             }
             if (fromId >= 8540)
             {
-                Console.WriteLine("Du kan ej överföra från ett lånekonto.");
+                DisplayMessage("Du kan ej överföra från ett lånekonto.", true);
                 return;
             }
             // Hitta avsändarkontot med matchande AccountID
             var fromAccount = CurrentUser.Accounts.FirstOrDefault(account => account.AccountID == fromId);
             if (fromAccount == null)
             {
-                Console.WriteLine("Inget konto hittades med det numret.");
+                DisplayMessage("Inget konto hittades med det numret.", true);
                 return;
             }
 
@@ -240,10 +276,10 @@ namespace MandalorianBankomaten
             }
 
             // Ange mottagarens kontonummer
-            Console.Write("Ange numret för mottagarens konto: ");
+            DisplayMessage("Ange numret för mottagarens konto: ");
             if (!int.TryParse(Console.ReadLine(), out int toId) || toId < 4850)
             {
-                Console.WriteLine("Ogiltigt val.");
+                DisplayMessage("Ogiltigt val.", true);
                 return;
             }
 
@@ -251,7 +287,7 @@ namespace MandalorianBankomaten
             var recipientAccount = allAccounts.FirstOrDefault(account => account.AccountID == toId);
             if (recipientAccount == null)
             {
-                Console.WriteLine("Inget konto hittades med det numret.");
+                DisplayMessage("Inget konto hittades med det numret.", true);
                 return;
             }
 
@@ -259,15 +295,15 @@ namespace MandalorianBankomaten
             var recipient = Users.FirstOrDefault(user => user.Accounts.Contains(recipientAccount));
             if (recipient == null)
             {
-                Console.WriteLine("Mottagaren finns inte.");
+                DisplayMessage("Mottagaren finns inte.", true);
                 return;
             }
 
             // Ange belopp
-            Console.Write("Ange belopp att överföra: ");
+            DisplayMessage("Ange belopp att överföra: ");
             if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0 || amount > fromAccount.Balance)
             {
-                Console.WriteLine("Ogiltigt belopp. Beloppet måste vara positivt och mindre än eller lika med ditt saldo.");
+                DisplayMessage("Ogiltigt belopp. Beloppet måste vara positivt och mindre än eller lika med ditt saldo.", true);
                 return;
             }
 
@@ -279,8 +315,8 @@ namespace MandalorianBankomaten
             //TransactionLog.LogTransaction(transactionInfo);
 
             // Bekräftelse av överföringen
-            Console.WriteLine($"\nDu har skickat {amount:C} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
-            Console.WriteLine($"Ditt nya saldo är för konto {fromAccount.AccountID}: {fromAccount.AccountName} är: {fromAccount.Balance:C}.");
+            DisplayMessage($"Du har skickat {amount:C} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
+            DisplayMessage($"Ditt nya saldo är för konto {fromAccount.AccountID}: {fromAccount.AccountName} är: {fromAccount.Balance:C}");
         }
         public void TransferBetweenAccounts()
         {
@@ -288,16 +324,16 @@ namespace MandalorianBankomaten
             CurrentUser.ShowAccounts();
 
             // Välj avsändarkonto
-            Console.Write("\nAnge numret för kontot att överföra från: ");
+            DisplayMessage("\nAnge numret för kontot att överföra från: ");
             if (!int.TryParse(Console.ReadLine(), out int fromId) || fromId < 4850)
             {
-                Console.WriteLine("Ogiltigt val.");
+                DisplayMessage("Ogiltigt val.", true);
                 return;
             }
 
             if (fromId >= 8540)
             {
-                Console.WriteLine("Du kan ej överföra från ett lånekonto.");
+                DisplayMessage("Du kan ej överföra från ett lånekonto.", true);
                 return;
             }
 
@@ -306,34 +342,34 @@ namespace MandalorianBankomaten
 
             if (fromAccount == null)
             {
-                Console.WriteLine("Inget konto hittades med det numret.");
+                DisplayMessage("Inget konto hittades med det numret.", true);
                 return;
             }
 
             // Välj mottagarkonto
-            Console.Write("Ange numret för kontot att överföra till: ");
+            DisplayMessage("Ange numret för kontot att överföra till: ");
             if (!int.TryParse(Console.ReadLine(), out int toId) || toId < 4850 || toId == fromId)
             {
-                Console.WriteLine("Ogiltigt val.");
+                DisplayMessage("Ogiltigt val.", true);
                 return;
             }
             if (toId >= 8540)
             {
-                Console.WriteLine("Du kan ej överföra till ett lånekonto.");
+                DisplayMessage("Du kan ej överföra till ett lånekonto.", true);
                 return;
             }
             var toAccount = CurrentUser.Accounts.FirstOrDefault(account => account.AccountID == toId);
 
             if (toAccount == null)
             {
-                Console.WriteLine("Inget konto hittades med det numret.");
+                DisplayMessage("Inget konto hittades med det numret.", true);
                 return;
             }
             // Ange belopp
-            Console.Write("Ange belopp att överföra: ");
+            DisplayMessage("Ange belopp att överföra: ");
             if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0)
             {
-                Console.WriteLine("Beloppet måste vara ett positivt tal.");
+                DisplayMessage("Beloppet måste vara ett positivt tal.", true);
                 return;
             }
 
@@ -348,24 +384,23 @@ namespace MandalorianBankomaten
         {
             if (CurrentUser == null)
             {
-                Console.WriteLine("Du måste vara inloggad för att ta ett lån.");
+                DisplayMessage("Du måste vara inloggad för att ta ett lån.", true);
                 return;
             }
-            Console.WriteLine($"Hej {CurrentUser.Name}! Välkommen till bankens låneavdelning. Du kan låna upp till 5 gånger ditt totala saldo.");
+            DisplayMessage($"Hej {CurrentUser.Name}! Välkommen till bankens låneavdelning. Du kan låna upp till 5 gånger ditt totala saldo.");
             decimal maxLoanAmount = CurrentUser.Accounts.Sum(account => account.Balance) * 5;
             decimal currentLoanAmount = CurrentUser.Loans.Sum(loan => loan.RemainingBalance);
             decimal availableLoanAmount = maxLoanAmount - currentLoanAmount;
 
-            Console.WriteLine(
-                $"Ditt nuvarande låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
+            DisplayMessage($"Ditt nuvarande låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
 
             decimal amount;
             Loan.LoanCategory loanCategory;
             // input for loan type
-            Console.WriteLine("Välj typ av lån:");
-            Console.WriteLine("1. 🏠 Bolån 4% ränta");
-            Console.WriteLine("2. 🚗 Billån 8% ränta");
-            Console.WriteLine("3. 💳 Privatlån 10% ränta");
+            DisplayMessage("Välj typ av lån:");
+            DisplayMessage("1. 🏠 Bolån 4% ränta");
+            DisplayMessage("2. 🚗 Billån 8% ränta");
+            DisplayMessage("3. 💳 Privatlån 10% ränta");
             int choice;
             while (true)
             {
@@ -373,7 +408,7 @@ namespace MandalorianBankomaten
                 {
                     break;
                 }
-                Console.WriteLine("Ogiltigt val. Försök igen.");
+                DisplayMessage("Ogiltigt val. Försök igen.", true);
             }
 
             switch (choice)
@@ -394,27 +429,129 @@ namespace MandalorianBankomaten
             // input for loan amount
             do
             {
-                Console.Write("Ange lånebelopp: ");
+                DisplayMessage("Ange lånebelopp: ");
                 if (!decimal.TryParse(Console.ReadLine(), out amount) || amount <= 0)
                 {
-                    Console.WriteLine("Ogiltigt belopp. Försök igen.");
+                    DisplayMessage("Ogiltigt belopp. Försök igen.", true);
                     continue;
                 }
                 if (amount + currentLoanAmount > maxLoanAmount)
                 {
-                    Console.WriteLine("Beloppet överstiger ditt tillgängliga låneutrymme. Försök igen.");
+                    DisplayMessage("Beloppet överstiger ditt tillgängliga låneutrymme. Försök igen.", true);
                 }
                 else if (amount > availableLoanAmount)
                 {
-                    Console.WriteLine("Beloppet överstiger det lånebelopp du kan ta för den valda lånetypen. Försök igen.");
+                    DisplayMessage("Beloppet överstiger det lånebelopp du kan ta för den valda lånetypen. Försök igen.", true);
                 }
             } while (amount <= 0 || amount + currentLoanAmount > maxLoanAmount || amount > availableLoanAmount);
 
             CurrentUser.TakeLoan(amount, loanCategory); // Calls my TakeLoan method in user.cs 
                                                         // Update available loan amount after taking the loan
             availableLoanAmount -= amount;
-            Console.WriteLine($"Ditt uppdaterade låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
+            DisplayMessage($"Ditt uppdaterade låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
         }
+        
+public void AmortizeLoan(User user)
+{
+    if (user.Loans.Count == 0)
+    {
+        DisplayMessage("Du har inga lån att amortera på.", true);       
+        return;
+    }
+
+    user.ShowLoans();
+
+    DisplayMessage("Ange ID för lånet du vill amortera:");
+    int loanId;
+    while (!int.TryParse(Console.ReadLine(), out loanId))
+    {
+        DisplayMessage("Ogiltig inmatning. Ange ett giltigt låne-ID.", true);
+    }
+
+    var loan = user.Loans.FirstOrDefault(l => l.LoanId == loanId); // find the loan with the matching loanID
+    if (loan == null)
+    {
+        DisplayMessage("Lånet hittades inte.", true);
+        return;
+    }
+
+    Account selectedAccount = null; 
+
+    while (true)
+    {
+        DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
+        foreach (var account in user.Accounts) // Shows the user's accounts to choose from
+        {
+            DisplayMessage($"Konto-ID: {account.AccountID} - {account.AccountName} - Saldo: {account.Balance:C}");
+        }
+
+        int accountId;
+        if (int.TryParse(Console.ReadLine(), out accountId))
+        {
+            selectedAccount = user.Accounts.FirstOrDefault(a => a.AccountID == accountId); // find the account with the matching accountID
+            if (selectedAccount != null)
+            {
+                break; // Konto hittat och valt
+            }
+        }
+        DisplayMessage("Ogiltigt konto-ID. Försök igen.", true);
+    }
+
+    decimal amount;
+    while (true)
+    {
+        DisplayMessage("Ange amorteringsbelopp:");
+        if (decimal.TryParse(Console.ReadLine(), out amount) && amount > 0)
+        {
+            if (amount > selectedAccount.Balance) // check if the amount is greater than the balance on selected account
+            {
+                DisplayMessage($"Ditt saldo för det valda kontot ({selectedAccount.AccountName}) är: {selectedAccount.Balance:C}", true);
+                DisplayMessage($"Beloppet {amount:C} överstiger ditt saldo på {selectedAccount.Balance:C}.", true);
+                DisplayMessage("Försök igen.", true);
+            }
+            else if (amount > loan.RemainingBalance) // check if the amount is greater than the remaining balance on the loan
+            {
+                DisplayMessage($"Du kan inte amortera mer än det återstående beloppet på ditt lån. Återstående saldo: {loan.RemainingBalance:C}", true);
+                DisplayMessage("Försök igen.", true);
+            }
+            else
+            {
+                break; // Beloppet är giltigt och tillräckligt
+            }
+        }
+        else
+        {
+            DisplayMessage("Ogiltig inmatning. Ange ett positivt belopp.", true);
+        }
+    }
+    user.MakeAmortization(loan, selectedAccount, amount); // Calls the user's MakeAmortization method
+    loan.MakePayment(amount); // Calls the loan's MakePayment method
+    DisplayAmortizationDetails(amount, selectedAccount, loan); // Displays the details of the amortization
+    if (loan.RemainingBalance == 0) // if remaning balance on the loan is 0 remove from the list and tell user it is paid.
+    {
+        DisplayMessage("Lånet är nu avbetalt och tas bort från dig.");
+        user.Loans.Remove(loan); // Removes the loan from the user's list of loans
+    }
+}
+
+private void DisplayAmortizationDetails(decimal amount, Account account, Loan loan)
+{
+    Console.WriteLine($"Amortering på {amount:C} har genomförts från kontot {account.AccountName}. Återstående saldo på lånet: {loan.RemainingBalance:C}");
+}
+// Displays a message to the user with an option to display an error message in red. Fun to try out and minimize ConsoleWriteline
+public void DisplayMessage(string message, bool isError = false)
+{
+    if (isError)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine(message);
+        Console.ResetColor();
+    }
+    else
+    {
+        Console.WriteLine(message);
+    }
+}
         public void Return()
         {
             Console.WriteLine("Tryck Enter för att komma tillbaka till menyn.");
