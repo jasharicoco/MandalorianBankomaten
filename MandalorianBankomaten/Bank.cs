@@ -118,7 +118,7 @@ namespace MandalorianBankomaten
                                         loginSuccesfull = LogIn();
                                         break;
                                     default:
-                                        Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                        DisplayMessage("Ogiltligt menyval. Försök igen!", true);
                                         break;
                                 }
                             }
@@ -169,7 +169,7 @@ namespace MandalorianBankomaten
                                         loginSuccesfull = LogIn();
                                         break;
                                     default:
-                                        Console.WriteLine("Ogiltligt menyval. Försök igen!");
+                                        DisplayMessage("Ogiltligt menyval. Försök igen!", true);
                                         Return();
                                         break;
                                 }
