@@ -92,6 +92,26 @@ namespace MandalorianBankomaten.Users
         }
         public void CreateAccount()
         {
+            // Menu to choose type of account
+            Console.WriteLine("Välj typ av konto du vill skapa:");
+            Console.WriteLine("[1] Vanligt konto");
+            Console.WriteLine("[2] Sparkonto");
+
+            int accountType;
+            while (true)
+            {
+                Console.Write("Ditt val: ");
+                string userChoice =Console.ReadLine();
+
+                if (int.TryParse(userChoice, out accountType) && accountType == 1 || accountType == 2)
+                {
+                    break; // Exit loop when valid choice is made
+                }
+                else
+                {
+                    Console.WriteLine("Ogiltigt val. Välj [1] eller [2]"); // Invalid choice
+                }
+            }
             string accountName;
             while (true)
             {
@@ -148,12 +168,26 @@ namespace MandalorianBankomaten.Users
                 }
             }
 
-            // Create the new account
-            Account newAccount = new Account(accountName, currencyCode, depositAmount);
-            Accounts.Add(newAccount);
+            if (accountType == 1)
+            {
+                // Create the new account
+                Account newAccount = new Account(accountName, currencyCode, depositAmount);
+                Accounts.Add(newAccount);
 
-            // Inform the user that the account was created successfully
-            Console.WriteLine($"Konto '{accountName}' har skapats med {depositAmount} {currencyCode}!");
+                // Inform the user that the account was created successfully
+                Console.WriteLine($"Konto '{accountName}' har skapats med {depositAmount} {currencyCode}!");
+            }
+            else if (accountType == 2)
+            {
+                // Hardcoded interestrate
+                decimal interestRate = 0.05m; // Interest rate at 5%
+                SavingAccount newSavingAccount = new SavingAccount(accountName, currencyCode, depositAmount, interestRate);
+                Accounts.Add(newSavingAccount);
+
+                // Inform the user that saving account was created successfully
+                Console.WriteLine($"Sparkonto '{accountName}' har skapats.");
+                newSavingAccount.ApplyInterest();
+            }  
 
         }
         public void RemoveAccount()
