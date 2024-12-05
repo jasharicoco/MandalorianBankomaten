@@ -76,25 +76,25 @@ namespace MandalorianBankomaten
             {
                 while (programRunning)
                 {
-                    Console.Clear();
+                    MenuUtility.ColorScheme();
                     ConsoleKey key = ConsoleKey.A;
                     int choiceIndex = 0;
                     //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
                     //och skriver ut resten utan färg.
-                    string[] menu = {"1. Visa konton\n" ,
-                        "2. Lägg till konto\n" ,
-                        "3. Ta bort konto\n" ,
-                        "4. För över pengar mellan konton\n" ,
-                        "5. För över pengar till en annan användare\n" ,
-                        "6. Ta lån\n" ,
-                        "7. Amortera lån\n" ,
-                        "8. Logga ut\n" };
+
+                    string[] menu = {"Visa konton\n" ,
+                        "Lägg till konto\n" ,
+                        "Ta bort konto\n" ,
+                        "För över pengar mellan konton\n" ,
+                        "För över pengar till en annan användare\n" ,
+                        "Ta lån\n" ,
+                        "Logga ut\n" };
 
                     if (CurrentAdmin != null)
                     {
-                        string[] adminMenu = {"1. Skapa användare\n" ,
-                                               "2. Radera användare\n" ,
-                                               "3. Logga ut\n" };
+                        string[] adminMenu = {"Skapa användare\n" ,
+                                               "Radera användare\n" ,
+                                               "Logga ut\n" };
 
                         // Admin Menu
                         while (programRunning)
