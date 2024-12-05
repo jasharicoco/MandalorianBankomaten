@@ -88,6 +88,7 @@ namespace MandalorianBankomaten
                         "För över pengar mellan konton\n" ,
                         "För över pengar till en annan användare\n" ,
                         "Ta lån\n" ,
+                        "Amortera lån\n" ,
                         "Logga ut\n" };
 
                     if (CurrentAdmin != null)
