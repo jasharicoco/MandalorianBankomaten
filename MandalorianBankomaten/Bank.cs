@@ -67,7 +67,11 @@ namespace MandalorianBankomaten
 
             DisplayMessage("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
-            bool loginSuccesfull = LogIn();
+            bool loginSuccesfull = false;
+            while (!loginSuccesfull)
+            {
+                loginSuccesfull = LogIn();
+            }
             if (loginSuccesfull) // if login is successful
             {
                 while (programRunning)
@@ -177,40 +181,68 @@ namespace MandalorianBankomaten
         }
         public bool LogIn()
         {
-            int attempts = 0;
-            const int maxAttempts = 3; // Constant for max attempts 
-            do
+            DisplayMessage("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
+            string username = Console.ReadLine().ToLower();
+
+            // First we check if it is an admin logging in
+            foreach (var admin in Admins)
             {
-                attempts++;
-                DisplayMessage("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
-                string username = Console.ReadLine().ToLower();
-                DisplayMessage("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");                string userpswd = Helper.ReadPassword();
-
-                // First we check if it is an admin logging in
-                foreach (var admin in Admins)
+                if (username == admin.Name)
                 {
-                    if (username == admin.Name && userpswd == admin.Password)
+                    int attempts = 0;
+                    const int maxAttempts = 3; // Constant for max attempts 
+                    do
                     {
-                        MenuUtility.ShowSuccessMessageAdmin(username);
-                        CurrentAdmin = admin;
-                        return true;
-                    }
-                }
+                        attempts++;
+                        DisplayMessage("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
+                        string userpswd = Helper.ReadPassword();
 
-                // No admin match means we check the regular user-list for a match
-                foreach (var user in Users)
+                        if (userpswd == admin.Password)
+                        {
+                            MenuUtility.ShowSuccessMessage(username);
+                            CurrentAdmin = admin;
+                            return true;
+                        }
+                        else
+                        {
+                            MenuUtility.ShowFailedLoginMessage(maxAttempts - attempts);
+                        }
+
+                    } while (attempts < 3);
+                    MenuUtility.ShowBlockedMessage();
+                    return false;
+                }
+            }
+
+            foreach (var user in Users)
+            {
+                if (username == user.Name)
                 {
-                    if (username == user.Name && userpswd == user.Password)
+                    int attempts = 0;
+                    const int maxAttempts = 3; // Constant for max attempts 
+                    do
                     {
-                        MenuUtility.ShowSuccessMessage(username);
-                        CurrentUser = user;
-                        return true;
-                    }
-                }
-                MenuUtility.ShowFailedLoginMessage(maxAttempts - attempts);
-            } while (attempts < 3);
+                        attempts++;
+                        DisplayMessage("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
+                        string userpswd = Helper.ReadPassword();
 
-            MenuUtility.ShowBlockedMessage();
+                        if(userpswd == user.Password)
+                        {
+                            MenuUtility.ShowSuccessMessage(username);
+                            CurrentUser = user;
+                            return true;
+                        }
+                        else
+                        {
+                            MenuUtility.ShowFailedLoginMessage(maxAttempts - attempts);
+                        }
+
+                    } while (attempts < 3);
+                    MenuUtility.ShowBlockedMessage();
+                    return false;
+                }
+            }
+            MenuUtility.ShowUserDontExist();
             return false;
         }
         public void TransferToAnotherUser()
