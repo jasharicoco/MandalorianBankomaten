@@ -86,7 +86,26 @@ namespace MandalorianBankomaten.Loans
         {
             return RemainingBalance * (InterestRate / 100) / 12;
         }
-        public void MakePayment(decimal paymentAmount) { }
+
+        public void MakePayment(decimal paymentAmount)
+        {
+            if (paymentAmount <= 0)
+            {
+                Console.WriteLine("Betalningsbeloppet måste vara större än noll.");
+                return;
+            }
+            if (paymentAmount > RemainingBalance) // makes sure the payment amount is not greater than the remaining balance
+            {
+                return;
+            }
+
+            _remainingBalance -= paymentAmount; // subtracts the payment amount from the remaining balance
+            
+            if (_remainingBalance < 0) // if the remaining balance is less than 0, set it to 0. Should never happen but just in case.
+            {
+                _remainingBalance = 0;
+            }
+        }
         public override string ToString()
         {
             return $"Lån ID: {LoanId}, Typ av lån: {Category}, Summa: {Amount:C}, Ränta: {InterestRate}%, Låneutrymme kvar: {RemainingBalance:C}";
