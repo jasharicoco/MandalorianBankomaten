@@ -145,7 +145,7 @@ namespace MandalorianBankomaten
                                         Return();
                                         break;
                                     case 3:
-                                        //currentUser.RemoveAccount();
+                                        CurrentUser.RemoveAccount();
                                         Return();
                                         break;
                                     case 4:
