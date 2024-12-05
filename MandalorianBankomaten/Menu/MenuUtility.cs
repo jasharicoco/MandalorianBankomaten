@@ -52,9 +52,12 @@
         public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key) 
         {
             Console.Clear();
-            Console.WriteLine("  ------ Menu -------\n");
+            string text = "------ Menu -------\n";
+            Console.SetCursorPosition((Console.WindowWidth - text.Length + 4) / 2, Console.CursorTop + 2);
+            Console.WriteLine(text);
             for (int i = 0; i < menu.Length; i++)
             {
+                Console.SetCursorPosition((Console.WindowWidth - menu[i].Length) / 2, Console.CursorTop);
                 //i starts at 0 and is the same value as choiceIndex -> writes that line in blue
                 if (i == index)
                 {
@@ -72,8 +75,8 @@
             //logs keypress
             key = Console.ReadKey().Key;
 
-            //if key is up arrow, lower the value of choiceIndex by 1. If it goes below 0 it becomes out of bounds
-            //so in that case it turns into the highest index, meaning it goes to the bottom of the list in the menu. 
+            //if key is up arrow, lower the value of choiceIndex by 1. If it goes below 0 it goes out of bounds
+            //and turns into the highest index, going to the bottom of the list in the menu. 
             if (key == ConsoleKey.UpArrow)
             {
                 index = index - 1;
