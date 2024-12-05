@@ -227,6 +227,12 @@ namespace MandalorianBankomaten.Users
                 Console.WriteLine(loan.ToString());
             }
         }
+
+        public void MakeAmortization(Loan loan, Account account, decimal amount)
+        {
+            account.Withdraw(amount); // withdraw from account
+            loan.MakePayment(amount); // make payment on loan
+        }
         public override string ToString()
         {
             return $"Name: {Name}, User ID: {UserId}";
