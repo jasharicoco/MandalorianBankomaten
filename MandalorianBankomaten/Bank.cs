@@ -72,7 +72,7 @@ namespace MandalorianBankomaten
             {
                 while (programRunning)
                 {
-                    Console.Clear();
+                    MenuUtility.ColorScheme();
                     ConsoleKey key = ConsoleKey.A;
                     int choiceIndex = 0;
                     //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
@@ -87,9 +87,9 @@ namespace MandalorianBankomaten
 
                     if (CurrentAdmin != null)
                     {
-                        string[] adminMenu = {"1. Skapa användare\n" ,
-                                               "2. Radera användare\n" ,
-                                               "3. Logga ut\n" };
+                        string[] adminMenu = {"Skapa användare\n" ,
+                                               "Radera användare\n" ,
+                                               "Logga ut\n" };
 
                         // Admin Menu
                         while (programRunning)
