@@ -55,7 +55,7 @@ namespace MandalorianBankomaten.Loans
         public string CurrencyCode
         {
             get => _currencyCode;
-            set { _currencyCode = value; }
+            set { _currencyCode = value.ToUpper(); }
         }
 
         // Enumeration

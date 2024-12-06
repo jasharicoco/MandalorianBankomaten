@@ -93,9 +93,10 @@ namespace MandalorianBankomaten.Accounts
                 Console.WriteLine("Otillräckligt saldo för uttag.");
             }
         }
+       
         public override string ToString()
         {
-            return $"Account Name: {AccountName}, Balance: {Balance.ToString("C")}, Currency: {CurrencyCode}, Account ID: {AccountID}";
+            return $"Account Name: {AccountName}, Balance: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}, Account ID: {AccountID}";
         }
 
     }
