@@ -101,7 +101,7 @@ namespace MandalorianBankomaten.Users
             while (true)
             {
                 Console.Write("Ditt val: ");
-                string userChoice =Console.ReadLine();
+                string userChoice = Console.ReadLine();
 
                 if (int.TryParse(userChoice, out accountType) && accountType == 1 || accountType == 2)
                 {
@@ -187,31 +187,60 @@ namespace MandalorianBankomaten.Users
                 // Inform the user that saving account was created successfully
                 Console.WriteLine($"Sparkonto '{accountName}' har skapats.");
                 newSavingAccount.ApplyInterest();
-            }  
+            }
 
         }
         public void RemoveAccount()
         {
             ShowAccounts();
+            Console.WriteLine();
+            Console.WriteLine("Skriv in kontonummret på kontot du vill ta bort:");
 
-            int accountID;
             while (true)
             {
-                Console.WriteLine("Ange kontonummer på kontot som du vill ta bort:");
-                accountID = Convert.ToInt32(Console.ReadLine());
-
-                foreach(var account in Accounts)
+                if (!int.TryParse(Console.ReadLine(), out int accountID))
                 {
-                    if(account.AccountID == accountID)
+                    Console.WriteLine("Fel inmatning, försök igen!");
+                }
+                else
+                {
+                    foreach (var account in Accounts)
                     {
-                        Account accountToRemove = Accounts.FirstOrDefault(account => account.AccountID == accountID);
-                        Accounts.Remove(accountToRemove);
-                        Console.WriteLine("Kontot har tagits bort!");
-                        return; // Exit the loop when a valid name is entered
-                    }
-                    else
-                    {
-                        Console.WriteLine("Fel kontonummer, försök igen!");
+                        if (account.AccountID == accountID)
+                        {
+                            // Gets the specified account from users accounts list
+                            Account accountToRemove = Accounts.FirstOrDefault(account => account.AccountID == accountID);
+
+
+                            Console.WriteLine();
+                            Console.WriteLine("Är du säker på att du vill ta bort följande konto (j/n):");
+                            Console.WriteLine($"{accountToRemove.AccountName} - {accountToRemove.Balance:C}");
+                            while (true)
+                            {
+                                string choiceConfirm = Console.ReadLine().ToLower();
+                                if(choiceConfirm == "j")
+                                {
+                                    break;
+                                }
+                                else if(choiceConfirm == "n")
+                                {
+                                    Console.WriteLine("Borttagandet av kontot avbröts.");
+                                    return;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Fel inmatning, försök igen!");
+                                }
+                            }
+
+                            Accounts.Remove(accountToRemove);
+                            Console.WriteLine("Kontot har tagits bort!");
+                            return;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Fel kontonummer, försök igen!");
+                        }
                     }
                 }
             }
@@ -260,7 +289,7 @@ namespace MandalorianBankomaten.Users
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
         {
             Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
-            
+
             Loan newLoan = new Loan(amount, loanCategory);
             Loans.Add(newLoan);
 
