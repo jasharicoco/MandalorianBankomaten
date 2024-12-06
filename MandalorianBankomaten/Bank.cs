@@ -376,6 +376,7 @@ namespace MandalorianBankomaten
 
             // Utför överföringen
             CurrentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount);
+            CurrencyConverter.CurrencyConversion(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
 
             // Log the transaction----------
             string transferInfo = $"Överföring: {amount} från konto {fromAccount} till konto {toAccount}";
@@ -451,15 +452,15 @@ namespace MandalorianBankomaten
             availableLoanAmount -= amount;
             DisplayMessage($"Ditt uppdaterade låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
         }
-        
-public void AmortizeLoan(User user)
-{
-    MenuUtility.ColorScheme();
-    if (user.Loans.Count == 0)
-    {
-        DisplayMessage("Du har inga lån att amortera på.", true);       
-        return;
-    }
+
+        public void AmortizeLoan(User user)
+        {
+            MenuUtility.ColorScheme();
+            if (user.Loans.Count == 0)
+            {
+                DisplayMessage("Du har inga lån att amortera på.", true);
+                return;
+            }
 
             user.ShowLoans();
 
@@ -481,14 +482,14 @@ public void AmortizeLoan(User user)
 
             Account selectedAccount = null;
 
-    while (true)
-    {
-        MenuUtility.ColorScheme();
-        DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
-        foreach (var account in user.Accounts) // Shows the user's accounts to choose from
-        {
-            DisplayMessage($"Konto-ID: {account.AccountID} - {account.AccountName} - Saldo: {account.Balance:C}");
-        }
+            while (true)
+            {
+                MenuUtility.ColorScheme();
+                DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
+                foreach (var account in user.Accounts) // Shows the user's accounts to choose from
+                {
+                    DisplayMessage($"Konto-ID: {account.AccountID} - {account.AccountName} - Saldo: {account.Balance:C}");
+                }
 
                 int accountId;
                 if (int.TryParse(Console.ReadLine(), out accountId))

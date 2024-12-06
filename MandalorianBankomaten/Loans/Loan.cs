@@ -7,6 +7,7 @@ namespace MandalorianBankomaten.Loans
         private decimal _interestRate;
         private decimal _remainingBalance;
         private decimal _loanId;
+        private string _currencyCode;
 
         // Static counter for generating unique loan IDs
         private static int _loanCounter = 8540;
@@ -50,6 +51,11 @@ namespace MandalorianBankomaten.Loans
                 //throw new ArgumentException("Remaining balance cannot be negative.");
                 _remainingBalance = value;
             }
+        }
+        public string CurrencyCode
+        {
+            get => _currencyCode;
+            set { _currencyCode = value.ToUpper(); }
         }
 
         // Enumeration
@@ -108,7 +114,7 @@ namespace MandalorianBankomaten.Loans
         }
         public override string ToString()
         {
-            return $"Lån ID: {LoanId}, Typ av lån: {Category}, Ursprunligt lån: {Amount:C}, Ränta: {InterestRate}%, Aktuell skuld: {RemainingBalance:C}";
+            return $"Lån ID: {LoanId}, Typ av lån: {Category}, Ursprunligt lån: {CurrencyConverter.FormatAmount(Amount, CurrencyCode)}, Ränta: {InterestRate}%, Aktuell skuld: {CurrencyConverter.FormatAmount(RemainingBalance, CurrencyCode)}";
         }
 
     }
