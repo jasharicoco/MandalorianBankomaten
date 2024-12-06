@@ -454,6 +454,7 @@ namespace MandalorianBankomaten
         
 public void AmortizeLoan(User user)
 {
+    MenuUtility.ColorScheme();
     if (user.Loans.Count == 0)
     {
         DisplayMessage("Du har inga lån att amortera på.", true);       
@@ -480,6 +481,7 @@ public void AmortizeLoan(User user)
 
     while (true)
     {
+        MenuUtility.ColorScheme();
         DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
         foreach (var account in user.Accounts) // Shows the user's accounts to choose from
         {
@@ -554,6 +556,7 @@ public void DisplayMessage(string message, bool isError = false)
 }
         public void Return()
         {
+            MenuUtility.ColorScheme();
             Console.WriteLine("Tryck Enter för att komma tillbaka till menyn.");
             Console.ReadLine();
         }
