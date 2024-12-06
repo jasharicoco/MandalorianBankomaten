@@ -131,7 +131,7 @@ namespace MandalorianBankomaten
                         while (programRunning)
                         {
                             (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key);
-                            
+
                             if (key == ConsoleKey.Enter)
                             {
                                 Console.Clear();
@@ -227,7 +227,7 @@ namespace MandalorianBankomaten
                         DisplayMessage("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
                         string userpswd = Helper.ReadPassword();
 
-                        if(userpswd == user.Password)
+                        if (userpswd == user.Password)
                         {
                             MenuUtility.ShowSuccessMessage(username);
                             CurrentUser = user;
@@ -451,107 +451,111 @@ namespace MandalorianBankomaten
             availableLoanAmount -= amount;
             DisplayMessage($"Ditt uppdaterade låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
         }
-        
-public void AmortizeLoan(User user)
-{
-    if (user.Loans.Count == 0)
-    {
-        DisplayMessage("Du har inga lån att amortera på.", true);       
-        return;
-    }
 
-    user.ShowLoans();
-
-    DisplayMessage("Ange ID för lånet du vill amortera:");
-    int loanId;
-    while (!int.TryParse(Console.ReadLine(), out loanId))
-    {
-        DisplayMessage("Ogiltig inmatning. Ange ett giltigt låne-ID.", true);
-    }
-
-    var loan = user.Loans.FirstOrDefault(l => l.LoanId == loanId); // find the loan with the matching loanID
-    if (loan == null)
-    {
-        DisplayMessage("Lånet hittades inte.", true);
-        return;
-    }
-
-    Account selectedAccount = null; 
-
-    while (true)
-    {
-        DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
-        foreach (var account in user.Accounts) // Shows the user's accounts to choose from
+        public void AmortizeLoan(User user)
         {
-            DisplayMessage($"Konto-ID: {account.AccountID} - {account.AccountName} - Saldo: {account.Balance:C}");
-        }
-
-        int accountId;
-        if (int.TryParse(Console.ReadLine(), out accountId))
-        {
-            selectedAccount = user.Accounts.FirstOrDefault(a => a.AccountID == accountId); // find the account with the matching accountID
-            if (selectedAccount != null)
+            if (user.Loans.Count == 0)
             {
-                break; // Konto hittat och valt
+                DisplayMessage("Du har inga lån att amortera på.", true);
+                return;
+            }
+
+            user.ShowLoans();
+
+            DisplayMessage("Ange ID för lånet du vill amortera:");
+            int loanId;
+            while (!int.TryParse(Console.ReadLine(), out loanId))
+            {
+                DisplayMessage("Ogiltig inmatning. Ange ett giltigt låne-ID.", true);
+            }
+
+            Console.WriteLine();
+
+            var loan = user.Loans.FirstOrDefault(l => l.LoanId == loanId); // find the loan with the matching loanID
+            if (loan == null)
+            {
+                DisplayMessage("Lånet hittades inte.", true);
+                return;
+            }
+
+            Account selectedAccount = null;
+
+            while (true)
+            {
+                DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
+                foreach (var account in user.Accounts) // Shows the user's accounts to choose from
+                {
+                    DisplayMessage($"Konto-ID: {account.AccountID} - {account.AccountName} - Saldo: {account.Balance:C}");
+                }
+
+                int accountId;
+                if (int.TryParse(Console.ReadLine(), out accountId))
+                {
+                    selectedAccount = user.Accounts.FirstOrDefault(a => a.AccountID == accountId); // find the account with the matching accountID
+                    if (selectedAccount != null)
+                    {
+                        break; // Konto hittat och valt
+                    }
+                }
+                DisplayMessage("Ogiltigt konto-ID. Försök igen.", true);
+            }
+
+            Console.WriteLine();
+
+            decimal amount;
+            while (true)
+            {
+                DisplayMessage("Ange amorteringsbelopp:");
+                if (decimal.TryParse(Console.ReadLine(), out amount) && amount > 0)
+                {
+                    if (amount > selectedAccount.Balance) // check if the amount is greater than the balance on selected account
+                    {
+                        DisplayMessage($"Ditt saldo för det valda kontot ({selectedAccount.AccountName}) är: {selectedAccount.Balance:C}", true);
+                        DisplayMessage($"Beloppet {amount:C} överstiger ditt saldo på {selectedAccount.Balance:C}.", true);
+                        DisplayMessage("Försök igen.", true);
+                    }
+                    else if (amount > loan.RemainingBalance) // check if the amount is greater than the remaining balance on the loan
+                    {
+                        DisplayMessage($"Du kan inte amortera mer än det återstående beloppet på ditt lån. Återstående saldo: {loan.RemainingBalance:C}", true);
+                        DisplayMessage("Försök igen.", true);
+                    }
+                    else
+                    {
+                        break; // Beloppet är giltigt och tillräckligt
+                    }
+                }
+                else
+                {
+                    DisplayMessage("Ogiltig inmatning. Ange ett positivt belopp.", true);
+                }
+            }
+            user.MakeAmortization(loan, selectedAccount, amount); // Calls the user's MakeAmortization method
+            DisplayAmortizationDetails(amount, selectedAccount, loan); // Displays the details of the amortization
+            if (loan.RemainingBalance == 0) // if remaning balance on the loan is 0 remove from the list and tell user it is paid.
+            {
+                DisplayMessage("Lånet är nu avbetalt och tas bort från dig.");
+                user.Loans.Remove(loan); // Removes the loan from the user's list of loans
             }
         }
-        DisplayMessage("Ogiltigt konto-ID. Försök igen.", true);
-    }
 
-    decimal amount;
-    while (true)
-    {
-        DisplayMessage("Ange amorteringsbelopp:");
-        if (decimal.TryParse(Console.ReadLine(), out amount) && amount > 0)
+        private void DisplayAmortizationDetails(decimal amount, Account account, Loan loan)
         {
-            if (amount > selectedAccount.Balance) // check if the amount is greater than the balance on selected account
+            Console.WriteLine($"Amortering på {amount:C} har genomförts från kontot {account.AccountName}. Återstående skuld på lånet: {loan.RemainingBalance:C}");
+        }
+        // Displays a message to the user with an option to display an error message in red. Fun to try out and minimize ConsoleWriteline
+        public void DisplayMessage(string message, bool isError = false)
+        {
+            if (isError)
             {
-                DisplayMessage($"Ditt saldo för det valda kontot ({selectedAccount.AccountName}) är: {selectedAccount.Balance:C}", true);
-                DisplayMessage($"Beloppet {amount:C} överstiger ditt saldo på {selectedAccount.Balance:C}.", true);
-                DisplayMessage("Försök igen.", true);
-            }
-            else if (amount > loan.RemainingBalance) // check if the amount is greater than the remaining balance on the loan
-            {
-                DisplayMessage($"Du kan inte amortera mer än det återstående beloppet på ditt lån. Återstående saldo: {loan.RemainingBalance:C}", true);
-                DisplayMessage("Försök igen.", true);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(message);
+                Console.ResetColor();
             }
             else
             {
-                break; // Beloppet är giltigt och tillräckligt
+                Console.WriteLine(message);
             }
         }
-        else
-        {
-            DisplayMessage("Ogiltig inmatning. Ange ett positivt belopp.", true);
-        }
-    }
-    user.MakeAmortization(loan, selectedAccount, amount); // Calls the user's MakeAmortization method
-    DisplayAmortizationDetails(amount, selectedAccount, loan); // Displays the details of the amortization
-    if (loan.RemainingBalance == 0) // if remaning balance on the loan is 0 remove from the list and tell user it is paid.
-    {
-        DisplayMessage("Lånet är nu avbetalt och tas bort från dig.");
-        user.Loans.Remove(loan); // Removes the loan from the user's list of loans
-    }
-}
-
-private void DisplayAmortizationDetails(decimal amount, Account account, Loan loan)
-{
-    Console.WriteLine($"Amortering på {amount:C} har genomförts från kontot {account.AccountName}. Återstående skuld på lånet: {loan.RemainingBalance:C}");
-}
-// Displays a message to the user with an option to display an error message in red. Fun to try out and minimize ConsoleWriteline
-public void DisplayMessage(string message, bool isError = false)
-{
-    if (isError)
-    {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine(message);
-        Console.ResetColor();
-    }
-    else
-    {
-        Console.WriteLine(message);
-    }
-}
         public void Return()
         {
             Console.WriteLine("Tryck Enter för att komma tillbaka till menyn.");
