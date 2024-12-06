@@ -1,18 +1,22 @@
 ﻿using System.Globalization;
+using System.Collections.Generic;
 
 namespace MandalorianBankomaten
 {
+    //programmed by margo
     public static class CurrencyConverter
     {
-        private static Dictionary<string, (decimal Rate, string Culture)> CurrencyData = new()
+
+        private static Dictionary<string, (decimal Rate, CultureInfo Culture)> CurrencyData = new()
         {
-            //counted from the swedish currency
-            {"SEK", (1.00m, "en-SV") },
-            {"USD", (0.091m, "en-US")},
-            {"EUR", (0.087m, "en-EU")},
-            {"DKK", (0.065m, "en-DK")},
-            {"JPY", (13.98m, "en-JP")},
-            {"GBP", (0.072m, "en-GB")}
+
+             {"SEK", (1.00m, new CultureInfo("sv-SE")) },
+             {"USD", (0.091m, new CultureInfo("en-US")) },
+             {"EUR", (0.087m, new CultureInfo("en-EU")) },
+             {"DKK", (0.065m, new CultureInfo("da-DK")) },
+             {"JPY", (13.98m, new CultureInfo("en-JP")) },
+             {"GBP", (0.072m, new CultureInfo("en-GB")) }
+
         };
 
 
@@ -42,9 +46,10 @@ namespace MandalorianBankomaten
             return convertedAmount;
         }
 
+        //method for both the converter and valdiation 
         public static decimal CurrencyConversion(string fromCurrency, string toCurrency, decimal amount)
         {
-            if(ValidateCurrencyCode(fromCurrency, toCurrency))
+            if (ValidateCurrencyCode(fromCurrency, toCurrency))
             {
                 return Converter(fromCurrency, toCurrency, amount);
             }
@@ -53,14 +58,15 @@ namespace MandalorianBankomaten
         }
 
         //can be used for new accounts
-        public static string FormatAmount(string currencyCode, decimal amount)
+        public static string FormatAmount(decimal amount, string currencyCode)
         {
-            if (CurrencyData.ContainsKey(currencyCode))
+            if (!CurrencyData.ContainsKey(currencyCode))
             {
                 Console.WriteLine($"Invalid currency code: {currencyCode}");
             }
 
-            var culture = new CultureInfo(CurrencyData[currencyCode].Culture);
+            CultureInfo culture = (CurrencyData[currencyCode].Culture);
+
             return amount.ToString("C", culture);
         }
     }
