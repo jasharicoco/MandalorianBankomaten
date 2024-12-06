@@ -78,7 +78,7 @@ namespace MandalorianBankomaten.Users
             Console.WriteLine($"Konton för användare: {Name}");
             for (int i = 0; i < Accounts.Count; i++)
             {
-                Console.WriteLine($"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {Accounts[i].Balance:C}");
+                Console.WriteLine($"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
             }
             if (Loans.Count > 0)
             {
@@ -131,35 +131,20 @@ namespace MandalorianBankomaten.Users
 
             // Ask for the currency code
             string currencyCode;
-            while (true)
-            {
-                Console.WriteLine("Ange konto-valuta (t.ex. SEK, USD, EUR):");
-                currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consistency
-
-                // You can extend this to validate known currencies, if needed.
-                if (string.IsNullOrWhiteSpace(currencyCode))
-                {
-                    Console.WriteLine("Valutan kan inte vara tom. Vänligen ange en giltig valuta.");
-                }
-                else if (currencyCode == "SEK" || currencyCode == "USD" || currencyCode == "EUR")
-                {
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Ange giltlig valuta.");
-                }
-            }
-
             decimal depositAmount;
+
             while (true)
             {
+                Console.WriteLine("Ange konto-valuta (t.ex. SEK, USD, EUR, USD, GPB, DKK, JPY):");
+                currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consi
+
                 Console.WriteLine("Ange insättningsbelopp:");
                 string input = Console.ReadLine();
 
                 // Try to convert the input to a decimal, and handle invalid inputs.
                 if (decimal.TryParse(input, out depositAmount) && depositAmount > 0)
                 {
+                    CurrencyConverter.FormatAmount(depositAmount, currencyCode);
                     break; // Valid amount entered, exit the loop
                 }
                 else
@@ -175,7 +160,7 @@ namespace MandalorianBankomaten.Users
                 Accounts.Add(newAccount);
 
                 // Inform the user that the account was created successfully
-                Console.WriteLine($"Konto '{accountName}' har skapats med {depositAmount} {currencyCode}!");
+                Console.WriteLine($"Konto '{accountName}' har skapats med {CurrencyConverter.FormatAmount(depositAmount, currencyCode)}!");
             }
             else if (accountType == 2)
             {
