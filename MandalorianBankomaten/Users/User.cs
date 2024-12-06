@@ -13,6 +13,9 @@ namespace MandalorianBankomaten.Users
         private string _password;
         private int _userId;
 
+        private string _fromCurrency;
+        private string _toCurrency;
+
         // Static counter for generating unique user IDs
         private static int _userCounter = 0;
 
@@ -43,6 +46,24 @@ namespace MandalorianBankomaten.Users
         {
             get => _userId;
             private set => _userId = value;
+        }
+
+
+        public string fromCurrency
+        {
+            get => _fromCurrency;
+            set
+            {
+                _fromCurrency = value;
+            }
+        }
+        public string toCurrency
+        {
+            get => _toCurrency;
+            set
+            {
+                _toCurrency = value;
+            }
         }
 
         // Constructor
@@ -101,7 +122,7 @@ namespace MandalorianBankomaten.Users
             while (true)
             {
                 Console.Write("Ditt val: ");
-                string userChoice =Console.ReadLine();
+                string userChoice = Console.ReadLine();
 
                 if (int.TryParse(userChoice, out accountType) && accountType == 1 || accountType == 2)
                 {
@@ -172,7 +193,7 @@ namespace MandalorianBankomaten.Users
                 // Inform the user that saving account was created successfully
                 Console.WriteLine($"Sparkonto '{accountName}' har skapats.");
                 newSavingAccount.ApplyInterest();
-            }  
+            }
 
         }
         public void RemoveAccount()
@@ -185,9 +206,9 @@ namespace MandalorianBankomaten.Users
                 Console.WriteLine("Ange kontonummer på kontot som du vill ta bort:");
                 accountID = Convert.ToInt32(Console.ReadLine());
 
-                foreach(var account in Accounts)
+                foreach (var account in Accounts)
                 {
-                    if(account.AccountID == accountID)
+                    if (account.AccountID == accountID)
                     {
                         Account accountToRemove = Accounts.FirstOrDefault(account => account.AccountID == accountID);
                         Accounts.Remove(accountToRemove);
@@ -208,6 +229,8 @@ namespace MandalorianBankomaten.Users
         }
         public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
+            CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
+
             if (fromAccount.Balance >= amount)
             {
                 //Execute transfer
@@ -241,11 +264,12 @@ namespace MandalorianBankomaten.Users
 
             // Lägg till beloppet till mottagarkontot
             recipientAccount.Balance += amount;
+
         }
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
         {
             Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
-            
+
             Loan newLoan = new Loan(amount, loanCategory);
             Loans.Add(newLoan);
 

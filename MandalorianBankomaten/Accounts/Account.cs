@@ -73,10 +73,11 @@ namespace MandalorianBankomaten.Accounts
             }
 
             Balance += amount;
-            Console.WriteLine($"Insättning av {amount.ToString("C", CultureInfo.CurrentCulture)} till {AccountName}. Nytt saldo: {Balance.ToString("C", CultureInfo.CurrentCulture)}.");
+            Console.WriteLine($"Insättning av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} till {AccountName}. Nytt saldo: {Balance.ToString("C", CultureInfo.CurrentCulture)}.");
         }
         public void Withdraw(decimal amount)
         {
+            //CurrencyConverter.FormatAmount(amount, CurrencyCode);
             if (amount <= 0)
             {
                 Console.WriteLine("Uttagsbeloppet måste vara större än noll.");
@@ -86,7 +87,7 @@ namespace MandalorianBankomaten.Accounts
             if (Balance >= amount)
             {
                 Balance -= amount;
-                Console.WriteLine($"Uttag av {amount.ToString("C", CultureInfo.CurrentCulture)} från {AccountName}. Nytt saldo: {Balance.ToString("C", CultureInfo.CurrentCulture)}.");
+                Console.WriteLine($"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}. Nytt saldo: {Balance.ToString("C", CultureInfo.CurrentCulture)}.");
             }
             else
             {
