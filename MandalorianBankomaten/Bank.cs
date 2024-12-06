@@ -451,14 +451,15 @@ namespace MandalorianBankomaten
             availableLoanAmount -= amount;
             DisplayMessage($"Ditt uppdaterade låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
         }
-
-        public void AmortizeLoan(User user)
-        {
-            if (user.Loans.Count == 0)
-            {
-                DisplayMessage("Du har inga lån att amortera på.", true);
-                return;
-            }
+        
+public void AmortizeLoan(User user)
+{
+    MenuUtility.ColorScheme();
+    if (user.Loans.Count == 0)
+    {
+        DisplayMessage("Du har inga lån att amortera på.", true);       
+        return;
+    }
 
             user.ShowLoans();
 
@@ -480,13 +481,14 @@ namespace MandalorianBankomaten
 
             Account selectedAccount = null;
 
-            while (true)
-            {
-                DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
-                foreach (var account in user.Accounts) // Shows the user's accounts to choose from
-                {
-                    DisplayMessage($"Konto-ID: {account.AccountID} - {account.AccountName} - Saldo: {account.Balance:C}");
-                }
+    while (true)
+    {
+        MenuUtility.ColorScheme();
+        DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
+        foreach (var account in user.Accounts) // Shows the user's accounts to choose from
+        {
+            DisplayMessage($"Konto-ID: {account.AccountID} - {account.AccountName} - Saldo: {account.Balance:C}");
+        }
 
                 int accountId;
                 if (int.TryParse(Console.ReadLine(), out accountId))
@@ -558,6 +560,7 @@ namespace MandalorianBankomaten
         }
         public void Return()
         {
+            MenuUtility.ColorScheme();
             Console.WriteLine("Tryck Enter för att komma tillbaka till menyn.");
             Console.ReadLine();
         }
