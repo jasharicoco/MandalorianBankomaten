@@ -64,7 +64,7 @@ namespace MandalorianBankomaten
             MenuUtility.ASCIIArt();
             bool programRunning = true;
             string? choice;
-
+            int windowHeight = Console.WindowHeight;
             DisplayMessage("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
             bool loginSuccesfull = false;
@@ -76,7 +76,6 @@ namespace MandalorianBankomaten
             {
                 while (programRunning)
                 {
-                    MenuUtility.ColorScheme();
                     ConsoleKey key = ConsoleKey.A;
                     int choiceIndex = 0;
                     //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
@@ -455,7 +454,7 @@ namespace MandalorianBankomaten
 
         public void AmortizeLoan(User user)
         {
-            MenuUtility.ColorScheme();
+            
             if (user.Loans.Count == 0)
             {
                 DisplayMessage("Du har inga lån att amortera på.", true);
@@ -484,7 +483,7 @@ namespace MandalorianBankomaten
 
             while (true)
             {
-                MenuUtility.ColorScheme();
+                
                 DisplayMessage("Välj från vilket konto du vill amortera genom att ange konto-ID:");
                 foreach (var account in user.Accounts) // Shows the user's accounts to choose from
                 {
@@ -561,7 +560,7 @@ namespace MandalorianBankomaten
         }
         public void Return()
         {
-            MenuUtility.ColorScheme();
+            
             Console.WriteLine("Tryck Enter för att komma tillbaka till menyn.");
             Console.ReadLine();
         }

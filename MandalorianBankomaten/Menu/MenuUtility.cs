@@ -1,4 +1,7 @@
-﻿namespace MandalorianBankomaten.Menu
+﻿using System.Data;
+using System.Security.Cryptography.X509Certificates;
+
+namespace MandalorianBankomaten.Menu
 {
     public class MenuUtility
     {
@@ -51,60 +54,79 @@
             Console.ResetColor();
         }
         // (int, ConsoleKey) means the method can return both of those types. 
-        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key) 
+        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key)
         {
-            MenuUtility.ColorScheme();
             Console.Clear();
-            string text = "M A N D A L O R I A N\n\n";
-            Console.SetCursorPosition((Console.WindowWidth - text.Length + 5) / 2, Console.CursorTop + 5);
-            Console.WriteLine(text);
+            Console.ResetColor();
+            // Draw the split background
+            SplitBackground(Console.WindowHeight, 45, ConsoleColor.Gray, ConsoleColor.Black);
+
+            // Print the title in black text on dark gray background
+            string title = "M A N D A L O R I A N\n";
+            Console.ForegroundColor = ConsoleColor.Black; // Set text color to black
+            Console.BackgroundColor = ConsoleColor.Gray;
+            Console.SetCursorPosition((45 - title.Length) / 2, 1); // Center the title in the gray section
+            Console.Write(title);
+
+            int startRow = (Console.WindowHeight - menu.Length * 2) / 2; // Vertically center the menu
             for (int i = 0; i < menu.Length; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth - menu[i].Length) / 2, Console.CursorTop);
-                //i starts at 0 and is the same value as choiceIndex -> writes that line in blue
+                int startCol = (45 - menu[i].Length - 2) / 2;
+                Console.SetCursorPosition(startCol, startRow + i*2); // Add some padding to the left for aesthetics
+
                 if (i == index)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"◆ {menu[i]}");
-                    Console.ResetColor();
+                    // Highlight the selected item: dark green text on dark gray background
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                    Console.Write($"◆ {menu[i]}"); // Add a marker to highlight
                 }
-                //Writes the other ones like normal
                 else
                 {
+                    // Normal menu items: black text on dark gray background
                     Console.ForegroundColor = ConsoleColor.Black;
-                    Console.BackgroundColor = ConsoleColor.DarkGray;
-                    Console.WriteLine($"  {menu[i]}");
+                    Console.BackgroundColor = ConsoleColor.Gray;
+                    Console.Write($"  {menu[i]}"); // Indent unselected items for clarity
                 }
-
             }
-            //logs keypress
-            key = Console.ReadKey().Key;
 
-            //if key is up arrow, lower the value of choiceIndex by 1. If it goes below 0 it goes out of bounds
-            //and turns into the highest index, going to the bottom of the list in the menu. 
+            Console.ResetColor();
+
+            // Capture keypress
+            key = Console.ReadKey(true).Key; // Prevent keypress from appearing in the console
+
+            // Adjust the selected index
             if (key == ConsoleKey.UpArrow)
             {
-                index = index - 1;
-                if (index < 0)
-                {
-                    index = menu.Length - 1;
-                }
+                index = (index - 1 + menu.Length) % menu.Length; // Move up, wrap around
             }
             else if (key == ConsoleKey.DownArrow)
             {
-                index = index + 1;
-                if (index == menu.Length)
-                {
-                    index = 0;
-                }
+                index = (index + 1) % menu.Length; // Move down, wrap around
             }
+
             return (index, key);
         }
-        public static (ConsoleColor Foreground, ConsoleColor Background) ColorScheme()
+
+        public static void SplitBackground(int height, int splitWidth, ConsoleColor leftColor, ConsoleColor rightColor)
         {
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.BackgroundColor = ConsoleColor.DarkGray;
-            return (Console.ForegroundColor, Console.BackgroundColor);
+            // Loop through each row from the top of the console to the bottom
+            for (int y = 0; y < height; y++)
+            {
+                // Set the cursor position at the start of the row
+                Console.SetCursorPosition(0, y);
+
+                // Set the left color and print the left part
+                Console.BackgroundColor = leftColor;
+                Console.Write(new string(' ', splitWidth));
+
+                // Set the right color and print the right part
+                Console.BackgroundColor = rightColor;
+                Console.Write(new string(' ', Console.WindowWidth - splitWidth));
+            }
+
+            // Reset the background color after drawing
+            Console.ResetColor();
         }
 
         public static void ASCIIArt()
