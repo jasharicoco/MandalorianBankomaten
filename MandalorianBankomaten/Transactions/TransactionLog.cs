@@ -19,12 +19,12 @@
         }
 
         // Methods
-        public void LogTransaction(string transactionInfo)
+        public void LogTransaction(int userId, string name, string transactionInfo)
         {
             try
             {
                 // Variable with log information
-                string logText = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {transactionInfo}";
+                string logText = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} Användare {userId} - {name}: {transactionInfo}";
                 // Opens and writes to file then closes it
                 File.AppendAllText(_logFilePath, logText + Environment.NewLine);
             }
@@ -34,18 +34,15 @@
                 Console.WriteLine($"Loggning misslyckades: {ex.Message}");
             }
         }
-        public void ShowTransactionLogs()
+        public void ShowTransactionLogs(int userId, string name)
         {
-            // Name for the file with transactions
-            string logFilePath = "TransactionLog.txt";
-
-            if (File.Exists(logFilePath))
+            if (File.Exists(_logFilePath))
             {
-                Console.WriteLine("Transaktionshistorik: ");
+                Console.WriteLine($"Transaktionshistorik för användare {name}:");
                 // Reads all file-lines and save it to string array
-                string[] logs = File.ReadAllLines(logFilePath);
+                string[] logs = File.ReadAllLines(_logFilePath);
 
-                foreach (var log in logs)
+                foreach (var log in logs.Where(log => log.Contains($"Användare {userId} - {name}:")))
                 {
                     Console.WriteLine(log);
                 }

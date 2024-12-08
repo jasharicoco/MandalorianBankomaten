@@ -60,6 +60,8 @@ namespace MandalorianBankomaten
         // Methods
         public void Run()
         {
+            TransactionLog = new TransactionLog("TransactionLog.txt");
+
             Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler synliga i programmet
             MenuUtility.ASCIIArt();
             bool programRunning = true;
@@ -88,6 +90,7 @@ namespace MandalorianBankomaten
                         "För över pengar till en annan användare\n" ,
                         "Ta lån\n" ,
                         "Amortera lån\n" ,
+                        "Visa transaktionshistorik\n",
                         "Logga ut\n" };
 
                     if (CurrentAdmin != null)
@@ -165,6 +168,10 @@ namespace MandalorianBankomaten
                                         Return();
                                         break;
                                     case 8:
+                                        TransactionLog.ShowTransactionLogs(CurrentUser.UserId, CurrentUser.Name);
+                                        Return();
+                                        break;
+                                    case 9:
                                         CurrentUser = null;
                                         loginSuccesfull = LogIn();
                                         break;
@@ -311,8 +318,8 @@ namespace MandalorianBankomaten
             CurrentUser.TransferMoneyToAccount(fromAccount, recipientAccount, amount);
 
             // Log the transaction----------
-            string transactionInfo = $"Överföring: {amount} från konto {fromAccount} till konto {recipientAccount}";
-            //TransactionLog.LogTransaction(transactionInfo);
+            string transactionInfo = $"Överföring: {amount:C} från konto {fromAccount.AccountID} till konto {recipientAccount.AccountID}";
+            TransactionLog.LogTransaction(CurrentUser.UserId, CurrentUser.Name, transactionInfo);
 
             // Bekräftelse av överföringen
             DisplayMessage($"Du har skickat {amount:C} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
@@ -378,8 +385,8 @@ namespace MandalorianBankomaten
             CurrencyConverter.CurrencyConversion(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
 
             // Log the transaction----------
-            string transferInfo = $"Överföring: {amount} från konto {fromAccount} till konto {toAccount}";
-            //TransactionLog.LogTransaction(transferInfo);
+            string transferInfo = $"Överföring: {amount:C} från konto {fromAccount.AccountID} till konto {toAccount.AccountID}";
+            TransactionLog.LogTransaction(CurrentUser.UserId, CurrentUser.Name, transferInfo);
         }
         public void TakeLoan() // programmed by Alex & Tim
         {
