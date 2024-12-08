@@ -54,14 +54,12 @@ namespace MandalorianBankomaten.Menu
             Console.ResetColor();
         }
         // (int, ConsoleKey) means the method can return both of those types. 
-        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key)
+        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key, bool menuRunning)
         {
             Console.Clear();
             Console.ResetColor();
-            // Draw the split background
             SplitBackground(Console.WindowHeight, 45, ConsoleColor.Gray, ConsoleColor.Black);
 
-            // Print the title in black text on dark gray background
             string title = "M A N D A L O R I A N\n";
             Console.ForegroundColor = ConsoleColor.Black; // Set text color to black
             Console.BackgroundColor = ConsoleColor.Gray;
@@ -72,30 +70,29 @@ namespace MandalorianBankomaten.Menu
             for (int i = 0; i < menu.Length; i++)
             {
                 int startCol = (45 - menu[i].Length - 2) / 2;
-                Console.SetCursorPosition(startCol, startRow + i*2); // Add some padding to the left for aesthetics
+                Console.SetCursorPosition(startCol, startRow + i * 2); // Add some padding to the left for aesthetics
 
                 if (i == index)
                 {
-                    // Highlight the selected item: dark green text on dark gray background
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.Write($"◆ {menu[i]}"); // Add a marker to highlight
+                    Console.Write($"◆ {menu[i]}"); 
                 }
                 else
                 {
                     // Normal menu items: black text on dark gray background
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.Write($"  {menu[i]}"); // Indent unselected items for clarity
+                    Console.Write($"  {menu[i]}");
                 }
             }
+            MenuUtility.SpaceBackground();
+            //so there's no pause for a keypress when this method is used inside the menu options
+            if (menuRunning == true)
+            {
+                key = Console.ReadKey().Key; 
+            }
 
-            Console.ResetColor();
-
-            // Capture keypress
-            key = Console.ReadKey(true).Key; // Prevent keypress from appearing in the console
-
-            // Adjust the selected index
             if (key == ConsoleKey.UpArrow)
             {
                 index = (index - 1 + menu.Length) % menu.Length; // Move up, wrap around
@@ -110,25 +107,41 @@ namespace MandalorianBankomaten.Menu
 
         public static void SplitBackground(int height, int splitWidth, ConsoleColor leftColor, ConsoleColor rightColor)
         {
-            // Loop through each row from the top of the console to the bottom
             for (int y = 0; y < height; y++)
             {
-                // Set the cursor position at the start of the row
                 Console.SetCursorPosition(0, y);
 
-                // Set the left color and print the left part
                 Console.BackgroundColor = leftColor;
                 Console.Write(new string(' ', splitWidth));
 
-                // Set the right color and print the right part
                 Console.BackgroundColor = rightColor;
                 Console.Write(new string(' ', Console.WindowWidth - splitWidth));
             }
 
-            // Reset the background color after drawing
             Console.ResetColor();
         }
+        public static void SpaceBackground()
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            int width = Console.WindowWidth - 45;
+            int height = Console.WindowHeight;
+            Random random = new Random();
+            int randomX;
+            int randomY;
+            int randomStar;
+            string[] stars = { ".", "·", "•" };
 
+            for (int i = 0; i < 30; i++)
+            {
+                randomStar = random.Next(0,3);
+                randomX = random.Next(45, width + 45);
+                randomY = random.Next(0, height);
+                Console.SetCursorPosition(randomX, randomY);
+                Console.Write($"{stars[randomStar]}");
+            }
+            Console.ResetColor();
+        }
         public static void ASCIIArt()
         {
             Console.WriteLine(

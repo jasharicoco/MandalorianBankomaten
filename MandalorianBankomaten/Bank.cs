@@ -4,6 +4,7 @@ using MandalorianBankomaten.Loans;
 using MandalorianBankomaten.Menu;
 using MandalorianBankomaten.Transactions;
 using MandalorianBankomaten.Users;
+using System;
 using System.Globalization;
 using System.Text;
 
@@ -66,7 +67,6 @@ namespace MandalorianBankomaten
             MenuUtility.ASCIIArt();
             bool programRunning = true;
             string? choice;
-            int windowHeight = Console.WindowHeight;
             DisplayMessage("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
             bool loginSuccesfull = false;
@@ -80,9 +80,7 @@ namespace MandalorianBankomaten
                 {
                     ConsoleKey key = ConsoleKey.A;
                     int choiceIndex = 0;
-                    //menyvalen indexas. En for-loop går igenom menyn och skriver ut den rad som indexet står på med en färg,
-                    //och skriver ut resten utan färg.
-
+                    
                     string[] menu = {"Visa konton\n" ,
                         "Lägg till konto\n" ,
                         "Ta bort konto\n" ,
@@ -102,8 +100,9 @@ namespace MandalorianBankomaten
                         // Admin Menu
                         while (programRunning)
                         {
+                            bool menuRunning = true;
                             //(choiceIndex, key) are the values that return from the method having been changed from the input
-                            (choiceIndex, key) = MenuUtility.ShowMenu(adminMenu, choiceIndex, key);
+                            (choiceIndex, key) = MenuUtility.ShowMenu(adminMenu, choiceIndex, key, menuRunning);
 
                             if (key == ConsoleKey.Enter)
                             {
@@ -129,17 +128,22 @@ namespace MandalorianBankomaten
                     }
                     else
                     {
+                        
                         // User Menu
                         while (programRunning)
                         {
-                            (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key);
-
+                            
+                            bool menuRunning = true;
+                            (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning);
+                            
                             if (key == ConsoleKey.Enter)
                             {
                                 Console.Clear();
                                 switch (choiceIndex + 1)
                                 {
                                     case 1:
+                                        menuRunning = false;
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning);
                                         CurrentUser.ShowAccounts();
                                         Return();
                                         break;
@@ -567,7 +571,7 @@ namespace MandalorianBankomaten
         }
         public void Return()
         {
-            
+            Console.SetCursorPosition(49, 28);
             Console.WriteLine("Tryck Enter för att komma tillbaka till menyn.");
             Console.ReadLine();
         }
