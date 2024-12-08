@@ -75,18 +75,28 @@ namespace MandalorianBankomaten.Users
         }
         public void ShowAccounts()
         {
-            Console.WriteLine($"Konton för användare: {Name}");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.SetCursorPosition(49, 4);
+            int yPosition = 4;
+            Console.Write($"Konton för användare: {Name}");
             for (int i = 0; i < Accounts.Count; i++)
             {
-                Console.WriteLine($"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
+                yPosition = yPosition + 1;
+                Console.SetCursorPosition(49, yPosition);
+                Console.Write($"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
             }
             if (Loans.Count > 0)
             {
-                Console.WriteLine("\nLånekonton:");
-
+                yPosition = yPosition + Accounts.Count + 1;
+                Console.SetCursorPosition(49, (yPosition));
+                Console.Write("\nLånekonton:");
+                
                 for (int i = 0; i < Loans.Count; i++)
                 {
-                    Console.WriteLine(Loans[i].ToString());
+                    yPosition = yPosition + 1;
+                    Console.SetCursorPosition(49, yPosition);
+                    Console.Write(Loans[i].ToString());
                 }
             }
         }
