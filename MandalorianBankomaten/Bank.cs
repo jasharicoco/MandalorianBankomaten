@@ -107,10 +107,8 @@ namespace MandalorianBankomaten
                         while (programRunning)
                         {
                             bool menuRunning = true;
-                            int runCount; 
-                            runCount =+ 1;
                             //(choiceIndex, key) are the values that return from the method having been changed from the input
-                            (choiceIndex, key) = MenuUtility.ShowMenu(adminMenu, choiceIndex, key, menuRunning, runCount, x, y, randomStar);
+                            (choiceIndex, key) = MenuUtility.ShowMenu(adminMenu, choiceIndex, key, menuRunning, x, y, randomStar);
 
                             if (key == ConsoleKey.Enter)
                             {
@@ -140,10 +138,8 @@ namespace MandalorianBankomaten
                         // User Menu
                         while (programRunning)
                         {
-                            int runCount;
-                            runCount =+ 1;
                             bool menuRunning = true;
-                            (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, runCount, x, y, randomStar);
+                            (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                             
                             if (key == ConsoleKey.Enter)
                             {
@@ -152,35 +148,49 @@ namespace MandalorianBankomaten
                                 {
                                     case 1:
                                         menuRunning = false;
-                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, runCount, x, y, randomStar);
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         CurrentUser.ShowAccounts();
                                         Return();
                                         break;
                                     case 2:
+                                        menuRunning = false;
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         CurrentUser.CreateAccount();
                                         Return();
                                         break;
                                     case 3:
+                                        menuRunning = false;
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         CurrentUser.RemoveAccount();
                                         Return();
                                         break;
                                     case 4:
+                                        menuRunning = false;
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         TransferBetweenAccounts();
                                         Return();
                                         break;
                                     case 5:
+                                        menuRunning = false;
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         TransferToAnotherUser();
                                         Return();
                                         break;
                                     case 6:
+                                        menuRunning = false;
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         TakeLoan();
                                         Return();
                                         break;
                                     case 7:
+                                        menuRunning = false;
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         AmortizeLoan(CurrentUser);
                                         Return();
                                         break;
                                     case 8:
+                                        menuRunning = false;
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         TransactionLog.ShowTransactionLogs(CurrentUser.UserId, CurrentUser.Name);
                                         Return();
                                         break;
@@ -575,7 +585,7 @@ namespace MandalorianBankomaten
             }
             else
             {
-                Console.WriteLine(message);
+                Console.Write(message);
             }
         }
         public void Return()
