@@ -16,6 +16,7 @@ namespace MandalorianBankomaten.Helpers
                 new User("margarita", "1234"),
                 new User("tim", "1234"),
                 new User("arbunit", "1234"),
+                new User("user1", "password1"),
             };
         }
 
