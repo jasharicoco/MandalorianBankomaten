@@ -418,7 +418,7 @@ namespace MandalorianBankomaten
             CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
 
             // Log the transaction----------
-            string transferInfo = $"Överföring: {amount:C} från konto {fromAccount.AccountID} till konto {toAccount.AccountID}";
+            string transferInfo = $"Överföring: {CurrencyConverter.FormatAmount(amount, fromAccount.CurrencyCode)} från konto {fromAccount.AccountID} till konto {toAccount.AccountID}";
             TransactionLog.LogTransaction(CurrentUser.UserId, CurrentUser.Name, transferInfo);
         }
         public void TakeLoan() // programmed by Alex & Tim
