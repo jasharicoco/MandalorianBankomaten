@@ -196,7 +196,8 @@ namespace MandalorianBankomaten.Users
 
             while (true)
             {
-                if (!int.TryParse(MenuUtility.CustomReadLine("Skriv in kontonummret på kontot du vill ta bort:".Length), out int accountID))
+                string input = MenuUtility.CustomReadLine("Skriv in kontonummret på kontot du vill ta bort:".Length);
+                if (!int.TryParse(input, out int accountID))
                 {
                     MenuUtility.CustomWriteLine(49, "Fel inmatning, försök igen!");
                 }
@@ -232,7 +233,8 @@ namespace MandalorianBankomaten.Users
                             }
 
                             Accounts.Remove(accountToRemove);
-                            MenuUtility.CustomWriteLine(49, "\nKontot har tagits bort!");
+                            Console.WriteLine();
+                            MenuUtility.CustomWriteLine(49, "Kontot har tagits bort!");
                             return;
                         }
                         else
