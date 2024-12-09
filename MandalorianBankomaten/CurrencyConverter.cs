@@ -37,12 +37,7 @@ namespace MandalorianBankomaten
         //calculates the amount and rate
         public static decimal Converter(string fromCurrency, string toCurrency, decimal amount)
         {
-            //string key = $"{fromCurrency} / {toCurrency}";
-
-            //if (!CurrencyData.ContainsKey(key))
-            //{
-            //    Console.WriteLine("Invalid currency code.");
-            //}
+            
             if (!CurrencyData.ContainsKey(fromCurrency) && !CurrencyData.ContainsKey(toCurrency))
             {
                 MenuUtility.CustomWriteLine(49, "Ogiltig valuta kod");

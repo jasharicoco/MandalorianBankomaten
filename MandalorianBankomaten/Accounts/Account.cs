@@ -57,7 +57,7 @@ namespace MandalorianBankomaten.Accounts
         // Constructor
         public Account(string accountName, string currencyCode, decimal initialBalance)
         {
-          
+
             AccountID = _accountCounter; // Generate a unique account ID
             AccountName = accountName;
             CurrencyCode = currencyCode;
@@ -75,7 +75,8 @@ namespace MandalorianBankomaten.Accounts
             }
 
             Balance += amount;
-            MenuUtility.CustomWriteLine(49, $"Insättning av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} till {AccountName}. \nNytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
+            MenuUtility.CustomWriteLine(49, $"Insättning av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} till {AccountName}.");
+            MenuUtility.CustomWriteLine(49, $"Nytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
         }
 
         public void Withdraw(decimal amount)
@@ -90,7 +91,8 @@ namespace MandalorianBankomaten.Accounts
             {
                 Balance -= amount;
 
-                MenuUtility.CustomWriteLine(49, $"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}. \nNytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
+                MenuUtility.CustomWriteLine(49, $"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}.");
+                MenuUtility.CustomWriteLine(49, $"Nytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
             }
             else
             {
