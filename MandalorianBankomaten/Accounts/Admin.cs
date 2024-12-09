@@ -1,4 +1,5 @@
-﻿using MandalorianBankomaten.Users;
+﻿using MandalorianBankomaten.Menu;
+using MandalorianBankomaten.Users;
 
 namespace MandalorianBankomaten.Accounts
 {
@@ -49,63 +50,63 @@ namespace MandalorianBankomaten.Accounts
         // Methods
         public List<User> CreateUser(List<User> users)
         {
-            Console.Write("Vänligen skriv in ett användarnamn: ");
-            string newUsername = Console.ReadLine().ToLower();
+            MenuUtility.CustomWriteLine(49, "Vänligen skriv in ett användarnamn:");
+            string newUsername = MenuUtility.CustomReadLine("Vänligen skriv in ett användarnamn:".Length).ToLower();
 
             bool usernameExists = users.Any(user => user.Name.ToLower() == newUsername);
 
             if (usernameExists)
             {
-                Console.WriteLine("Användarnamnet är redan upptaget. Försök med ett annat.");
+                MenuUtility.CustomWriteLine(49, "Användarnamnet är redan upptaget. Försök med ett annat.");
                 return users;
             }
 
-            Console.Write("Vänligen skriv in ett lösenord: ");
-            string newPassword = Console.ReadLine();
+            MenuUtility.CustomWriteLine(49, "Vänligen skriv in ett lösenord: ");
+            string newPassword = MenuUtility.CustomReadLine("Vänligen skriv in ett lösenord: ".Length);
 
             User newUser = new User(newUsername, newPassword);
             users.Add(newUser);
-            Console.WriteLine("Användaren har skapats!");
+            MenuUtility.CustomWriteLine(49, "Användaren har skapats!");
             return users;
         }
         public List<User> DeleteUser(List<User> users)
         {
             if (users.Count == 0)
             {
-                Console.WriteLine("Det finns inga användare att ta bort.");
+                MenuUtility.CustomWriteLine(49, "Det finns inga användare att ta bort.");
                 return users; // If there are no users, return the list as it is
             }
 
-            Console.WriteLine("Lista över alla användare:");
+            MenuUtility.CustomWriteLine(49, "Lista över alla användare:");
             foreach (var user in users)
             {
-                Console.WriteLine($"👽 {user.Name}");
+                MenuUtility.CustomWriteLine(49, $"👽 {user.Name}");
             }
 
-            Console.Write("Ange namnet på den användare du vill ta bort: ");
-            string usernameToRemove = Console.ReadLine();
+            MenuUtility.CustomWriteLine(49, "Ange namnet på den användare du vill ta bort: ");
+            string usernameToRemove = MenuUtility.CustomReadLine("Ange namnet på den användare du vill ta bort:".Length);
 
             // Use helper function to check if the user exists
             var userToRemove = FindUserByName(users, usernameToRemove);
 
             if (userToRemove != null)
             {
-                Console.WriteLine($"Är du säker på att du vill ta bort användaren '{userToRemove.Name}'? (j/n)");
-                string answer = Console.ReadLine().ToLower();
+                MenuUtility.CustomWriteLine(49, $"Är du säker på att du vill ta bort användaren '{userToRemove.Name}'? (j/n)");
+                string answer = MenuUtility.CustomReadLine("Ange insättningsbelopp:".Length).ToLower();
 
                 if (answer == "j")
                 {
                     users.Remove(userToRemove);
-                    Console.WriteLine($"Användare '{userToRemove.Name}' har tagits bort.");
+                    MenuUtility.CustomWriteLine(49, $"Användare '{userToRemove.Name}' har tagits bort.");
                 }
                 else
                 {
-                    Console.WriteLine("Åtgärden avbröts. Ingen användare har tagits bort.");
+                    MenuUtility.CustomWriteLine(49, "Åtgärden avbröts. Ingen användare har tagits bort.");
                 }
             }
             else
             {
-                Console.WriteLine($"Ingen användare med namnet '{usernameToRemove}' hittades.");
+                MenuUtility.CustomWriteLine(49, $"Ingen användare med namnet '{usernameToRemove}' hittades.");
             }
 
             Console.ReadKey();

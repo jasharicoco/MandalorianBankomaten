@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Collections.Generic;
+using MandalorianBankomaten.Menu;
 
 namespace MandalorianBankomaten
 {
@@ -44,7 +45,7 @@ namespace MandalorianBankomaten
             //}
             if (!CurrencyData.ContainsKey(fromCurrency) && !CurrencyData.ContainsKey(toCurrency))
             {
-                Console.WriteLine("Ogiltig valuta kod");
+                MenuUtility.CustomWriteLine(49, "Ogiltig valuta kod");
             }
             if (fromCurrency == toCurrency)
             {
@@ -75,7 +76,7 @@ namespace MandalorianBankomaten
         {
             if (!CurrencyData.ContainsKey(currencyCode))
             {
-                Console.WriteLine($"Invalid currency code: {currencyCode}");
+                MenuUtility.CustomWriteLine(49, $"Invalid currency code: {currencyCode}");
                 return null;
             }
 

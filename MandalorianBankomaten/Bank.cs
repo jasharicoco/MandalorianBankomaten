@@ -7,6 +7,7 @@ using MandalorianBankomaten.Users;
 using System;
 using System.Globalization;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MandalorianBankomaten
 {
@@ -62,12 +63,13 @@ namespace MandalorianBankomaten
         public void Run()
         {
             TransactionLog = new TransactionLog("TransactionLog.txt");
-
+            Console.ForegroundColor = ConsoleColor.White;
             Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler synliga i programmet
             MenuUtility.ASCIIArt();
             bool programRunning = true;
             string? choice;
-            DisplayMessage("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
+            Console.SetCursorPosition(1, 2);
+            Console.WriteLine("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
             //generating random values here so they don't loop and create a new pattern on every key input
             int[] randomStar = new int[50];
@@ -189,8 +191,6 @@ namespace MandalorianBankomaten
                                         Return();
                                         break;
                                     case 8:
-                                        menuRunning = false;
-                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, x, y, randomStar);
                                         TransactionLog.ShowTransactionLogs(CurrentUser.UserId, CurrentUser.Name);
                                         Return();
                                         break;
@@ -211,7 +211,8 @@ namespace MandalorianBankomaten
         }
         public bool LogIn()
         {
-            DisplayMessage("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
+            Console.SetCursorPosition(2, 4);
+            Console.Write("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
             string username = Console.ReadLine().ToLower();
 
             // First we check if it is an admin logging in
@@ -224,7 +225,8 @@ namespace MandalorianBankomaten
                     do
                     {
                         attempts++;
-                        DisplayMessage("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
+                        Console.SetCursorPosition(2, 6);
+                        Console.Write("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
                         string userpswd = Helper.ReadPassword();
 
                         if (userpswd == admin.Password)
@@ -253,7 +255,8 @@ namespace MandalorianBankomaten
                     do
                     {
                         attempts++;
-                        DisplayMessage("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
+                        Console.SetCursorPosition(2, 6);
+                        Console.Write("Vänligen skriv in ditt \ud83d\udd12 lösenord: ");
                         string userpswd = Helper.ReadPassword();
 
                         if (userpswd == user.Password)
@@ -281,7 +284,8 @@ namespace MandalorianBankomaten
             CurrentUser.ShowAccounts();
 
             DisplayMessage("Ange numret för kontot att överföra från: ");
-            if (!int.TryParse(Console.ReadLine(), out int fromId) || fromId < 4850)
+            string input = MenuUtility.CustomReadLine("Ange numret för kontot att överföra från:".Length);
+            if (!int.TryParse(input, out int fromId) || fromId < 4850)
             {
                 DisplayMessage("Ogiltigt val.", true);
                 return;
@@ -307,7 +311,8 @@ namespace MandalorianBankomaten
 
             // Ange mottagarens kontonummer
             DisplayMessage("Ange numret för mottagarens konto: ");
-            if (!int.TryParse(Console.ReadLine(), out int toId) || toId < 4850)
+            string inputTwo = MenuUtility.CustomReadLine("Ange numret för mottagarens konto:".Length);
+            if (!int.TryParse(inputTwo, out int toId) || toId < 4850)
             {
                 DisplayMessage("Ogiltigt val.", true);
                 return;
@@ -331,9 +336,11 @@ namespace MandalorianBankomaten
 
             // Ange belopp
             DisplayMessage("Ange belopp att överföra: ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0 || amount > fromAccount.Balance)
+            string inputThree = MenuUtility.CustomReadLine("Ange belopp att överföra: ".Length);
+            if (!decimal.TryParse(inputThree, out decimal amount) || amount <= 0 || amount > fromAccount.Balance)
             {
-                DisplayMessage("Ogiltigt belopp. Beloppet måste vara positivt och mindre än eller lika med ditt saldo.", true);
+                DisplayMessage("Ogiltigt belopp. Beloppet måste vara positivt och mindre än", true);
+                DisplayMessage("eller lika med ditt saldo.", true);
                 return;
             }
 
@@ -354,8 +361,9 @@ namespace MandalorianBankomaten
             CurrentUser.ShowAccounts();
 
             // Välj avsändarkonto
-            DisplayMessage("\nAnge numret för kontot att överföra från: ");
-            if (!int.TryParse(Console.ReadLine(), out int fromId) || fromId < 4850)
+            DisplayMessage("Ange numret för kontot att överföra från: ");
+            string input = MenuUtility.CustomReadLine("Ange numret för kontot att överföra från:".Length);
+            if (!int.TryParse(input, out int fromId) || fromId < 4850)
             {
                 DisplayMessage("Ogiltigt val.", true);
                 return;
@@ -378,7 +386,8 @@ namespace MandalorianBankomaten
 
             // Välj mottagarkonto
             DisplayMessage("Ange numret för kontot att överföra till: ");
-            if (!int.TryParse(Console.ReadLine(), out int toId) || toId < 4850 || toId == fromId)
+            string inputTwo = MenuUtility.CustomReadLine("Ange numret för kontot att överföra från:".Length);
+            if (!int.TryParse(inputTwo, out int toId) || toId < 4850 || toId == fromId)
             {
                 DisplayMessage("Ogiltigt val.", true);
                 return;
@@ -397,7 +406,8 @@ namespace MandalorianBankomaten
             }
             // Ange belopp
             DisplayMessage("Ange belopp att överföra: ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal amount) || amount <= 0)
+            string inputThree = MenuUtility.CustomReadLine("Ange numret för kontot att överföra från:".Length);
+            if (!decimal.TryParse(inputThree, out decimal amount) || amount <= 0)
             {
                 DisplayMessage("Beloppet måste vara ett positivt tal.", true);
                 return;
@@ -413,16 +423,18 @@ namespace MandalorianBankomaten
         }
         public void TakeLoan() // programmed by Alex & Tim
         {
+            Console.SetCursorPosition(49, 3);
             if (CurrentUser == null)
             {
                 DisplayMessage("Du måste vara inloggad för att ta ett lån.", true);
                 return;
             }
-            DisplayMessage($"Hej {CurrentUser.Name}! Välkommen till bankens låneavdelning. Du kan låna upp till 5 gånger ditt totala saldo.");
+            DisplayMessage($"Hej {CurrentUser.Name}! Välkommen till bankens låneavdelning.");
+            DisplayMessage("Du kan låna upp till 5 gånger ditt totala saldo.");
             decimal maxLoanAmount = CurrentUser.Accounts.Sum(account => account.Balance) * 5;
             decimal currentLoanAmount = CurrentUser.Loans.Sum(loan => loan.RemainingBalance);
             decimal availableLoanAmount = maxLoanAmount - currentLoanAmount;
-
+            Console.WriteLine();
             DisplayMessage($"Ditt nuvarande låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
 
             decimal amount;
@@ -435,7 +447,8 @@ namespace MandalorianBankomaten
             int choice;
             while (true)
             {
-                if (int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= 3)
+                string input = MenuUtility.CustomReadLine("Ange numret för kontot att överföra från:".Length);
+                if (int.TryParse(input, out choice) && choice >= 1 && choice <= 3)
                 {
                     break;
                 }
@@ -461,7 +474,8 @@ namespace MandalorianBankomaten
             do
             {
                 DisplayMessage("Ange lånebelopp: ");
-                if (!decimal.TryParse(Console.ReadLine(), out amount) || amount <= 0)
+                string input = MenuUtility.CustomReadLine("Ange lånebelopp:".Length);
+                if (!decimal.TryParse(input, out amount) || amount <= 0)
                 {
                     DisplayMessage("Ogiltigt belopp. Försök igen.", true);
                     continue;
@@ -495,7 +509,8 @@ namespace MandalorianBankomaten
 
             DisplayMessage("Ange ID för lånet du vill amortera:");
             int loanId;
-            while (!int.TryParse(Console.ReadLine(), out loanId))
+            string input = MenuUtility.CustomReadLine("Ange ID för lånet du vill amortera:".Length);
+            while (!int.TryParse(input, out loanId))
             {
                 DisplayMessage("Ogiltig inmatning. Ange ett giltigt låne-ID.", true);
             }
@@ -521,7 +536,8 @@ namespace MandalorianBankomaten
                 }
 
                 int accountId;
-                if (int.TryParse(Console.ReadLine(), out accountId))
+                string inputTwo = MenuUtility.CustomReadLine("Ange lånebelopp:".Length);
+                if (int.TryParse(inputTwo, out accountId))
                 {
                     selectedAccount = user.Accounts.FirstOrDefault(a => a.AccountID == accountId); // find the account with the matching accountID
                     if (selectedAccount != null)
@@ -538,6 +554,7 @@ namespace MandalorianBankomaten
             while (true)
             {
                 DisplayMessage("Ange amorteringsbelopp:");
+                string inputThree = MenuUtility.CustomReadLine("Ange amorteringsbelopp:".Length);
                 if (decimal.TryParse(Console.ReadLine(), out amount) && amount > 0)
                 {
                     if (amount > selectedAccount.Balance) // check if the amount is greater than the balance on selected account
@@ -580,13 +597,27 @@ namespace MandalorianBankomaten
             if (isError)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
+                MenuUtility.CustomWriteLine(49, message);
+                Console.ResetColor();
+            }
+            else
+            {
+                MenuUtility.CustomWriteLine(49, message);
+            }
+        }
+        public void DisplayMessageLogIn(string message, bool isError = false)
+        {
+            if (isError)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(message);
                 Console.ResetColor();
             }
             else
             {
-                Console.Write(message);
+                Console.WriteLine(message);
             }
+
         }
         public void Return()
         {

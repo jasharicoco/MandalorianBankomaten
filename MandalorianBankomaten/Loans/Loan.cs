@@ -1,3 +1,5 @@
+using MandalorianBankomaten.Menu;
+
 namespace MandalorianBankomaten.Loans
 {
     internal class Loan
@@ -97,7 +99,7 @@ namespace MandalorianBankomaten.Loans
         {
             if (paymentAmount <= 0)
             {
-                Console.WriteLine("Betalningsbeloppet måste vara större än noll.");
+                MenuUtility.CustomWriteLine(49, "Betalningsbeloppet måste vara större än noll.");
                 return;
             }
             if (paymentAmount > RemainingBalance) // makes sure the payment amount is not greater than the remaining balance

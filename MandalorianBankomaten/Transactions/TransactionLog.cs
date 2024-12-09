@@ -1,4 +1,6 @@
-﻿namespace MandalorianBankomaten.Transactions
+﻿using MandalorianBankomaten.Menu;
+
+namespace MandalorianBankomaten.Transactions
 {
     internal class TransactionLog
     {
@@ -31,7 +33,7 @@
             catch (Exception ex)
             {
                 // error message if try does not work
-                Console.WriteLine($"Loggning misslyckades: {ex.Message}");
+                MenuUtility.CustomWriteLine(49, $"Loggning misslyckades: {ex.Message}");
             }
         }
         public void ShowTransactionLogs(int userId, string name)
@@ -49,7 +51,7 @@
             }
             else
             {
-                Console.WriteLine("Transaktionshistoriken är tom.");
+                MenuUtility.CustomWriteLine(49, "Transaktionshistoriken är tom.");
             }
         }
 
