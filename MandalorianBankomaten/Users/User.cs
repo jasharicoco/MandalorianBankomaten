@@ -146,9 +146,13 @@ namespace MandalorianBankomaten.Users
 
             while (true)
             {
-                Console.WriteLine("Ange konto-valuta (t.ex. SEK, USD, EUR, USD, GBP, DKK, JPY):");
-                currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consi
-
+                string[] validCurrencies = { "SEK", "USD", "EUR", "GBP", "DKK", "JPY" };
+                do
+                {
+                    Console.WriteLine("Ange konto-valuta (SEK, USD, EUR, GBP, DKK, JPY)");
+                    currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consistency
+                }
+                while (!validCurrencies.Contains(currencyCode)); // Check if input is in the list of valid currencies
                 Console.WriteLine("Ange insättningsbelopp:");
                 string input = Console.ReadLine();
 
@@ -297,13 +301,12 @@ namespace MandalorianBankomaten.Users
             }
 
             decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
-            fromAccount.Withdraw(converterAmount - amount);
-            recipientAccount.Deposit(converterAmount + amount);
 
             // Subtrahera beloppet från avsändarkontot
-            fromAccount.Balance -= amount;
+            fromAccount.Withdraw(converterAmount);
             // Lägg till beloppet till mottagarkontot
-            recipientAccount.Balance += amount;
+            recipientAccount.Deposit(converterAmount);
+
         }
 
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
