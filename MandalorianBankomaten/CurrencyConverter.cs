@@ -76,6 +76,7 @@ namespace MandalorianBankomaten
             if (!CurrencyData.ContainsKey(currencyCode))
             {
                 Console.WriteLine($"Invalid currency code: {currencyCode}");
+                return null;
             }
 
             CultureInfo culture = (CurrencyData[currencyCode].Culture);

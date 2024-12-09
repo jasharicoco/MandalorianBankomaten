@@ -89,7 +89,7 @@ namespace MandalorianBankomaten.Users
             }
             if (Loans.Count > 0)
             {
-                yPosition = yPosition + Accounts.Count + 1;
+                yPosition = yPosition + Accounts.Count + 2;
                 Console.SetCursorPosition(49, (yPosition));
                 Console.Write("\nLånekonton:");
                 
@@ -140,19 +140,23 @@ namespace MandalorianBankomaten.Users
                 }
             }
 
-            // Ask for the currency code
             string currencyCode;
             decimal depositAmount;
 
-            while (true)
+            // Valid currency codes in an array for easy checking
+            string[] validCurrencies = { "SEK", "USD", "EUR", "GBP", "DKK", "JPY" };
+
+            do
             {
-                string[] validCurrencies = { "SEK", "USD", "EUR", "GBP", "DKK", "JPY" };
-                do
-                {
                     Console.WriteLine("Ange konto-valuta (SEK, USD, EUR, GBP, DKK, JPY)");
                     currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consistency
-                }
-                while (!validCurrencies.Contains(currencyCode)); // Check if input is in the list of valid currencies
+
+            }
+            while (!validCurrencies.Contains(currencyCode)); // Check if input is in the list of valid currencies
+
+            while (true)
+            {
+
                 Console.WriteLine("Ange insättningsbelopp:");
                 string input = Console.ReadLine();
 
