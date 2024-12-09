@@ -11,6 +11,7 @@ namespace MandalorianBankomaten.Menu
         {
             Console.ForegroundColor = ConsoleColor.DarkRed;
             TextBox("❌ Du har gjort för många misslyckade försök. Kontot är tillfälligt avstängt.");
+            Console.WriteLine();
             Console.ResetColor();
         }
         public static void ShowFailedLoginMessage(int remainingAttempts)
@@ -24,18 +25,21 @@ namespace MandalorianBankomaten.Menu
         {
             Console.ForegroundColor = ConsoleColor.Red;
             TextBox("❌ Användare finns ej i systemet, försök igen!");
+            Console.WriteLine();
             System.Threading.Thread.Sleep(1500); // Pause program for user interaction
         }
         public static void ShowSuccessMessage(string userName)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             TextBox($"✅ Inloggning lyckades! Välkommen {userName}!");
+            Console.WriteLine();
             System.Threading.Thread.Sleep(1500); // Pause program for user interaction
         }
         public static void ShowSuccessMessageAdmin(string userName)
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            TextBox($"✅ Inloggning lyckades! Välkommen admin: {userName}!");
+            TextBox($"✅ Inloggning lyckades! Välkommen admin: {userName}");
+            Console.WriteLine();
             System.Threading.Thread.Sleep(1500); // Pause program for user interaction
         }
         public static void TextBox(string message)

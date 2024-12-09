@@ -14,7 +14,7 @@
 ## How to Use
 1. **Run the Program:** Open the project in your IDE and start the application.  
 2. **Login:** Use the sample credentials below or create new accounts:
-   - Admin: Username: `admin`, Password: `admin123`
+   - Admin: Username: `admin`, Password: `0000`
    - User: Username: `user1`, Password: `password1`
 3. **Navigate the Menu:** Use arrow keys to highlight options and press `Enter` to select.  
 
