@@ -19,7 +19,7 @@ namespace MandalorianBankomaten
 
 
         //validates if the currency code exists 
-        public static bool ValidateCurrencyCode(string fromCurrency, string toCurrency)
+        public static bool ValidateCurrency(string fromCurrency, string toCurrency)
         {
             if (!CurrencyData.ContainsKey(fromCurrency) || !CurrencyData.ContainsKey(toCurrency))
             {
@@ -36,13 +36,16 @@ namespace MandalorianBankomaten
         //calculates the amount and rate
         public static decimal Converter(string fromCurrency, string toCurrency, decimal amount)
         {
-            string key = $"{fromCurrency} / {toCurrency}";
+            //string key = $"{fromCurrency} / {toCurrency}";
 
-            if (!CurrencyData.ContainsKey(key))
+            //if (!CurrencyData.ContainsKey(key))
+            //{
+            //    Console.WriteLine("Invalid currency code.");
+            //}
+            if (!CurrencyData.ContainsKey(fromCurrency) && !CurrencyData.ContainsKey(toCurrency))
             {
-                Console.WriteLine("Invalid currency code.");
+                Console.WriteLine("Ogiltig valuta kod");
             }
-            
             if (fromCurrency == toCurrency)
             {
                 //no conversion needed
@@ -52,18 +55,18 @@ namespace MandalorianBankomaten
             decimal fromRate = CurrencyData[fromCurrency].Rate;
             decimal toRate = CurrencyData[toCurrency].Rate;
 
-            return  amount * (toRate / fromRate);
+            return amount * (toRate / fromRate);
         }
 
         //method for both the converter and valdiation 
         public static decimal? CurrencyConversion(string fromCurrency, string toCurrency, decimal amount)
         {
-            if (!ValidateCurrencyCode(fromCurrency, toCurrency))
+            if (!ValidateCurrency(fromCurrency, toCurrency))
             {
                 return null;
             }
 
-            decimal convertedAmount =  Converter(fromCurrency, toCurrency, amount);
+            decimal convertedAmount = Converter(fromCurrency, toCurrency, amount);
             return convertedAmount;
         }
 
