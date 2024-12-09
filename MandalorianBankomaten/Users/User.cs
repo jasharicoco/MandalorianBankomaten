@@ -1,5 +1,6 @@
 using MandalorianBankomaten.Accounts;
 using MandalorianBankomaten.Loans;
+using MandalorianBankomaten.Menu;
 using System.Globalization;
 using System.Security.Principal;
 
@@ -76,43 +77,37 @@ namespace MandalorianBankomaten.Users
         }
         public void ShowAccounts()
         {
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.SetCursorPosition(49, 4);
             int yPosition = 4;
-            Console.Write($"Konton för användare: {Name}");
+            MenuUtility.CustomWriteLine(49, $"Konton för användare: {Name}");
             for (int i = 0; i < Accounts.Count; i++)
             {
-                yPosition = yPosition + 1;
-                Console.SetCursorPosition(49, yPosition);
-                Console.Write($"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
+                MenuUtility.CustomWriteLine(49, $"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
             }
             if (Loans.Count > 0)
             {
-                yPosition = yPosition + Accounts.Count + 2;
-                Console.SetCursorPosition(49, (yPosition));
-                Console.Write("\nLånekonton:");
+                MenuUtility.CustomWriteLine(49, "\nLånekonton:");
                 
                 for (int i = 0; i < Loans.Count; i++)
                 {
-                    yPosition = yPosition + 1;
-                    Console.SetCursorPosition(49, yPosition);
-                    Console.Write(Loans[i].ToString());
+                    MenuUtility.CustomWriteLine(49, Loans[i].ToString());
                 }
             }
         }
         public void CreateAccount()
         {
+            
             // Menu to choose type of account
-            Console.WriteLine("Välj typ av konto du vill skapa:");
-            Console.WriteLine("[1] Vanligt konto");
-            Console.WriteLine("[2] Sparkonto");
+            Console.SetCursorPosition(49, 4);
+            MenuUtility.CustomWriteLine(49, "Välj typ av konto du vill skapa:");
+            MenuUtility.CustomWriteLine(49, "[1] Vanligt konto");
+            MenuUtility.CustomWriteLine(49, "[2] Sparkonto");
 
             int accountType;
             while (true)
             {
-                Console.Write("Ditt val: ");
-                string userChoice = Console.ReadLine();
+                MenuUtility.CustomWriteLine(49, "Ditt val: ");
+                string userChoice = MenuUtility.CustomReadLine("Ditt val: ".Length);
 
                 if (int.TryParse(userChoice, out accountType) && accountType == 1 || accountType == 2)
                 {
@@ -126,13 +121,13 @@ namespace MandalorianBankomaten.Users
             string accountName;
             while (true)
             {
-                Console.WriteLine("Ange namn på konto:");
-                accountName = Console.ReadLine();
+                MenuUtility.CustomWriteLine(49, "Ange namn på konto:");
+                accountName = MenuUtility.CustomReadLine("Ange namn på konto:".Length);
 
                 // Check for invalid or empty account name
                 if (string.IsNullOrWhiteSpace(accountName))
                 {
-                    Console.WriteLine("Input är ogiltigt. Vänligen ange ett giltigt namn för kontot.");
+                    MenuUtility.CustomWriteLine(49, "Input är ogiltigt. Vänligen ange ett giltigt namn för kontot.");
                 }
                 else
                 {
@@ -148,17 +143,16 @@ namespace MandalorianBankomaten.Users
 
             do
             {
-                    Console.WriteLine("Ange konto-valuta (SEK, USD, EUR, GBP, DKK, JPY)");
-                    currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consistency
-
+                MenuUtility.CustomWriteLine(49, "Ange konto-valuta (SEK, USD, EUR, GBP, DKK, JPY):");
+                currencyCode = MenuUtility.CustomReadLine("Ange konto-valuta (SEK, USD, EUR, GBP, DKK, JPY):".Length).ToUpper(); // Convert to upper case to ensure consistency
             }
             while (!validCurrencies.Contains(currencyCode)); // Check if input is in the list of valid currencies
 
             while (true)
             {
 
-                Console.WriteLine("Ange insättningsbelopp:");
-                string input = Console.ReadLine();
+                MenuUtility.CustomWriteLine(49, "Ange insättningsbelopp:");
+                string input = MenuUtility.CustomReadLine("Ange insättningsbelopp:".Length);
 
                 // Try to convert the input to a decimal, and handle invalid inputs.
                 if (decimal.TryParse(input, out depositAmount) && depositAmount > 0)
@@ -168,7 +162,7 @@ namespace MandalorianBankomaten.Users
                 }
                 else
                 {
-                    Console.WriteLine("Ogiltigt belopp. Vänligen ange ett positivt belopp för insättning.");
+                    MenuUtility.CustomWriteLine(49, "Ogiltigt belopp. Vänligen ange ett positivt belopp för insättning.");
                 }
             }
 
@@ -179,7 +173,7 @@ namespace MandalorianBankomaten.Users
                 Accounts.Add(newAccount);
 
                 // Inform the user that the account was created successfully
-                Console.WriteLine($"Konto '{accountName}' har skapats med {CurrencyConverter.FormatAmount(depositAmount, currencyCode)}!");
+                MenuUtility.CustomWriteLine(49, $"Konto '{accountName}' har skapats med {CurrencyConverter.FormatAmount(depositAmount, currencyCode)}!");
             }
             else if (accountType == 2)
             {
@@ -189,22 +183,23 @@ namespace MandalorianBankomaten.Users
                 Accounts.Add(newSavingAccount);
 
                 // Inform the user that saving account was created successfully
-                Console.WriteLine($"Sparkonto '{accountName}' har skapats.");
+                MenuUtility.CustomWriteLine(49, $"Sparkonto '{accountName}' har skapats.");
                 newSavingAccount.ApplyInterest();
             }
 
         }
         public void RemoveAccount()
         {
+            Console.SetCursorPosition(49, 4);
             ShowAccounts();
-            Console.WriteLine();
-            Console.WriteLine("Skriv in kontonummret på kontot du vill ta bort:");
+            MenuUtility.CustomWriteLine(49, "");
+            MenuUtility.CustomWriteLine(49, "Skriv in kontonummret på kontot du vill ta bort:");
 
             while (true)
             {
-                if (!int.TryParse(Console.ReadLine(), out int accountID))
+                if (!int.TryParse(MenuUtility.CustomReadLine("Skriv in kontonummret på kontot du vill ta bort:".Length), out int accountID))
                 {
-                    Console.WriteLine("Fel inmatning, försök igen!");
+                    MenuUtility.CustomWriteLine(49, "Fel inmatning, försök igen!");
                 }
                 else
                 {
@@ -217,33 +212,33 @@ namespace MandalorianBankomaten.Users
 
 
                             Console.WriteLine();
-                            Console.WriteLine("Är du säker på att du vill ta bort följande konto (j/n):");
-                            Console.WriteLine($"{accountToRemove.AccountName} - {accountToRemove.Balance:C}");
+                            MenuUtility.CustomWriteLine(49, $"{accountToRemove.AccountName} - {accountToRemove.Balance:C}");
+                            MenuUtility.CustomWriteLine(49, "Är du säker på att du vill ta bort följande konto (j/n):");
                             while (true)
                             {
-                                string choiceConfirm = Console.ReadLine().ToLower();
+                                string choiceConfirm = MenuUtility.CustomReadLine("Är du säker på att du vill ta bort följande konto (j/n):".Length).ToLower();
                                 if (choiceConfirm == "j")
                                 {
                                     break;
                                 }
                                 else if (choiceConfirm == "n")
                                 {
-                                    Console.WriteLine("Borttagandet av kontot avbröts.");
+                                    MenuUtility.CustomWriteLine(49, "Borttagandet av kontot avbröts.");
                                     return;
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Fel inmatning, försök igen!");
+                                    MenuUtility.CustomWriteLine(49, "Fel inmatning, försök igen!");
                                 }
                             }
 
                             Accounts.Remove(accountToRemove);
-                            Console.WriteLine("Kontot har tagits bort!");
+                            MenuUtility.CustomWriteLine(49, "\nKontot har tagits bort!");
                             return;
                         }
                         else
                         {
-                            Console.WriteLine("Fel kontonummer, försök igen!");
+                            MenuUtility.CustomWriteLine(49, "Fel kontonummer, försök igen!");
                         }
                     }
                 }
@@ -262,7 +257,7 @@ namespace MandalorianBankomaten.Users
             if (fromAccount.Balance >= amount)
             {
                 //Execute transfer
-                Console.WriteLine($"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
+                MenuUtility.CustomWriteLine(49, $"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
 
                 CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
                 fromAccount.Withdraw(amount);
@@ -270,7 +265,7 @@ namespace MandalorianBankomaten.Users
             }
             else
             {
-                Console.WriteLine("Otillräckligt saldo för överföring.");
+                MenuUtility.CustomWriteLine(49, "Otillräckligt saldo för överföring.");
             }
 
             decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
@@ -288,14 +283,14 @@ namespace MandalorianBankomaten.Users
             // Kontrollera om beloppet är positivt
             if (amount <= 0)
             {
-                Console.WriteLine("Beloppet måste vara ett positivt tal.");
+                MenuUtility.CustomWriteLine(49, "Beloppet måste vara ett positivt tal.");
                 return;
             }
 
             // Kontrollera om avsändarkontot har tillräckligt med saldo
             if (fromAccount.Balance < amount)
             {
-                Console.WriteLine("Det finns inte tillräckligt med pengar på ditt konto för denna överföring.");
+                MenuUtility.CustomWriteLine(49, "Det finns inte tillräckligt med pengar på ditt konto för denna överföring.");
                 return;
             }
 
@@ -315,27 +310,27 @@ namespace MandalorianBankomaten.Users
 
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
         {
-            Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
+            MenuUtility.CustomWriteLine(49, "Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
 
             Loan newLoan = new Loan(amount, loanCategory);
             Loans.Add(newLoan);
 
-            Console.WriteLine($"Ett nytt {loanCategory} har skapats. Låne-ID: {newLoan.LoanId}");
-            Console.WriteLine($"Lånebelopp: {newLoan.Amount.ToString("C", CultureInfo.CurrentCulture)}");
-            Console.WriteLine($"Ränta: {newLoan.InterestRate}%");
-            Console.WriteLine($"Månatlig ränta: {newLoan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)}");
+            MenuUtility.CustomWriteLine(49, $"Ett nytt {loanCategory} har skapats. Låne-ID: {newLoan.LoanId}");
+            MenuUtility.CustomWriteLine(49, $"Lånebelopp: {newLoan.Amount.ToString("C", CultureInfo.CurrentCulture)}");
+            MenuUtility.CustomWriteLine(49, $"Ränta: {newLoan.InterestRate}%");
+            MenuUtility.CustomWriteLine(49, $"Månatlig ränta: {newLoan.MonthlyInterest().ToString("C", CultureInfo.CurrentCulture)}");
         }
         public void ShowLoans()
         {
             if (Loans.Count == 0)
             {
-                Console.WriteLine("Inga lån registrerade.");
+                MenuUtility.CustomWriteLine(49, "Inga lån registrerade.");
                 return;
             }
 
             foreach (var loan in Loans)
             {
-                Console.WriteLine(loan.ToString());
+                MenuUtility.CustomWriteLine(49, loan.ToString());
             }
         }
 

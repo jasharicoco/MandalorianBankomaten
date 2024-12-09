@@ -56,10 +56,11 @@ namespace MandalorianBankomaten.Menu
                     i = -1;
                 }
             }
+            Console.WriteLine();
             Console.ResetColor();
         }
         // (int, ConsoleKey) means the method can return both of those types. 
-        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key, bool menuRunning, int runCount, int[] x, int[] y, int[] randomStar)
+        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key, bool menuRunning, int[] x, int[] y, int[] randomStar)
         {
             Console.Clear();
             Console.ResetColor();
@@ -124,21 +125,6 @@ namespace MandalorianBankomaten.Menu
             return (index, key);
         }
 
-        public static void SplitBackground(int height, int splitWidth, ConsoleColor leftColor, ConsoleColor rightColor)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                Console.SetCursorPosition(0, y);
-
-                Console.BackgroundColor = leftColor;
-                Console.Write(new string(' ', splitWidth));
-
-                Console.BackgroundColor = rightColor;
-                Console.Write(new string(' ', Console.WindowWidth - splitWidth));
-            }
-
-            Console.ResetColor();
-        }
         public static (int[], int[], int[]) SpaceBackgroundPrep(int[] x, int[] y, int[] randomStar)
         {
             int width = Console.WindowWidth - 45;
@@ -157,7 +143,37 @@ namespace MandalorianBankomaten.Menu
 
             return (x, y, randomStar);
         }
+        public static void SplitBackground(int height, int splitWidth, ConsoleColor leftColor, ConsoleColor rightColor)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Console.SetCursorPosition(0, y);
 
+                Console.BackgroundColor = leftColor;
+                Console.Write(new string(' ', splitWidth));
+
+                Console.BackgroundColor = rightColor;
+                Console.Write(new string(' ', Console.WindowWidth - splitWidth));
+            }
+
+            Console.ResetColor();
+        }
+
+        public static void CustomWriteLine(int fixedX, string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            int currentY = Console.CursorTop;
+            Console.SetCursorPosition(fixedX, currentY);
+            Console.WriteLine(text);
+        }
+        public static string CustomReadLine(int prompt)
+        {
+            int currentY = Console.CursorTop;
+            Console.SetCursorPosition(49 + prompt + 1, currentY - 1);
+            string input = Console.ReadLine();
+            Console.SetCursorPosition(49, currentY);
+            return input;
+        }
         public static void ASCIIArt()
         {
             Console.WriteLine(
