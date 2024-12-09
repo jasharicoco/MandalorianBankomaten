@@ -29,11 +29,11 @@
         {
             decimal totalInterest = Balance * _interestRate;
             Balance += totalInterest;
-            Console.WriteLine($"Räntesats: {_interestRate:P}\nÅrlig ränta: {totalInterest:C}\nSaldo inklusive ränta: {Balance:C}");
+            Console.WriteLine($"Räntesats: {_interestRate:P}\nÅrlig ränta: {CurrencyConverter.FormatAmount(totalInterest, CurrencyCode)}\nSaldo inklusive ränta: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}");
         }
         public override string ToString()
         {
-            return $"Account Name: {AccountName}, Balance: {Balance.ToString("C")}, Currency: {CurrencyCode}, Account ID: {AccountID}, Interest Rate: {InterestRate}";
+            return $"Account Name: {AccountName} \nBalance: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)} \nAccount ID: {AccountID} \nInterest Rate: {InterestRate}";
         }
 
     }
