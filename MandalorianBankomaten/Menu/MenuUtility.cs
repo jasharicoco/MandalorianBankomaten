@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Security.Cryptography.X509Certificates;
 
 namespace MandalorianBankomaten.Menu
@@ -54,10 +55,11 @@ namespace MandalorianBankomaten.Menu
             Console.ResetColor();
         }
         // (int, ConsoleKey) means the method can return both of those types. 
-        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key, bool menuRunning)
+        public static (int, ConsoleKey) ShowMenu(string[] menu, int index, ConsoleKey key, bool menuRunning, int runCount, int[] x, int[] y, int[] randomStar)
         {
             Console.Clear();
             Console.ResetColor();
+            bool hasRun = false;
             SplitBackground(Console.WindowHeight, 45, ConsoleColor.Gray, ConsoleColor.Black);
 
             string title = "M A N D A L O R I A N\n";
@@ -86,7 +88,20 @@ namespace MandalorianBankomaten.Menu
                     Console.Write($"  {menu[i]}");
                 }
             }
-            MenuUtility.SpaceBackground();
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            Random random = new Random();
+            
+            string[] stars = { ".", "·", "•" };
+            for (int i = 0; i < 50; i++)
+            {
+                Console.SetCursorPosition(x[i], y[i]);
+                Console.Write($"{stars[randomStar[i]]}");
+            }
+            Console.ResetColor();
+            Console.SetCursorPosition(0, 0);
+
             //so there's no pause for a keypress when this method is used inside the menu options
             if (menuRunning == true)
             {
@@ -120,28 +135,25 @@ namespace MandalorianBankomaten.Menu
 
             Console.ResetColor();
         }
-        public static void SpaceBackground()
+        public static (int[], int[], int[]) SpaceBackgroundPrep(int[] x, int[] y, int[] randomStar)
         {
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
             int width = Console.WindowWidth - 45;
             int height = Console.WindowHeight;
             Random random = new Random();
-            int randomX;
-            int randomY;
-            int randomStar;
-            string[] stars = { ".", "·", "•" };
-
-            for (int i = 0; i < 30; i++)
+            
+            for (int i = 0; i < 50; i++)
             {
-                randomStar = random.Next(0,3);
-                randomX = random.Next(45, width + 45);
-                randomY = random.Next(0, height);
-                Console.SetCursorPosition(randomX, randomY);
-                Console.Write($"{stars[randomStar]}");
+                int star = random.Next(0, 3);
+                int randomX = random.Next(45, width + 45);
+                int randomY = random.Next(0, height);
+                x[i] = randomX;
+                y[i] = randomY;
+                randomStar[i] = star;
             }
-            Console.ResetColor();
+
+            return (x, y, randomStar);
         }
+
         public static void ASCIIArt()
         {
             Console.WriteLine(

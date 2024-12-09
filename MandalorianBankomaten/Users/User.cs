@@ -89,7 +89,7 @@ namespace MandalorianBankomaten.Users
             }
             if (Loans.Count > 0)
             {
-                yPosition = yPosition + Accounts.Count + 1;
+                yPosition = yPosition + Accounts.Count + 2;
                 Console.SetCursorPosition(49, (yPosition));
                 Console.Write("\nLånekonton:");
                 

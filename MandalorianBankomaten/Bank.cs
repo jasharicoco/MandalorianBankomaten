@@ -69,6 +69,12 @@ namespace MandalorianBankomaten
             string? choice;
             DisplayMessage("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
+            //generating random values here so they don't loop and create a new pattern on every key input
+            int[] randomStar = new int[50];
+            int[] x = new int[50];
+            int[] y = new int[50];
+            (x, y, randomStar) = MenuUtility.SpaceBackgroundPrep(x, y, randomStar);
+
             bool loginSuccesfull = false;
             while (!loginSuccesfull)
             {
@@ -101,8 +107,10 @@ namespace MandalorianBankomaten
                         while (programRunning)
                         {
                             bool menuRunning = true;
+                            int runCount; 
+                            runCount =+ 1;
                             //(choiceIndex, key) are the values that return from the method having been changed from the input
-                            (choiceIndex, key) = MenuUtility.ShowMenu(adminMenu, choiceIndex, key, menuRunning);
+                            (choiceIndex, key) = MenuUtility.ShowMenu(adminMenu, choiceIndex, key, menuRunning, runCount, x, y, randomStar);
 
                             if (key == ConsoleKey.Enter)
                             {
@@ -132,9 +140,10 @@ namespace MandalorianBankomaten
                         // User Menu
                         while (programRunning)
                         {
-                            
+                            int runCount;
+                            runCount =+ 1;
                             bool menuRunning = true;
-                            (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning);
+                            (choiceIndex, key) = MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, runCount, x, y, randomStar);
                             
                             if (key == ConsoleKey.Enter)
                             {
@@ -143,7 +152,7 @@ namespace MandalorianBankomaten
                                 {
                                     case 1:
                                         menuRunning = false;
-                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning);
+                                        MenuUtility.ShowMenu(menu, choiceIndex, key, menuRunning, runCount, x, y, randomStar);
                                         CurrentUser.ShowAccounts();
                                         Return();
                                         break;
