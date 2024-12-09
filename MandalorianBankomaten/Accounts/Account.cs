@@ -1,3 +1,4 @@
+using MandalorianBankomaten.Menu;
 using System.Globalization;
 
 namespace MandalorianBankomaten.Accounts
@@ -69,12 +70,12 @@ namespace MandalorianBankomaten.Accounts
         {
             if (amount <= 0)
             {
-                Console.WriteLine("Insättningsbeloppet måste vara större än noll.");
+                MenuUtility.CustomWriteLine(49, "Insättningsbeloppet måste vara större än noll.");
                 return;
             }
 
             Balance += amount;
-            Console.WriteLine($"Insättning av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} till {AccountName}. \nNytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
+            MenuUtility.CustomWriteLine(49, $"Insättning av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} till {AccountName}. \nNytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
         }
 
         public void Withdraw(decimal amount)
@@ -89,7 +90,7 @@ namespace MandalorianBankomaten.Accounts
             {
                 Balance -= amount;
 
-                Console.WriteLine($"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}. \nNytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
+                MenuUtility.CustomWriteLine(49, $"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}. \nNytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
             }
             else
             {

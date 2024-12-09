@@ -66,7 +66,7 @@ namespace MandalorianBankomaten.Users
         {
             if (Accounts.Count == 0)
             {
-                Console.WriteLine($"{Name} har inga konton på den här banken.");
+                MenuUtility.CustomWriteLine(49, $"{Name} har inga konton på den här banken.");
                 return false;
             }
             return true;
@@ -115,7 +115,7 @@ namespace MandalorianBankomaten.Users
                 }
                 else
                 {
-                    Console.WriteLine("Ogiltigt val. Välj [1] eller [2]"); // Invalid choice
+                    MenuUtility.CustomWriteLine(49, "Ogiltigt val. Välj [1] eller [2]"); // Invalid choice
                 }
             }
             string accountName;

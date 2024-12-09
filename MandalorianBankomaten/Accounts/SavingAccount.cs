@@ -1,4 +1,6 @@
-﻿namespace MandalorianBankomaten.Accounts
+﻿using MandalorianBankomaten.Menu;
+
+namespace MandalorianBankomaten.Accounts
 {
     internal class SavingAccount : Account
     {
@@ -29,7 +31,9 @@
         {
             decimal totalInterest = Balance * _interestRate;
             Balance += totalInterest;
-            Console.WriteLine($"Räntesats: {_interestRate:P}\nÅrlig ränta: {CurrencyConverter.FormatAmount(totalInterest, CurrencyCode)}\nSaldo inklusive ränta: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}");
+            MenuUtility.CustomWriteLine(49, $"Räntesats: {_interestRate:P} , {CurrencyCode}");
+            MenuUtility.CustomWriteLine(49, $"Årlig ränta: { CurrencyConverter.FormatAmount(totalInterest, CurrencyCode)}");
+            MenuUtility.CustomWriteLine(49, $"Saldo inklusive ränta: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}");
         }
         public override string ToString()
         {
