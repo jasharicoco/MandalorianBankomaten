@@ -150,6 +150,7 @@ namespace MandalorianBankomaten.Users
 
             while (true)
             {
+
                 MenuUtility.CustomWriteLine(49, "Ange insättningsbelopp:");
                 string input = MenuUtility.CustomReadLine("Ange insättningsbelopp:".Length);
 
@@ -301,13 +302,12 @@ namespace MandalorianBankomaten.Users
             }
 
             decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
-            fromAccount.Withdraw(converterAmount - amount);
-            recipientAccount.Deposit(converterAmount + amount);
 
             // Subtrahera beloppet från avsändarkontot
-            fromAccount.Balance -= amount;
+            fromAccount.Withdraw(converterAmount);
             // Lägg till beloppet till mottagarkontot
-            recipientAccount.Balance += amount;
+            recipientAccount.Deposit(converterAmount);
+
         }
 
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)

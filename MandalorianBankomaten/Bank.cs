@@ -123,7 +123,7 @@ namespace MandalorianBankomaten
                                         break;
                                     case 3:
                                         CurrentAdmin = null;
-                                        loginSuccesfull = LogIn();
+                                        Run();
                                         break;
                                     default:
                                         DisplayMessage("Ogiltligt menyval. Försök igen!", true);
@@ -196,7 +196,7 @@ namespace MandalorianBankomaten
                                         break;
                                     case 9:
                                         CurrentUser = null;
-                                        loginSuccesfull = LogIn();
+                                        Run();
                                         break;
                                     default:
                                         DisplayMessage("Ogiltligt menyval. Försök igen!", true);
