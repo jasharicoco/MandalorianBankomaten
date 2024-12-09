@@ -1,6 +1,7 @@
 using MandalorianBankomaten.Accounts;
 using MandalorianBankomaten.Loans;
 using System.Globalization;
+using System.Security.Principal;
 
 namespace MandalorianBankomaten.Users
 {
@@ -145,7 +146,7 @@ namespace MandalorianBankomaten.Users
 
             while (true)
             {
-                Console.WriteLine("Ange konto-valuta (t.ex. SEK, USD, EUR, USD, GPB, DKK, JPY):");
+                Console.WriteLine("Ange konto-valuta (t.ex. SEK, USD, EUR, USD, GBP, DKK, JPY):");
                 currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consi
 
                 Console.WriteLine("Ange insättningsbelopp:");
@@ -249,29 +250,28 @@ namespace MandalorianBankomaten.Users
         //this
         public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
-            if (fromAccount.CurrencyCode != toAccount.CurrencyCode == true)
+
+            if (fromAccount.Balance >= amount)
             {
-                Console.WriteLine("\nDid it work");
+                //Execute transfer
+                Console.WriteLine($"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
 
-                if (fromAccount.Balance >= amount)
-                {
-                    //Execute transfer
-                    Console.WriteLine($"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
-                    fromAccount.Withdraw(amount);
-                    toAccount.Deposit(amount);
-
-                    CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
-                }
-                else
-                {
-                    Console.WriteLine("Otillräckligt saldo för överföring.");
-                }
+                CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
+                fromAccount.Withdraw(amount);
+                toAccount.Deposit(amount);
             }
+            else
+            {
+                Console.WriteLine("Otillräckligt saldo för överföring.");
+            }
+
         }
+
         //this
         //between own accounts 
         public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount)
         {
+
             // Kontrollera om beloppet är positivt
             if (amount <= 0)
             {
@@ -286,14 +286,14 @@ namespace MandalorianBankomaten.Users
                 return;
             }
 
+            CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
+
             // Subtrahera beloppet från avsändarkontot
             fromAccount.Balance -= amount;
-
             // Lägg till beloppet till mottagarkontot
             recipientAccount.Balance += amount;
         }
 
-        //this
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
         {
             Console.WriteLine("Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");

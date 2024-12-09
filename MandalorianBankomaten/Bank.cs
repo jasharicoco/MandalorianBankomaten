@@ -326,8 +326,8 @@ namespace MandalorianBankomaten
             TransactionLog.LogTransaction(CurrentUser.UserId, CurrentUser.Name, transactionInfo);
 
             // Bekräftelse av överföringen
-            DisplayMessage($"Du har skickat {amount:C} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
-            DisplayMessage($"Ditt nya saldo är för konto {fromAccount.AccountID}: {fromAccount.AccountName} är: {fromAccount.Balance:C}");
+            DisplayMessage($"Du har skickat {CurrencyConverter.FormatAmount(amount, fromAccount.CurrencyCode)} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
+            DisplayMessage($"Ditt nya saldo är för konto {fromAccount.AccountID}: {fromAccount.AccountName} är: {CurrencyConverter.FormatAmount(fromAccount.Balance, fromAccount.CurrencyCode)}");
         }
         public void TransferBetweenAccounts()
         {
@@ -386,7 +386,7 @@ namespace MandalorianBankomaten
 
             // Utför överföringen
             CurrentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount);
-            CurrencyConverter.CurrencyConversion(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
+            CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
 
             // Log the transaction----------
             string transferInfo = $"Överföring: {amount:C} från konto {fromAccount.AccountID} till konto {toAccount.AccountID}";

@@ -56,6 +56,7 @@ namespace MandalorianBankomaten.Accounts
         // Constructor
         public Account(string accountName, string currencyCode, decimal initialBalance)
         {
+          
             AccountID = _accountCounter; // Generate a unique account ID
             AccountName = accountName;
             CurrencyCode = currencyCode;
@@ -73,8 +74,9 @@ namespace MandalorianBankomaten.Accounts
             }
 
             Balance += amount;
-            Console.WriteLine($"Insättning av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} till {AccountName}. Nytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
+            Console.WriteLine($"Insättning av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} till {AccountName}. \nNytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
         }
+
         public void Withdraw(decimal amount)
         {
             if (amount <= 0)
@@ -86,14 +88,15 @@ namespace MandalorianBankomaten.Accounts
             if (Balance >= amount)
             {
                 Balance -= amount;
-                Console.WriteLine($"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}. Nytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
+
+                Console.WriteLine($"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}. \nNytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
             }
             else
             {
                 Console.WriteLine("Otillräckligt saldo för uttag.");
             }
         }
-       
+
         public override string ToString()
         {
             return $"Account Name: {AccountName}, Balance: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}, Account ID: {AccountID}";
