@@ -265,6 +265,11 @@ namespace MandalorianBankomaten.Users
                 Console.WriteLine("Otillräckligt saldo för överföring.");
             }
 
+            decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
+
+            fromAccount.Withdraw(converterAmount);
+            toAccount.Deposit(converterAmount);
+
         }
 
         //this
@@ -286,7 +291,14 @@ namespace MandalorianBankomaten.Users
                 return;
             }
 
-            CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
+            if (!CurrencyConverter.ValidateCurrency(fromAccount.CurrencyCode, recipientAccount.CurrencyCode))
+            {
+                return;
+            }
+
+            decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
+            fromAccount.Withdraw(converterAmount - amount);
+            recipientAccount.Deposit(converterAmount + amount);
 
             // Subtrahera beloppet från avsändarkontot
             fromAccount.Balance -= amount;
