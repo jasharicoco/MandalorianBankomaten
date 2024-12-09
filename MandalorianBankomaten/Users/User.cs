@@ -140,15 +140,21 @@ namespace MandalorianBankomaten.Users
                 }
             }
 
-            // Ask for the currency code
             string currencyCode;
             decimal depositAmount;
 
+            // Valid currency codes in an array for easy checking
+            string[] validCurrencies = { "SEK", "USD", "EUR", "GBP", "DKK", "JPY" };
+
+            do
+            {
+                Console.WriteLine("Ange konto-valuta (SEK, USD, EUR, GBP, DKK, JPY)");
+                currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consistency
+            }
+            while (!validCurrencies.Contains(currencyCode)); // Check if input is in the list of valid currencies
+
             while (true)
             {
-                Console.WriteLine("Ange konto-valuta (t.ex. SEK, USD, EUR, USD, GBP, DKK, JPY):");
-                currencyCode = Console.ReadLine().ToUpper(); // Convert to upper case to ensure consi
-
                 Console.WriteLine("Ange insättningsbelopp:");
                 string input = Console.ReadLine();
 
