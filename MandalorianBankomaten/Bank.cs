@@ -6,6 +6,7 @@ using MandalorianBankomaten.Transactions;
 using MandalorianBankomaten.Users;
 using System;
 using System.Globalization;
+using System.Security.Principal;
 using System.Text;
 
 namespace MandalorianBankomaten
@@ -333,6 +334,13 @@ namespace MandalorianBankomaten
                 return;
             }
 
+            // Kontrollera om kontot tillhör den aktuella användaren
+            if (CurrentUser.Accounts.Any(account => account.AccountID == toId))
+            {
+                DisplayMessage("Du kan inte överföra pengar till dina egna konton.", true);
+                return;
+            }
+
             // Hitta mottagarens användare genom att kolla vilket konto som tillhör vilken användare
             var recipient = Users.FirstOrDefault(user => user.Accounts.Contains(recipientAccount));
             if (recipient == null)
@@ -352,15 +360,12 @@ namespace MandalorianBankomaten
             }
 
             // Utför överföringen
-            CurrentUser.TransferMoneyToAccount(fromAccount, recipientAccount, amount);
+            decimal amountConverted = CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
+            CurrentUser.TransferMoneyToAccount(fromAccount, recipientAccount, amount, amountConverted);
 
             // Log the transaction----------
             string transactionInfo = $"Överföring: {amount:C} från konto {fromAccount.AccountID} till konto {recipientAccount.AccountID}";
             TransactionLog.LogTransaction(CurrentUser.UserId, CurrentUser.Name, transactionInfo);
-
-            // Bekräftelse av överföringen
-            DisplayMessage($"Du har skickat {CurrencyConverter.FormatAmount(amount, fromAccount.CurrencyCode)} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
-            DisplayMessage($"Ditt nya saldo är för konto {fromAccount.AccountID}: {fromAccount.AccountName} är: {CurrencyConverter.FormatAmount(fromAccount.Balance, fromAccount.CurrencyCode)}");
         }
         public void TransferBetweenAccounts()
         {
@@ -502,7 +507,6 @@ namespace MandalorianBankomaten
             availableLoanAmount -= amount;
             DisplayMessage($"Ditt uppdaterade låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
         }
-
         public void AmortizeLoan(User user)
         {
             Console.SetCursorPosition(49, 2);
@@ -598,7 +602,6 @@ namespace MandalorianBankomaten
                 user.Loans.Remove(loan); // Removes the loan from the user's list of loans
             }
         }
-
         private void DisplayAmortizationDetails(decimal amount, Account account, Loan loan)
         {
             MenuUtility.CustomWriteLine(49, $"Amortering på {amount:C} har genomförts från kontot {account.AccountName}.");

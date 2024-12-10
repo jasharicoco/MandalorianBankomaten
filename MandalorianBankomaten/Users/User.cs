@@ -273,7 +273,6 @@ namespace MandalorianBankomaten.Users
                 //Execute transfer
                 MenuUtility.CustomWriteLine(49, $"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
 
-                //CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
                 fromAccount.Withdraw(amount);
                 toAccount.Deposit(amountConverted);
             }
@@ -285,35 +284,17 @@ namespace MandalorianBankomaten.Users
 
         //this
         //between own accounts 
-        public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount)
+        public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount, decimal amountConverted)
         {
-
-            // Kontrollera om beloppet är positivt
-            if (amount <= 0)
-            {
-                MenuUtility.CustomWriteLine(49, "Beloppet måste vara ett positivt tal.");
-                return;
-            }
-
-            // Kontrollera om avsändarkontot har tillräckligt med saldo
-            if (fromAccount.Balance < amount)
-            {
-                MenuUtility.CustomWriteLine(49, "Kontosaldo otillräckligt för överföring.");
-                return;
-            }
-
-            if (!CurrencyConverter.ValidateCurrency(fromAccount.CurrencyCode, recipientAccount.CurrencyCode))
-            {
-                return;
-            }
-
-            decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
-
             // Subtrahera beloppet från avsändarkontot
-            fromAccount.Withdraw(converterAmount);
-            // Lägg till beloppet till mottagarkontot
-            recipientAccount.Deposit(converterAmount);
+            if(!CurrencyConverter.ValidateCurrency(fromAccount.CurrencyCode, recipientAccount.CurrencyCode))
+            {
+                return;
+            }
 
+            fromAccount.Withdraw(amount);
+            // Lägg till beloppet till mottagarkontot
+            recipientAccount.DepositSecret(amountConverted);
         }
 
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
