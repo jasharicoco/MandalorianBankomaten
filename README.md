@@ -6,7 +6,7 @@
 ### Classes:
 ### Bank
 - Displays menu
-- User interactions such as login, money transfers, loans and etc.
+- User interactions such as login, money transfers, loans and more.
 ### User
 - View, create, or delete accounts.
 - Transfer money between accounts or to other users.
@@ -16,9 +16,9 @@
 - Create and delete user accounts.
 
 ### SavingAccount
-- Specialized type of account, savnings account
+- Specialized type of account, savings account
 - It inherits from Account base class
-- Users earn insterest on their balance
+- Users earn interest on their balance
 
 ## How to Use
 1. **Run the Program:** Open the project in your IDE and start the application.  
