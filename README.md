@@ -3,7 +3,11 @@
 **Mandalorian Bankomaten** is a simple console-based banking system where users can manage their accounts, perform transactions, and handle loans. Admins can manage users and oversee the system.
 
 ## Features
-### Users
+### Classes:
+### Bank
+- Displays menu
+- User interactions such as login, money transfers, loans and etc.
+### User
 - View, create, or delete accounts.
 - Transfer money between accounts or to other users.
 - Apply for loans and make repayments.
