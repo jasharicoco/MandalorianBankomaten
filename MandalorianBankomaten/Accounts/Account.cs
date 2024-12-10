@@ -94,10 +94,10 @@ namespace MandalorianBankomaten.Accounts
                 MenuUtility.CustomWriteLine(49, $"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}.");
                 MenuUtility.CustomWriteLine(49, $"Nytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
             }
-            else
-            {
-                Console.WriteLine("Otillräckligt saldo för uttag.");
-            }
+            //else
+            //{
+            //    Console.WriteLine("Otillräckligt saldo för uttag.");
+            //}
         }
 
         public override string ToString()
