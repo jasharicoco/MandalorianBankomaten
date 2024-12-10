@@ -23,4 +23,10 @@
 - Each user has their own accounts and loans.  
 - Admins have full control over user management.  
 
+## Link to our kanban-board
+https://trello.com/b/IPnrlnPr/the-mandolorians
+
+## UML
+![image](https://github.com/user-attachments/assets/fe33b2e1-7f8c-44d4-ac49-e78f1db6b521)
+
 **Created by Team Mandalorian**
