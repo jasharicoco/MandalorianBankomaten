@@ -25,10 +25,6 @@ namespace MandalorianBankomaten
             {
                 return false;
             }
-            else if (fromCurrency == toCurrency)
-            {
-                return false;
-            }
 
             return true;
         }

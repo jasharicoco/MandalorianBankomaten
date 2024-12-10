@@ -273,7 +273,6 @@ namespace MandalorianBankomaten.Users
                 //Execute transfer
                 MenuUtility.CustomWriteLine(49, $"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
 
-                //CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
                 fromAccount.Withdraw(amount);
                 toAccount.Deposit(amountConverted);
             }
@@ -288,6 +287,11 @@ namespace MandalorianBankomaten.Users
         public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount, decimal amountConverted)
         {
             // Subtrahera beloppet från avsändarkontot
+            if(!CurrencyConverter.ValidateCurrency(fromAccount.CurrencyCode, recipientAccount.CurrencyCode))
+            {
+                return;
+            }
+
             fromAccount.Withdraw(amount);
             // Lägg till beloppet till mottagarkontot
             recipientAccount.DepositSecret(amountConverted);
