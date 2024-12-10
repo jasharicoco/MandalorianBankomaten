@@ -1,6 +1,7 @@
 using MandalorianBankomaten.Accounts;
 using MandalorianBankomaten.Loans;
 using MandalorianBankomaten.Menu;
+using System;
 using System.Globalization;
 using System.Security.Principal;
 
@@ -82,12 +83,14 @@ namespace MandalorianBankomaten.Users
             MenuUtility.CustomWriteLine(49, $"Konton för användare: {Name}");
             for (int i = 0; i < Accounts.Count; i++)
             {
-                MenuUtility.CustomWriteLine(49, $"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
+                MenuUtility.CustomWriteLine(49, $" {Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
             }
             if (Loans.Count > 0)
             {
-                MenuUtility.CustomWriteLine(49, "\nLånekonton:");
 
+                Console.WriteLine();
+                MenuUtility.CustomWriteLine(49, "Lånekonton:");
+                
                 for (int i = 0; i < Loans.Count; i++)
                 {
                     MenuUtility.CustomWriteLine(49, Loans[i].ToString());
@@ -171,7 +174,7 @@ namespace MandalorianBankomaten.Users
                 // Create the new account
                 Account newAccount = new Account(accountName, currencyCode, depositAmount);
                 Accounts.Add(newAccount);
-
+                Console.WriteLine();
                 // Inform the user that the account was created successfully
                 MenuUtility.CustomWriteLine(49, $"Konto '{accountName}' har skapats med {CurrencyConverter.FormatAmount(depositAmount, currencyCode)}!");
             }
@@ -265,26 +268,24 @@ namespace MandalorianBankomaten.Users
         //this
         public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
         {
-
             if (fromAccount.Balance >= amount)
             {
+                Console.WriteLine();
                 //Execute transfer
                 MenuUtility.CustomWriteLine(49, $"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
 
                 //CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
                 //fromAccount.Withdraw(amount);
                 //toAccount.Deposit(amount);
+                decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
+
+                fromAccount.Withdraw(converterAmount);
+                toAccount.Deposit(converterAmount);
             }
             else
             {
-                MenuUtility.CustomWriteLine(49, "Otillräckligt saldo för överföring.");
+                MenuUtility.CustomWriteLine(49, "Kontosaldo otillräckligt för överföring.");
             }
-
-            decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
-
-            fromAccount.Withdraw(converterAmount - amount);
-            toAccount.Deposit(converterAmount + amount);
-
         }
 
         //this
@@ -302,7 +303,7 @@ namespace MandalorianBankomaten.Users
             // Kontrollera om avsändarkontot har tillräckligt med saldo
             if (fromAccount.Balance < amount)
             {
-                MenuUtility.CustomWriteLine(49, "Det finns inte tillräckligt med pengar på ditt konto för denna överföring.");
+                MenuUtility.CustomWriteLine(49, "Kontosaldo otillräckligt för överföring.");
                 return;
             }
 
@@ -322,7 +323,7 @@ namespace MandalorianBankomaten.Users
 
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
         {
-            MenuUtility.CustomWriteLine(49, "Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
+            //MenuUtility.CustomWriteLine(49, "Innan ditt lån kan genomföras behöver vi skapa upp ett unik lånekonto åt dig.");
 
             Loan newLoan = new Loan(amount, loanCategory);
             Loans.Add(newLoan);
