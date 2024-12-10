@@ -36,7 +36,10 @@
 - Includes methods for displaying messages, managing menus and creating visual effects such as backgrounds and ASCII art
 
 ### TransactionLog
-- 
+- Designed to manage and log user's transactions and show transactionhistory
+
+### CurrencyConverter
+- Designed to handle currency conversion, formatting and validation for various currencies
 
 ## How to Use
 1. **Run the Program:** Open the project in your IDE and start the application.  
