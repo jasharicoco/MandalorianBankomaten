@@ -87,7 +87,7 @@ namespace MandalorianBankomaten.Users
             if (Loans.Count > 0)
             {
                 MenuUtility.CustomWriteLine(49, "\nLånekonton:");
-                
+
                 for (int i = 0; i < Loans.Count; i++)
                 {
                     MenuUtility.CustomWriteLine(49, Loans[i].ToString());
@@ -96,12 +96,12 @@ namespace MandalorianBankomaten.Users
         }
         public void CreateAccount()
         {
-            
+
             // Menu to choose type of account
             Console.SetCursorPosition(49, 4);
             MenuUtility.CustomWriteLine(49, "Välj typ av konto du vill skapa:");
             MenuUtility.CustomWriteLine(49, "[1] Vanligt konto");
-            MenuUtility.CustomWriteLine(49, "[2] Sparkonto");
+            MenuUtility.CustomWriteLine(49, "[2] Sparkonto med 4% ränta");
 
             int accountType;
             while (true)
@@ -198,9 +198,13 @@ namespace MandalorianBankomaten.Users
             while (true)
             {
                 string input = MenuUtility.CustomReadLine("Skriv in kontonummret på kontot du vill ta bort:".Length);
+                if (input == "exit")
+                {
+                    return;
+                }
                 if (!int.TryParse(input, out int accountID))
                 {
-                    MenuUtility.CustomWriteLine(49, "Fel inmatning, försök igen!");
+                    MenuUtility.CustomWriteLine(49, "Fel inmatning. Skriv 'exit' för att avbryta.");
                 }
                 else
                 {
@@ -251,6 +255,7 @@ namespace MandalorianBankomaten.Users
                 }
             }
         }
+
         public void AddAccount(Account account)
         {
             if (account == null) throw new ArgumentNullException(nameof(account));
