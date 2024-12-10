@@ -20,6 +20,14 @@
 - It inherits from Account base class
 - Users earn interest on their balance
 
+### Helper
+- Provides functionality for the application
+- Securely capturing a user's password without displaying the characters typed
+
+### Seeder
+- Creates seed users, allowing immediate login and testing
+- Creates seed accounts, ensuring that every user has accounts with initial balances
+
 ## How to Use
 1. **Run the Program:** Open the project in your IDE and start the application.  
 2. **Login:** Use the sample credentials below or create new accounts:
