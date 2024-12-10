@@ -28,6 +28,16 @@
 - Creates seed users, allowing immediate login and testing
 - Creates seed accounts, ensuring that every user has accounts with initial balances
 
+### Loan
+- Provides functionality for managing loans, such as calculating interest, making payments and generating loan-specifik details
+
+### MenuUtility
+- Designed to handle user interface-related tasks in this application
+- Includes methods for displaying messages, managing menus and creating visual effects such as backgrounds and ASCII art
+
+### TransactionLog
+- 
+
 ## How to Use
 1. **Run the Program:** Open the project in your IDE and start the application.  
 2. **Login:** Use the sample credentials below or create new accounts:
