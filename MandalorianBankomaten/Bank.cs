@@ -298,7 +298,7 @@ namespace MandalorianBankomaten
                 DisplayMessage("Ogiltigt val.", true);
                 return;
             }
-            if (fromId >= 8540)
+            if (fromId >= 8540 && fromId <= 8560)
             {
                 DisplayMessage("Du kan ej överföra från ett lånekonto.", true);
                 return;
