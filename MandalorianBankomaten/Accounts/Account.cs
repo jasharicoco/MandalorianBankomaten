@@ -77,6 +77,16 @@ namespace MandalorianBankomaten.Accounts
             MenuUtility.CustomWriteLine(49, $"Insättning av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} till {AccountName}.");
             MenuUtility.CustomWriteLine(49, $"Nytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
         }
+        public void DepositSecret(decimal amount)
+        {
+            if (amount <= 0)
+            {
+                MenuUtility.CustomWriteLine(49, "Insättningsbeloppet måste vara större än noll.");
+                return;
+            }
+
+            Balance += amount;
+        }
 
         public void Withdraw(decimal amount)
         {
@@ -93,10 +103,6 @@ namespace MandalorianBankomaten.Accounts
                 MenuUtility.CustomWriteLine(49, $"Uttag av {CurrencyConverter.FormatAmount(amount, CurrencyCode)} från {AccountName}.");
                 MenuUtility.CustomWriteLine(49, $"Nytt saldo: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}.");
             }
-            //else
-            //{
-            //    Console.WriteLine("Otillräckligt saldo för uttag.");
-            //}
         }
 
         public override string ToString()
