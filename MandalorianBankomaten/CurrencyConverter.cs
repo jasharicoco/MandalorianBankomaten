@@ -1,6 +1,5 @@
-﻿using System.Globalization;
-using System.Collections.Generic;
-using MandalorianBankomaten.Menu;
+﻿using MandalorianBankomaten.Menu;
+using System.Globalization;
 
 namespace MandalorianBankomaten
 {
@@ -37,21 +36,20 @@ namespace MandalorianBankomaten
         //calculates the amount and rate
         public static decimal Converter(string fromCurrency, string toCurrency, decimal amount)
         {
-            
-            if (!CurrencyData.ContainsKey(fromCurrency) && !CurrencyData.ContainsKey(toCurrency))
-            {
-                MenuUtility.CustomWriteLine(49, "Ogiltig valuta kod");
-            }
+            // Om valutorna är samma, ingen konvertering behövs
             if (fromCurrency == toCurrency)
             {
-                //no conversion needed
                 return amount;
             }
 
+            // Hämta växelkurser
             decimal fromRate = CurrencyData[fromCurrency].Rate;
             decimal toRate = CurrencyData[toCurrency].Rate;
 
-            return amount * (toRate / fromRate);
+            // Beräkna det omvandlade beloppet
+            decimal convertedAmount = amount * (toRate / fromRate);
+
+            return convertedAmount; // Detta är beloppet i "toCurrency"
         }
 
         //method for both the converter and valdiation 

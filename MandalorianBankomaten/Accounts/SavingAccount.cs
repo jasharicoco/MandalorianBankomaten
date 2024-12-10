@@ -30,10 +30,9 @@ namespace MandalorianBankomaten.Accounts
         public void ApplyInterest()
         {
             decimal totalInterest = Balance * _interestRate;
-            Balance += totalInterest;
+            //Balance += totalInterest;
             MenuUtility.CustomWriteLine(49, $"Räntesats: {_interestRate:P} , {CurrencyCode}");
             MenuUtility.CustomWriteLine(49, $"Årlig ränta: { CurrencyConverter.FormatAmount(totalInterest, CurrencyCode)}");
-            MenuUtility.CustomWriteLine(49, $"Saldo inklusive ränta: {CurrencyConverter.FormatAmount(Balance, CurrencyCode)}");
         }
         public override string ToString()
         {
