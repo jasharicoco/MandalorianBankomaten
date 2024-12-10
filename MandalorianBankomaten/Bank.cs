@@ -65,19 +65,21 @@ namespace MandalorianBankomaten
             int[] randomStar = new int[70];
             int[] x = new int[70];
             int[] y = new int[70];
-            
             Console.Clear();
             Console.ResetColor();
-            (x, y, randomStar) = MenuUtility.SpaceBackgroundPrep(x, y, randomStar, Console.WindowWidth, Console.WindowHeight, 0);
+            (x, y, randomStar) = MenuUtility.SpaceBackgroundPrep(x, y, randomStar, Console.WindowWidth, Console.WindowHeight, 0, 70);
             MenuUtility.SpaceBackground(randomStar, x, y, 70);
+            MenuUtility.ASCIIArt();
+            
             TransactionLog = new TransactionLog("TransactionLog.txt");
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler synliga i programmet
-            MenuUtility.ASCIIArt();
+            
             bool programRunning = true;
             string? choice;
             Console.SetCursorPosition(1, 2);
             Console.WriteLine("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
+            
 
             //generating random values here so they don't loop and create a new pattern on every key input
 
@@ -93,7 +95,7 @@ namespace MandalorianBankomaten
                     randomStar = new int[50];
                     x = new int[50];
                     y = new int[50];
-                    (x, y, randomStar) = MenuUtility.SpaceBackgroundPrep(x, y, randomStar, Console.WindowWidth - 45, Console.WindowHeight, 45);
+                    (x, y, randomStar) = MenuUtility.SpaceBackgroundPrep(x, y, randomStar, Console.WindowWidth - 45, Console.WindowHeight, 45, 50);
                     ConsoleKey key = ConsoleKey.A;
                     int choiceIndex = 0;
                     Console.Clear();
