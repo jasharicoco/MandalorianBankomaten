@@ -111,7 +111,9 @@ namespace MandalorianBankomaten.Loans
         }
         public override string ToString()
         {
-            return $"Lån ID: {LoanId}, Typ av lån: {Category}, Ursprunligt lån: {Amount:C}, Ränta: {InterestRate}%, Aktuell skuld: {RemainingBalance:C}";
+
+            return $" {LoanId}. {Category}: {Amount:C}, skuld: {RemainingBalance:C}, Ränta: {InterestRate}%";
+
         }
 
     }

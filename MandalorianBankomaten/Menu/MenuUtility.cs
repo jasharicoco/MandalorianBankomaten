@@ -79,7 +79,7 @@
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.BackgroundColor = ConsoleColor.Gray;
-                    Console.Write($"◆ {menu[i]}"); 
+                    Console.Write($"◆ {menu[i]}");
                 }
                 else
                 {
@@ -93,7 +93,7 @@
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.White;
             Random random = new Random();
-            
+
             string[] stars = { ".", "·", "•" };
             for (int i = 0; i < 50; i++)
             {
@@ -106,7 +106,7 @@
             //so there's no pause for a keypress when this method is used inside the menu options
             if (menuRunning == true)
             {
-                key = Console.ReadKey().Key; 
+                key = Console.ReadKey().Key;
             }
 
             if (key == ConsoleKey.UpArrow)
@@ -126,7 +126,7 @@
             int width = Console.WindowWidth - 45;
             int height = Console.WindowHeight;
             Random random = new Random();
-            
+
             for (int i = 0; i < 50; i++)
             {
                 int star = random.Next(0, 3);
@@ -170,6 +170,7 @@
             Console.SetCursorPosition(49, currentY);
             return input;
         }
+            
         public static void ASCIIArt()
         {
             MenuUtility.CustomWriteLine(49, "⠀⢀⣠⣄⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⡾⠿⠿⠿⠿⢷⣶⣦⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀");
