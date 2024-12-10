@@ -509,9 +509,14 @@ namespace MandalorianBankomaten
             DisplayMessage("Ange ID för lånet du vill amortera:");
             int loanId;
             string input = MenuUtility.CustomReadLine("Ange ID för lånet du vill amortera:".Length);
-            while (!int.TryParse(input, out loanId))
+            while (true)
             {
+                if(int.TryParse(input, out loanId))
+                {
+                    break;
+                }
                 DisplayMessage("Ogiltig inmatning. Ange ett giltigt låne-ID.", true);
+                input = MenuUtility.CustomReadLine("Ange ID för lånet du vill amortera:".Length);
             }
 
             Console.WriteLine();
@@ -554,7 +559,7 @@ namespace MandalorianBankomaten
             {
                 DisplayMessage("Ange amorteringsbelopp:");
                 string inputThree = MenuUtility.CustomReadLine("Ange amorteringsbelopp:".Length);
-                if (decimal.TryParse(Console.ReadLine(), out amount) && amount > 0)
+                if (decimal.TryParse(inputThree, out amount) && amount > 0)
                 {
                     if (amount > selectedAccount.Balance) // check if the amount is greater than the balance on selected account
                     {
