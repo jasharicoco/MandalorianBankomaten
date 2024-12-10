@@ -6,6 +6,7 @@ using MandalorianBankomaten.Transactions;
 using MandalorianBankomaten.Users;
 using System;
 using System.Globalization;
+using System.Security.Principal;
 using System.Text;
 
 namespace MandalorianBankomaten
@@ -344,15 +345,12 @@ namespace MandalorianBankomaten
             }
 
             // Utför överföringen
-            CurrentUser.TransferMoneyToAccount(fromAccount, recipientAccount, amount);
+            decimal amountConverted = CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
+            CurrentUser.TransferMoneyToAccount(fromAccount, recipientAccount, amount, amountConverted);
 
             // Log the transaction----------
             string transactionInfo = $"Överföring: {amount:C} från konto {fromAccount.AccountID} till konto {recipientAccount.AccountID}";
             TransactionLog.LogTransaction(CurrentUser.UserId, CurrentUser.Name, transactionInfo);
-
-            // Bekräftelse av överföringen
-            DisplayMessage($"Du har skickat {CurrencyConverter.FormatAmount(amount, fromAccount.CurrencyCode)} från konto {fromAccount.AccountID}: {fromAccount.AccountName} till konto {recipientAccount.AccountID}.");
-            DisplayMessage($"Ditt nya saldo är för konto {fromAccount.AccountID}: {fromAccount.AccountName} är: {CurrencyConverter.FormatAmount(fromAccount.Balance, fromAccount.CurrencyCode)}");
         }
         public void TransferBetweenAccounts()
         {

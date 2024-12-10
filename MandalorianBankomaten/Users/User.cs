@@ -285,34 +285,17 @@ namespace MandalorianBankomaten.Users
 
         //this
         //between own accounts 
-        public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount)
+        public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount, decimal amountConverted)
         {
-
-            // Kontrollera om beloppet är positivt
-            if (amount <= 0)
-            {
-                MenuUtility.CustomWriteLine(49, "Beloppet måste vara ett positivt tal.");
-                return;
-            }
-
-            // Kontrollera om avsändarkontot har tillräckligt med saldo
-            if (fromAccount.Balance < amount)
-            {
-                MenuUtility.CustomWriteLine(49, "Kontosaldo otillräckligt för överföring.");
-                return;
-            }
-
             if (!CurrencyConverter.ValidateCurrency(fromAccount.CurrencyCode, recipientAccount.CurrencyCode))
             {
                 return;
             }
 
-            decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, recipientAccount.CurrencyCode, amount);
-
             // Subtrahera beloppet från avsändarkontot
-            fromAccount.Withdraw(converterAmount);
+            fromAccount.Withdraw(amount);
             // Lägg till beloppet till mottagarkontot
-            recipientAccount.Deposit(converterAmount);
+            recipientAccount.DepositSecret(amountConverted);
 
         }
 
