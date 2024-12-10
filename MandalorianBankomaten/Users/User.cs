@@ -82,7 +82,7 @@ namespace MandalorianBankomaten.Users
             MenuUtility.CustomWriteLine(49, $"Konton för användare: {Name}");
             for (int i = 0; i < Accounts.Count; i++)
             {
-                MenuUtility.CustomWriteLine(49, $" {Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
+                MenuUtility.CustomWriteLine(49, $"{Accounts[i].AccountID}. {Accounts[i].AccountName} - Saldo: {CurrencyConverter.FormatAmount(Accounts[i].Balance, Accounts[i].CurrencyCode)}");
             }
             if (Loans.Count > 0)
             {

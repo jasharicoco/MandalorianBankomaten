@@ -61,8 +61,16 @@ namespace MandalorianBankomaten
         // Methods
         public void Run()
         {
+            int[] randomStar = new int[70];
+            int[] x = new int[70];
+            int[] y = new int[70];
+            
+            Console.Clear();
+            Console.ResetColor();
+            (x, y, randomStar) = MenuUtility.SpaceBackgroundPrep(x, y, randomStar, Console.WindowWidth, Console.WindowHeight, 0);
+            MenuUtility.SpaceBackground(randomStar, x, y, 70);
             TransactionLog = new TransactionLog("TransactionLog.txt");
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.OutputEncoding = Encoding.UTF8; // Gör ovanliga symboler synliga i programmet
             MenuUtility.ASCIIArt();
             bool programRunning = true;
@@ -71,23 +79,24 @@ namespace MandalorianBankomaten
             Console.WriteLine("\ud83c\udf1f Välkommen till Mandalorian Bankomaten \ud83c\udf1f\n");
 
             //generating random values here so they don't loop and create a new pattern on every key input
-            int[] randomStar = new int[50];
-            int[] x = new int[50];
-            int[] y = new int[50];
-            (x, y, randomStar) = MenuUtility.SpaceBackgroundPrep(x, y, randomStar);
 
             bool loginSuccesfull = false;
             while (!loginSuccesfull)
             {
-                loginSuccesfull = LogIn();
+                loginSuccesfull = LogIn(randomStar, x, y);
             }
             if (loginSuccesfull) // if login is successful
             {
                 while (programRunning)
                 {
+                    randomStar = new int[50];
+                    x = new int[50];
+                    y = new int[50];
+                    (x, y, randomStar) = MenuUtility.SpaceBackgroundPrep(x, y, randomStar, Console.WindowWidth - 45, Console.WindowHeight, 45);
                     ConsoleKey key = ConsoleKey.A;
                     int choiceIndex = 0;
-                    
+                    Console.Clear();
+                    Console.ResetColor();
                     string[] menu = {"Visa konton\n" ,
                         "Lägg till konto\n" ,
                         "Ta bort konto\n" ,
@@ -103,7 +112,7 @@ namespace MandalorianBankomaten
                         string[] adminMenu = {"Skapa användare\n" ,
                                                "Radera användare\n" ,
                                                "Logga ut\n" };
-
+                        
                         // Admin Menu
                         while (programRunning)
                         {
@@ -135,7 +144,6 @@ namespace MandalorianBankomaten
                     }
                     else
                     {
-                        
                         // User Menu
                         while (programRunning)
                         {
@@ -208,7 +216,7 @@ namespace MandalorianBankomaten
                 }
             }
         }
-        public bool LogIn()
+        public bool LogIn(int[] randomStar, int[] x, int[] y)
         {
             Console.SetCursorPosition(2, 4);
             Console.Write("Vänligen skriv in ditt \ud83d\udc64 användernamn: ");
@@ -497,7 +505,7 @@ namespace MandalorianBankomaten
 
         public void AmortizeLoan(User user)
         {
-            
+            Console.SetCursorPosition(49, 2);
             if (user.Loans.Count == 0)
             {
                 DisplayMessage("Du har inga lån att amortera på.", true);
@@ -505,7 +513,7 @@ namespace MandalorianBankomaten
             }
 
             user.ShowLoans();
-
+            Console.WriteLine();
             DisplayMessage("Ange ID för lånet du vill amortera:");
             int loanId;
             string input = MenuUtility.CustomReadLine("Ange ID för lånet du vill amortera:".Length);
@@ -540,7 +548,7 @@ namespace MandalorianBankomaten
                 }
 
                 int accountId;
-                string inputTwo = MenuUtility.CustomReadLine("Ange lånebelopp:".Length);
+                string inputTwo = MenuUtility.CustomReadLine("Välj från vilket konto du vill amortera genom att ange konto-ID:".Length);
                 if (int.TryParse(inputTwo, out accountId))
                 {
                     selectedAccount = user.Accounts.FirstOrDefault(a => a.AccountID == accountId); // find the account with the matching accountID
@@ -593,7 +601,8 @@ namespace MandalorianBankomaten
 
         private void DisplayAmortizationDetails(decimal amount, Account account, Loan loan)
         {
-            Console.WriteLine($"Amortering på {amount:C} har genomförts från kontot {account.AccountName}. Återstående skuld på lånet: {loan.RemainingBalance:C}");
+            MenuUtility.CustomWriteLine(49, $"Amortering på {amount:C} har genomförts från kontot {account.AccountName}.");
+            MenuUtility.CustomWriteLine(49, $"Återstående skuld på lånet: {loan.RemainingBalance:C}");
         }
         // Displays a message to the user with an option to display an error message in red. Fun to try out and minimize ConsoleWriteline
         public void DisplayMessage(string message, bool isError = false)
@@ -601,7 +610,7 @@ namespace MandalorianBankomaten
             if (isError)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                MenuUtility.CustomWriteLine(49, message);
+                MenuUtility.CustomWriteLineDefault(49, message);
                 Console.ResetColor();
             }
             else
@@ -625,6 +634,7 @@ namespace MandalorianBankomaten
         }
         public void Return()
         {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.SetCursorPosition(49, 28);
             Console.WriteLine("Tryck Enter för att komma tillbaka till menyn.");
             Console.ReadLine();
