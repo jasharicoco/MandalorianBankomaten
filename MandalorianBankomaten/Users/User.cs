@@ -204,13 +204,16 @@ namespace MandalorianBankomaten.Users
                 }
                 else
                 {
+                    bool accountFound = false; // Flagga för att spåra om kontot hittades
+
                     foreach (var account in Accounts)
                     {
                         if (account.AccountID == accountID)
                         {
+                            accountFound = true; // Konto hittades
+
                             // Gets the specified account from users accounts list
                             Account accountToRemove = Accounts.FirstOrDefault(account => account.AccountID == accountID);
-
 
                             Console.WriteLine();
                             MenuUtility.CustomWriteLine(49, $"{accountToRemove.AccountName} - {accountToRemove.Balance:C}");
@@ -238,10 +241,12 @@ namespace MandalorianBankomaten.Users
                             MenuUtility.CustomWriteLine(49, "Kontot har tagits bort!");
                             return;
                         }
-                        else
-                        {
-                            MenuUtility.CustomWriteLine(49, "Fel kontonummer, försök igen!");
-                        }
+                    }
+
+                    // Om inget konto hittades
+                    if (!accountFound)
+                    {
+                        MenuUtility.CustomWriteLine(49, "Fel kontonummer, försök igen!");
                     }
                 }
             }
