@@ -90,6 +90,20 @@
                 }
             }
 
+            //Console.BackgroundColor = ConsoleColor.Black;
+            //Console.ForegroundColor = ConsoleColor.White;
+            //Random random = new Random();
+
+            //string[] stars = { ".", "·", "•" };
+            //for (int i = 0; i < 50; i++)
+            //{
+            //    Console.SetCursorPosition(x[i], y[i]);
+            //    Console.Write($"{stars[randomStar[i]]}");
+            //}
+            //Console.ResetColor();
+            //Console.SetCursorPosition(0, 0);
+            
+
             SpaceBackground(randomStar, x, y, 50);
 
             //so there's no pause for a keypress when this method is used inside the menu options
@@ -125,13 +139,13 @@
             Console.ResetColor();
             Console.SetCursorPosition(0, 0);
         }
-        public static (int[], int[], int[]) SpaceBackgroundPrep(int[] x, int[] y, int[] randomStar, int width, int height, int xStartingPoint, int starCount)
+        public static (int[], int[], int[]) SpaceBackgroundPrep(int[] x, int[] y, int[] randomStar, int width, int height, int xStartingPoint)
         {
             //int width = Console.WindowWidth - 45;
             //int height = Console.WindowHeight;
             Random random = new Random();
 
-            for (int i = 0; i < starCount; i++)
+            for (int i = 0; i < 50; i++)
             {
                 int star = random.Next(0, 3);
                 int randomX = random.Next(xStartingPoint, width + xStartingPoint);
