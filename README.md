@@ -12,8 +12,13 @@
 - Transfer money between accounts or to other users.
 - Apply for loans and make repayments.
 
-### Admins
+### Admin
 - Create and delete user accounts.
+
+### SavingAccount
+- Specialized type of account, savnings account
+- It inherits from Account base class
+- Users earn insterest on their balance
 
 ## How to Use
 1. **Run the Program:** Open the project in your IDE and start the application.  
