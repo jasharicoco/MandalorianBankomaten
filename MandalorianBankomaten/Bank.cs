@@ -7,7 +7,6 @@ using MandalorianBankomaten.Users;
 using System;
 using System.Globalization;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace MandalorianBankomaten
 {
@@ -414,8 +413,8 @@ namespace MandalorianBankomaten
             }
 
             // Utför överföringen
-            CurrentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount);
-            //CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
+            decimal amountConverted = CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
+            CurrentUser.TransferMoneyBetweenAccounts(fromAccount, toAccount, amount, amountConverted);
 
             // Log the transaction----------
             string transferInfo = $"Överföring: {CurrencyConverter.FormatAmount(amount, fromAccount.CurrencyCode)} från konto {fromAccount.AccountID} till konto {toAccount.AccountID}";

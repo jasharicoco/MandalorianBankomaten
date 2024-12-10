@@ -1,5 +1,4 @@
 using MandalorianBankomaten.Menu;
-using System.Globalization;
 
 namespace MandalorianBankomaten.Accounts
 {

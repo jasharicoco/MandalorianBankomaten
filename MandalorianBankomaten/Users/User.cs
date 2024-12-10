@@ -3,7 +3,6 @@ using MandalorianBankomaten.Loans;
 using MandalorianBankomaten.Menu;
 using System;
 using System.Globalization;
-using System.Security.Principal;
 
 namespace MandalorianBankomaten.Users
 {
@@ -104,7 +103,7 @@ namespace MandalorianBankomaten.Users
             Console.SetCursorPosition(49, 4);
             MenuUtility.CustomWriteLine(49, "Välj typ av konto du vill skapa:");
             MenuUtility.CustomWriteLine(49, "[1] Vanligt konto");
-            MenuUtility.CustomWriteLine(49, "[2] Sparkonto med 4% ränta");
+            MenuUtility.CustomWriteLine(49, "[2] Sparkonto med 5% ränta");
 
             int accountType;
             while (true)
@@ -266,7 +265,7 @@ namespace MandalorianBankomaten.Users
         }
         //between users
         //this
-        public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount)
+        public void TransferMoneyBetweenAccounts(Account fromAccount, Account toAccount, decimal amount, decimal amountConverted)
         {
             if (fromAccount.Balance >= amount)
             {
@@ -275,12 +274,8 @@ namespace MandalorianBankomaten.Users
                 MenuUtility.CustomWriteLine(49, $"Överföring från {fromAccount.AccountName} till {toAccount.AccountName} lyckades.");
 
                 //CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
-                //fromAccount.Withdraw(amount);
-                //toAccount.Deposit(amount);
-                decimal converterAmount = CurrencyConverter.Converter(fromAccount.CurrencyCode, toAccount.CurrencyCode, amount);
-
-                fromAccount.Withdraw(converterAmount);
-                toAccount.Deposit(converterAmount);
+                fromAccount.Withdraw(amount);
+                toAccount.Deposit(amountConverted);
             }
             else
             {
