@@ -326,6 +326,13 @@ namespace MandalorianBankomaten
                 return;
             }
 
+            // Kontrollera om kontot tillhör den aktuella användaren
+            if (CurrentUser.Accounts.Any(account => account.AccountID == toId))
+            {
+                DisplayMessage("Du kan inte överföra pengar till dina egna konton.", true);
+                return;
+            }
+
             // Hitta mottagarens användare genom att kolla vilket konto som tillhör vilken användare
             var recipient = Users.FirstOrDefault(user => user.Accounts.Contains(recipientAccount));
             if (recipient == null)
@@ -492,7 +499,6 @@ namespace MandalorianBankomaten
             availableLoanAmount -= amount;
             DisplayMessage($"Ditt uppdaterade låneutrymme: {availableLoanAmount.ToString("C", CultureInfo.CurrentCulture)}");
         }
-
         public void AmortizeLoan(User user)
         {
             
@@ -588,7 +594,6 @@ namespace MandalorianBankomaten
                 user.Loans.Remove(loan); // Removes the loan from the user's list of loans
             }
         }
-
         private void DisplayAmortizationDetails(decimal amount, Account account, Loan loan)
         {
             Console.WriteLine($"Amortering på {amount:C} har genomförts från kontot {account.AccountName}. Återstående skuld på lånet: {loan.RemainingBalance:C}");

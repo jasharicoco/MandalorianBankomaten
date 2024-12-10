@@ -287,16 +287,10 @@ namespace MandalorianBankomaten.Users
         //between own accounts 
         public void TransferMoneyToAccount(Account fromAccount, Account recipientAccount, decimal amount, decimal amountConverted)
         {
-            if (!CurrencyConverter.ValidateCurrency(fromAccount.CurrencyCode, recipientAccount.CurrencyCode))
-            {
-                return;
-            }
-
             // Subtrahera beloppet från avsändarkontot
             fromAccount.Withdraw(amount);
             // Lägg till beloppet till mottagarkontot
             recipientAccount.DepositSecret(amountConverted);
-
         }
 
         public void TakeLoan(decimal amount, Loan.LoanCategory loanCategory)
