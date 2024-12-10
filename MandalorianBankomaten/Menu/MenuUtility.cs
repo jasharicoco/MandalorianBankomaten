@@ -182,7 +182,7 @@
             Console.SetCursorPosition(49, currentY);
             return input;
         }
-            
+        int lol = 1;
         public static void ASCIIArt()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
